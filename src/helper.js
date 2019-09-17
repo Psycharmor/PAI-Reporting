@@ -1,6 +1,7 @@
 export const AUTH_TOKEN = window.location.host + '/AUTH_TOKEN';
 
 export const getUserSnippet = username => {
+
   // debugger
   let initials = '';
   if (!username) {

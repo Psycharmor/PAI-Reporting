@@ -11,7 +11,7 @@ class LoginForm extends Component {
     loading: false,
     username: '',
     password: '',
-    error: '',
+    error: ''
   }
 
   handleLogin = event => {
@@ -22,13 +22,23 @@ class LoginForm extends Component {
       username,
       password
     })
-    .then(user => this.handleLoginSuccess(user.data))
-    .catch(error => this.handleLoginFail(error))
+      .then( (user)=>{
+          if(user.user_role === "subscriber" ){
+            
+
+              console.log(user.user_role)
+          }else{
+
+              throw new Error('SORRY, You don\'t have permissions to Psycharmor Reporting ');
+          }
+      })
+      .then(user => this.handleLoginSuccess(user.data))
+      .catch(error => this.handleLoginFail(error))
   }
 
   handleLoginSuccess = user => {
     localStorage.setItem(AUTH_TOKEN, JSON.stringify(user));
-    console.log('user', user)
+    // console.log('user', user)
     this.setState({
       validate: false,
       loading: false,

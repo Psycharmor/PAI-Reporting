@@ -1,11 +1,11 @@
 {
   "domain": {
     "env": {
-      "siteUrl": "https://learnarmor.com/"
+      "siteUrl": "http://localhost:8008/"
     }
   },
   "API": {
-    "WP": "api/",
+    "WP": "wp-json/",
     "JWT": "jwt-auth/v1/"
   },
   "endpoint": {
