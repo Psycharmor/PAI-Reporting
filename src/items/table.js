@@ -1,70 +1,126 @@
 import React, { Component } from 'react'
 import { AUTH_TOKEN } from '../helper';
-import WPAPI from '../service/wpClient';
+import ApiCaller from './ApiCaller';
+import ActivityTable from '../components/ActivityTable';
+
+import {Button, Select, MenuItem, TextField} from '@material-ui/core';
+// import LoadingOverlay from 'react-loading-overlay';
 
 class Table extends Component {
-  constructor () {
-    super();
-    this.state = {
-      clouds: []
+
+    constructor () {
+        super();
+
+        const user = JSON.parse(localStorage.getItem(AUTH_TOKEN));
+        this.state = {
+          activities: [],
+          selectedGroup: user.group[0].id,
+          showOverlay: true,
+          disableNextBtn: false,
+          disablePrevBtn: true
+        };
+        this.paging = {
+            limit: 1000,
+            offset: 0,
+            count: 0
+        }
+        this.groups = user.group;
     }
-  }
 
-  componentDidMount (){
-    const user = JSON.parse(localStorage.getItem(AUTH_TOKEN));
+    componentDidMount() {
+        this.changeActivityState();
+    }//end MOUNT
 
-    // let jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9wc3ljaGFybW9yLmNvbSIsImlhdCI6MTU2ODM4NzUyMywibmJmIjoxNTY4Mzg3NTIzLCJleHAiOjE1Njg5OTIzMjMsImRhdGEiOnsidXNlciI6eyJpZCI6IjE4NTExIn19fQ.gp3Vt_AGrMsRvKDokIJfauphOvhfXEnXjTP3ZoOaiAk'
-    // let jwtData = jwt.split('.')[1]
-    // let decodedJwtJsonData = window.atob(jwtData)
-    // let decodedJwtData = JSON.parse(decodedJwtJsonData)
-    //
-    // let isAdmin = decodedJwtData.admin
-    //
-    // console.log('jwtData: ' + jwtData)
-    // console.log('decodedJwtJsonData: ' + decodedJwtJsonData)
-    // console.log('decodedJwtData: ' + decodedJwtData)
-    // console.log('Is admin: ' + isAdmin)
-    // 
-    // console.log(user)
-    // debugger
-    const usersUrl = WPAPI.usersEndpoint;
-    let header = new Headers();
-    header.append('Accept', 'application/json');
-    let req = new Request(usersUrl, {
-        method: 'GET',
-        headers : {
-          Authorization:'Bearer' + user.token },
-        mode: 'cors'
-    });
-    fetch(req)
-        .then( (response)=>{
-            if(response.ok){
-                return response.json();
-            }else{
-                throw new Error('BAD HTTPS');
-            }
-        }).then( (jsonData) => {
-            this.setState({ clouds: jsonData })
+    changeActivityPage(goingForward) {
+        if (!goingForward) {
+            this.paging.offset = Math.max(0, this.paging.offset - (this.paging.limit + this.paging.count))
+        }
+        this.changeActivityState();
+    }
 
-          console.log(jsonData);
-
-        }).catch( (err) =>{
-            console.log('ERROR:', err.message);
+    changeActivityState() {
+        this.setState({
+            showOverlay: true,
+            disableNextBtn: true,
+            disablePrevBtn: true
         });
-  }//end MOUNT
+        const apiCaller = new ApiCaller();
+        apiCaller.getActivityFromGroup(this.state.selectedGroup, this.paging.limit, this.paging.offset)
+            .then((jsonData) => {
+                this.paging.offset += jsonData.length;
+                this.paging.count = jsonData.length;
+                this.setState({
+                    activities: jsonData,
+                    selectedGroup: this.state.selectedGroup,
+                    showOverlay: false,
+                    disableNextBtn: this.paging.count < this.paging.limit,
+                    disablePrevBtn: (this.paging.offset - this.paging.count) <= 0
+                });
+                console.log(this.state, this.paging);
+            })
+            .catch((err) => {
+                console.log(err);
+            }
+        );
+    }
 
-  render() {
-    const items = this.state.clouds.map((item, key) =>
-            <li key={item.id}>ID :{item.id}</li>
+    changeSelectedGroup(groupId) {
+        if(groupId === this.state.selectedGroup) {
+            return;
+        }
+        this.setState({
+            showOverlay: true,
+            disableNextBtn: true,
+            disablePrevBtn: true
+        });
+        const apiCaller = new ApiCaller();
+        apiCaller.getActivityFromGroup(groupId, this.paging.limit, 0)
+            .then((jsonData) => {
+                this.paging.offset = jsonData.length;
+                this.paging.count = jsonData.length;
+                this.setState({
+                    activities: jsonData,
+                    selectedGroup: groupId,
+                    showOverlay: false,
+                    disableNextBtn: this.paging.count < this.paging.limit,
+                    disablePrevBtn: (this.paging.offset - this.paging.count) <= 0
+                });
+                console.log(this.state, this.paging);
+            })
+            .catch((err) => {
+                console.log(err);
+            }
+        );
+    }
+
+    getActivityAfterDate(dateThreshold) {
+        console.log(dateThreshold);
+        const date = new Date(dateThreshold + " 00:00");
+        if (date.toString() === "Invalid Date") {
+            return;
+        }
+        console.log(date, Math.floor(date.valueOf() / 1000));
+    }
+
+    render() {
+        const groups = this.groups.map((item, key) =>
+            <MenuItem key={key} value={item.id}>{item.name}</MenuItem>
         );
 
-    return (
-      <div className="container">
-        <ul>
-          {items}
-        </ul>
-      </div>
-    )
-  }
+        return (
+            <div>
+                <Button variant="contained" color="primary" disabled={this.state.disablePrevBtn} onClick={() => this.changeActivityPage(false)}>Prev</Button>
+                <Button variant="contained" color="primary" disabled={this.state.disableNextBtn} onClick={() => this.changeActivityPage(true)}>Next</Button>
+                <Select value={this.state.selectedGroup} onChange={(e) => this.changeSelectedGroup(e.target.value)}>
+                    {groups}
+                </Select>
+                <TextField
+                    type="date"
+                    onBlur={(e) => this.getActivityAfterDate(e.target.value)}
+                />
+                <ActivityTable showOverlay={this.state.showOverlay} activities={this.state.activities} />
+            </div>
+        );
+    }
 }
-export default Table
+export default Table;
