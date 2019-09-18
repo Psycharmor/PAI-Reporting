@@ -1,0 +1,53 @@
+[33mcommit 9171d8e7dd23a419f622146ff3eaeed3dcaeac45[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+Author: pai_eayran <eayran@psycharmor.org>
+Date:   Wed Sep 18 13:57:03 2019 -0700
+
+    Add basic features before filters
+
+[33mcommit ca495c32b312c9c5c03ff3dada536776a2b3d467[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Delgesh Shahab <dshahab@psycharmor.org>
+Date:   Tue Sep 17 06:59:34 2019 -0700
+
+    updated version with api
+
+[33mcommit a1be13f0fb1e62ad00a23ed9bf81f9ddc9b1de4b[m
+Author: Delgesh Shahab <dshahab@psycharmor.org>
+Date:   Mon Sep 9 07:28:47 2019 -0700
+
+    remove yarn security
+
+[33mcommit 3e095488cf0b1e3a578a85a63d72c9ea340ecd04[m
+Author: Delgesh Shahab <dshahab@psycharmor.org>
+Date:   Mon Sep 9 07:27:38 2019 -0700
+
+    updated ig
+
+[33mcommit 6265776ced62a41a071daccab82d96fa2f440120[m
+Author: Delgesh Shahab <dshahab@psycharmor.org>
+Date:   Mon Sep 9 07:26:24 2019 -0700
+
+    react app
+
+[33mcommit 6b72cb2752576e4d39e7af814c454e8e0350922d[m
+Author: Delgesh Shahab <dshahab@psycharmor.org>
+Date:   Mon Sep 9 07:24:49 2019 -0700
+
+    remove files
+
+[33mcommit 351bf3f3f43a017e8f2abca914eac3aa2dbfc753[m
+Author: Delgesh Shahab <dshahab@psycharmor.org>
+Date:   Sat Sep 7 14:46:58 2019 -0700
+
+    gitignore
+
+[33mcommit a6479460d7014bde1f3cec7c27b1cec494604aa8[m
+Author: Delgesh Shahab <dshahab@psycharmor.org>
+Date:   Thu Sep 5 12:01:45 2019 -0700
+
+    React App with Login/Dashboard using Wordpress Login
+
+[33mcommit 0e1c43c180bfa63955baa9030c812c664e1d29b4[m
+Author: Psycharmor <54641692+Psycharmor@users.noreply.github.com>
+Date:   Thu Sep 5 11:58:54 2019 -0700
+
+    Initial commit

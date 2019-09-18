@@ -8,8 +8,8 @@ class ApiCaller {
         this.activityUrl = WPAPI.userActsEndpoint;
     }
 
-    getActivityFromGroup(groupId, limit, offset) {
-        const request = this.createRequestObject(groupId, limit, offset);
+    getActivityFromGroup(groupId, limit, offset, updatedAfter) {
+        const request = this.createRequestObject(groupId, limit, offset, updatedAfter);
         return fetch(request)
             .then((response) => {
                 if (response.ok) {
@@ -25,8 +25,8 @@ class ApiCaller {
         );
     }
 
-    createRequestObject( groupId, limit, offset ) {
-        const activityUrlWithQueryArgs = this.activityUrl + this.createQueryArgs(groupId, limit, offset);
+    createRequestObject(groupId, limit, offset, updatedAfter) {
+        const activityUrlWithQueryArgs = this.activityUrl + this.createQueryArgs(groupId, limit, offset, updatedAfter);
         console.log(activityUrlWithQueryArgs);
         const requestOptions = {
             method: "GET",
@@ -37,8 +37,8 @@ class ApiCaller {
         return new Request(activityUrlWithQueryArgs, requestOptions);
     }
 
-    createQueryArgs(groupId, limit, offset) {
-        return "?group_id=" + groupId + "&limit=" + limit + "&offset=" + offset;
+    createQueryArgs(groupId, limit, offset, updatedAfter) {
+        return "?group_id=" + groupId + "&limit=" + limit + "&offset=" + offset + "&updated_after=" + updatedAfter;
     }
 }
 export default ApiCaller;

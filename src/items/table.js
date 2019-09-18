@@ -22,6 +22,7 @@ class Table extends Component {
         this.paging = {
             limit: 1000,
             offset: 0,
+            updatedAfter: 0,
             count: 0
         }
         this.groups = user.group;
@@ -45,7 +46,7 @@ class Table extends Component {
             disablePrevBtn: true
         });
         const apiCaller = new ApiCaller();
-        apiCaller.getActivityFromGroup(this.state.selectedGroup, this.paging.limit, this.paging.offset)
+        apiCaller.getActivityFromGroup(this.state.selectedGroup, this.paging.limit, this.paging.offset, this.paging.updatedAfter)
             .then((jsonData) => {
                 this.paging.offset += jsonData.length;
                 this.paging.count = jsonData.length;
@@ -74,7 +75,7 @@ class Table extends Component {
             disablePrevBtn: true
         });
         const apiCaller = new ApiCaller();
-        apiCaller.getActivityFromGroup(groupId, this.paging.limit, 0)
+        apiCaller.getActivityFromGroup(groupId, this.paging.limit, 0, this.paging.updatedAfter)
             .then((jsonData) => {
                 this.paging.offset = jsonData.length;
                 this.paging.count = jsonData.length;
@@ -99,7 +100,9 @@ class Table extends Component {
         if (date.toString() === "Invalid Date") {
             return;
         }
-        console.log(date, Math.floor(date.valueOf() / 1000));
+        this.paging.offset = 0;
+        this.paging.updatedAfter = Math.floor(date.valueOf() / 1000);
+        this.changeActivityState();
     }
 
     render() {
