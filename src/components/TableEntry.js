@@ -20,6 +20,15 @@ class TableEntry extends Component {
         });
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        // activity changed, reset dropdown
+        if (this.props.activity !== prevProps.activity) {
+            this.setState({
+                opened: false
+            });
+        }
+    }
+
     render() {
         return(
             <li className="table-entry">
