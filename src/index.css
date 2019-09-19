@@ -67,3 +67,56 @@ code {
   text-align: center;
   padding-top: 16px;
 }
+
+/* table entry */
+li.table-entry {
+    list-style-type: none;
+}
+
+.table-entry-header {
+    display: flex;
+    height: 30px;
+    transition: 0.3s;
+}
+
+.table-entry-header div {
+    flex-grow: 1;
+    flex-basis: 0;
+    align-self: center;
+    justify-content: center;
+}
+
+.table-entry-header.active {
+    background-color: #ffffff;
+}
+
+.table-entry-header:hover {
+    background-color: #ffffff;
+    cursor: pointer;
+}
+
+.table-entry-header.label {
+    transition: 0.0s;
+}
+
+.table-entry-header.label:hover {
+    background-color: inherit;
+    cursor: auto;
+}
+
+.table-entry-content {
+    display: flex;
+    flex-direction: column;
+    height: 0;
+    background-color: #ffffff;
+    overflow-y: hidden;
+    transition: height 0.3s ease;
+}
+
+.table-entry-content div {
+
+}
+
+.table-entry-content.active {
+    height: 80px;
+}
