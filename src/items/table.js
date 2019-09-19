@@ -8,8 +8,8 @@ import {Button, Select, MenuItem, TextField} from '@material-ui/core';
 
 class Table extends Component {
 
-    constructor () {
-        super();
+    constructor(props) {
+        super(props);
 
         const user = JSON.parse(localStorage.getItem(AUTH_TOKEN));
         this.state = {
@@ -19,6 +19,13 @@ class Table extends Component {
           disableNextBtn: false,
           disablePrevBtn: true
         };
+        this.limits = [
+            10,
+            20,
+            50,
+            100,
+            1000
+        ];
         this.paging = {
             limit: 1000,
             offset: 0,
@@ -34,7 +41,7 @@ class Table extends Component {
 
     changeActivityPage(goingForward) {
         if (!goingForward) {
-            this.paging.offset = Math.max(0, this.paging.offset - (this.paging.limit + this.paging.count))
+            this.paging.offset = Math.max(0, this.paging.offset - (this.paging.limit + this.paging.count));
         }
         this.changeActivityState();
     }
@@ -94,6 +101,13 @@ class Table extends Component {
         );
     }
 
+    changeLimit(newLimit) {
+        // redo the current page with new limit
+        this.paging.offset = Math.max(0, this.paging.offset - this.paging.count);
+        this.paging.limit = newLimit;
+        this.changeActivityState();
+    }
+
     getActivityAfterDate(dateThreshold) {
         console.log(dateThreshold);
         const date = new Date(dateThreshold + " 00:00");
@@ -110,12 +124,19 @@ class Table extends Component {
             <MenuItem key={key} value={item.id}>{item.name}</MenuItem>
         );
 
+        const limits = this.limits.map((limit, key)  =>
+            <MenuItem key={key} value={limit}>{limit}</MenuItem>
+        );
+
         return (
             <div>
                 <Button variant="contained" color="primary" disabled={this.state.disablePrevBtn} onClick={() => this.changeActivityPage(false)}>Prev</Button>
                 <Button variant="contained" color="primary" disabled={this.state.disableNextBtn} onClick={() => this.changeActivityPage(true)}>Next</Button>
                 <Select value={this.state.selectedGroup} onChange={(e) => this.changeSelectedGroup(e.target.value)}>
                     {groups}
+                </Select>
+                <Select value={this.paging.limit} onChange={(e) => this.changeLimit(e.target.value)}>
+                    {limits}
                 </Select>
                 <TextField
                     type="date"
