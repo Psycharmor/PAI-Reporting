@@ -16,7 +16,7 @@ class ActivityTable extends Component {
 
         return (
             <div>
-                <ul>
+                <ul className="table-list">
                     <li className="table-entry">
                         <div className="table-entry-header label">
                             <div>Name</div>

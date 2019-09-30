@@ -1,15 +1,13 @@
 import { AUTH_TOKEN } from '../helper';
-import WPAPI from '../service/wpClient';
 
 class ApiCaller {
 
-    constructor() {
+    constructor(endPoint) {
         this.user = JSON.parse(localStorage.getItem(AUTH_TOKEN));
-        this.activityUrl = WPAPI.userActsEndpoint;
     }
 
-    getActivityFromGroup(groupId, limit, offset, updatedAfter) {
-        const request = this.createRequestObject(groupId, limit, offset, updatedAfter);
+    getActivityFromGroup(groupId, endpoint) {
+        const request = this.createRequestObject(groupId, endpoint);
         return fetch(request)
             .then((response) => {
                 if (response.ok) {
@@ -21,12 +19,11 @@ class ApiCaller {
             })
             .catch((err) => {
                 console.log(err);
-            }
-        );
+            });
     }
 
-    createRequestObject(groupId, limit, offset, updatedAfter) {
-        const activityUrlWithQueryArgs = this.activityUrl + this.createQueryArgs(groupId, limit, offset, updatedAfter);
+    createRequestObject(groupId, endpoint) {
+        const activityUrlWithQueryArgs = endpoint + this.createQueryArgs(groupId);
         console.log(activityUrlWithQueryArgs);
         const requestOptions = {
             method: "GET",
@@ -37,8 +34,8 @@ class ApiCaller {
         return new Request(activityUrlWithQueryArgs, requestOptions);
     }
 
-    createQueryArgs(groupId, limit, offset, updatedAfter) {
-        return "?group_id=" + groupId + "&limit=" + limit + "&offset=" + offset + "&updated_after=" + updatedAfter;
+    createQueryArgs(groupId) {
+        return "?groupid=" + groupId;
     }
 }
 export default ApiCaller;

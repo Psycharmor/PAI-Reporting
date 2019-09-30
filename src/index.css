@@ -68,6 +68,11 @@ code {
   padding-top: 16px;
 }
 
+/* table */
+ul.table-list {
+    padding-left: 0;
+}
+
 /* table entry */
 li.table-entry {
     list-style-type: none;

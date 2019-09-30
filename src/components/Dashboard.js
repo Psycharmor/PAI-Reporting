@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { AUTH_TOKEN, getUserSnippet } from '../helper';
-import Table from '../items/table';
+import Table from './table/Table';
 
 import { Button, Container } from '@material-ui/core';
 
@@ -10,8 +10,7 @@ import { Button, Container } from '@material-ui/core';
 const Dashboard = props => {
 
 
-  const user = JSON.parse(localStorage.getItem(AUTH_TOKEN));
-
+    const user = JSON.parse(localStorage.getItem(AUTH_TOKEN));
 
     return (
 

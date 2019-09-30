@@ -1,8 +1,9 @@
   const WPAPI = {
        // allPosts: 'https://learnarmor.com/api/triwest/v1/users/',
-       usersEndpoint: 'http://localhost:80/psycharmor-local/wp-json/pai/v1/users/?',
-       coursesEndpoint: 'http://localhost:80/psycharmor-local/wp-json/pai/v1/course-activities',
-       userActsEndpoint: 'http://localhost:80/psycharmor-local/wp-json/pai/v1/users-activities',
+       usersEndpoint: 'http://localhost:80/psycharmor-local/wp-json/pai/v1/users',
+       coursesEndpoint: 'http://localhost:80/psycharmor-local/wp-json/pai/v1/courses',
+       courseActivitiesEndpoint: 'http://localhost:80/psycharmor-local/wp-json/pai/v1/course-activities',
+       groupsEndpoint: 'http://localhost:80/psycharmor-local/wp-json/pai/v1/groups',
        allGroupEndpoint: 'http://localhost:80/psycharmor-local/wp-json/uncanny_reporting/v1/dashboard_data//?group_id=all',
        tinCanDataEndpoint: 'http://localhost:80/psycharmor-local/wp-json/uncanny_reporting/v1/tincan_data/', // add user id for this
 
