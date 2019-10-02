@@ -6,7 +6,7 @@ class ApiCaller {
         this.user = JSON.parse(localStorage.getItem(AUTH_TOKEN));
     }
 
-    getActivityFromGroup(groupId, endpoint) {
+    getApiResult(groupId, endpoint) {
         const request = this.createRequestObject(groupId, endpoint);
         return fetch(request)
             .then((response) => {

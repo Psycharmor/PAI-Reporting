@@ -1,20 +1,20 @@
-import React from 'react';
+import React from "react";
 
-import { AUTH_TOKEN, getUserSnippet } from '../helper';
+import {Select, MenuItem, Button, Container} from "@material-ui/core";
+import LoadingOverlay from "react-loading-overlay";
+
+import {AUTH_TOKEN, getUserSnippet} from "../helper";
 import ApiCaller from "../items/ApiCaller";
 import WPAPI from "../service/wpClient";
-import Table from './table/Table';
-import Summary from './summary/Summary';
-
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import { Button, Container } from '@material-ui/core';
+import Table from "./table/Table";
+import Summary from "./summary/Summary";
 
 class Dashboard extends React.Component {
+
     constructor(props) {
         super(props);
-        this.user = JSON.parse(localStorage.getItem(AUTH_TOKEN));
 
+        this.user = JSON.parse(localStorage.getItem(AUTH_TOKEN));
         this.state = {
             groupInfo: {},
             groupUsers: {},
@@ -22,8 +22,16 @@ class Dashboard extends React.Component {
             groupCourseActivities: {},
             currentWindow: "groupSummary",
             courseWindow: {},
-            userWindow: {}
+            userWindow: {},
+            overlayActive: false
         };
+
+        this.nextGroup = {
+            groupInfo: {},
+            groupUsers: {},
+            groupCourses: {},
+            groupCourseActivities: {}
+        }
     }
 
     componentDidMount() {
@@ -37,6 +45,18 @@ class Dashboard extends React.Component {
                 undefined
         */
         this.setGroup(9376);
+    }
+
+    updateGroupState() {
+        if (this.groupStatesHaveAllUpdated()) {
+            this.setState({
+                groupInfo: this.nextGroup.groupInfo,
+                groupUsers: this.nextGroup.groupUsers,
+                groupCourses: this.nextGroup.groupCourses,
+                groupCourseActivities: this.nextGroup.groupCourseActivities,
+                overlayActive: false
+            });
+        }
     }
 
     handleGroupClick() {
@@ -75,14 +95,9 @@ class Dashboard extends React.Component {
     }
 
     setGroup(groupId) {
-        /*
-            set the state properties related to groups and reset the window to
-            the group summary
-            params:
-                groupId         -> (int) group id
-            return:
-                undefined
-        */
+        this.setState({
+            overlayActive: true
+        });
         this.setGroupState(groupId, WPAPI.groupsEndpoint, "groupInfo");
         this.setGroupState(groupId, WPAPI.usersEndpoint, "groupUsers");
         this.setGroupState(groupId, WPAPI.coursesEndpoint, "groupCourses");
@@ -119,16 +134,37 @@ class Dashboard extends React.Component {
                         {options}
                     </Select>
                 </div>
-                <Summary
-                    dashboardState={this.state}
-                />
+                <LoadingOverlay
+                    active={this.state.overlayActive}
+                    spinner
+                >
+                <Summary dashboardState={this.state} />
                 <Table
                     dashboardState={this.state}
                     handleCourseClick={(e) => this.handleCourseClick(e)}
                     handleUserClick={(e) => this.handleUserClick(e)}
                 />
+                </LoadingOverlay>
             </Container>
         );
+    }
+
+    groupStatesHaveAllUpdated() {
+        const groupFields = [
+            "groupInfo",
+            "groupUsers",
+            "groupCourses",
+            "groupCourseActivities"
+        ];
+
+        for (let i = 0; i < groupFields.length; ++i) {
+            const groupField = groupFields[i];
+            if (JSON.stringify(this.nextGroup[groupField]) === JSON.stringify(this.state[groupField])) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     setGroupState(groupId, endpoint, stateKey) {
@@ -143,12 +179,11 @@ class Dashboard extends React.Component {
         */
         const apiCaller = new ApiCaller();
 
-        apiCaller.getActivityFromGroup(groupId, endpoint)
+        apiCaller.getApiResult(groupId, endpoint)
         .then((jsonData) => {
-            this.setState({
-                [stateKey]: jsonData
-            });
-            console.log("setGroupState" + stateKey + " successful", this.state[stateKey]);
+            this.nextGroup[stateKey] = jsonData;
+            this.updateGroupState();
+            console.log("setGroupState" + stateKey + " successful", this.nextGroup[stateKey]);
         })
         .catch((err) => {
             const msg = "setGroupState " + endpoint + " failed";
@@ -156,5 +191,4 @@ class Dashboard extends React.Component {
         });
     }
 }
-
 export default Dashboard;
