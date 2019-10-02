@@ -17,7 +17,6 @@ class UserTable extends Component {
 
         return(
             <div>
-                <h3>User Progress</h3>
                 <Table>
                     <TableHead>
                         <TableRow>
@@ -55,7 +54,7 @@ class UserTable extends Component {
     }
 
     renderTableBody() {
-        if (Object.keys(this.props.activities).length === 0 && Object.keys(this.props.courses).length === 0 && Object.keys(this.props.users).length === 0) {
+        if (Object.keys(this.props.activities).length === 0 && Object.keys(this.props.courses).length === 0) {
                 return [];
         }
 
@@ -65,7 +64,7 @@ class UserTable extends Component {
                    return(
                        <TableRow key={key} onClick={() => this.props.handleClick(item.course)}>
                             <TableCell>{item.title}</TableCell>
-                            <TableCell>{item.completed}</TableCell>
+                            <TableCell>{+item.completed.toFixed(2)}%</TableCell>
                             <TableCell>{item.date > 0 ? this.getFormattedDate(item.date) : "not recorded"}</TableCell>
                        </TableRow>
                    );

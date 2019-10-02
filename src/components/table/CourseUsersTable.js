@@ -17,7 +17,6 @@ class CourseUsersTable extends Component {
 
         return(
             <div>
-                <h3>Group Progress</h3>
                 <Table>
                     <TableHead>
                         <TableRow>
@@ -68,7 +67,7 @@ class CourseUsersTable extends Component {
                        <TableRow key={key} onClick={() => this.props.handleClick(item.user)}>
                            <TableCell>{item.username}</TableCell>
                            <TableCell>{item.email}</TableCell>
-                           <TableCell>{item.completed}%</TableCell>
+                           <TableCell>{+item.completed.toFixed(2)}%</TableCell>
                            <TableCell>{(item.date > 0 ? this.getFormattedDate(item.date) : "not recorded")}</TableCell>
                        </TableRow>
                    );

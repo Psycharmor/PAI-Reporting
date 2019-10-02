@@ -44,19 +44,7 @@ class Dashboard extends React.Component {
             return:
                 undefined
         */
-        this.setGroup(9376);
-    }
-
-    updateGroupState() {
-        if (this.groupStatesHaveAllUpdated()) {
-            this.setState({
-                groupInfo: this.nextGroup.groupInfo,
-                groupUsers: this.nextGroup.groupUsers,
-                groupCourses: this.nextGroup.groupCourses,
-                groupCourseActivities: this.nextGroup.groupCourseActivities,
-                overlayActive: false
-            });
-        }
+        this.setGroup(this.user.group[0].id);
     }
 
     handleGroupClick() {
@@ -102,12 +90,13 @@ class Dashboard extends React.Component {
         this.setGroupState(groupId, WPAPI.usersEndpoint, "groupUsers");
         this.setGroupState(groupId, WPAPI.coursesEndpoint, "groupCourses");
         this.setGroupState(groupId, WPAPI.courseActivitiesEndpoint, "groupCourseActivities");
-        this.setState({
-            currentWindow: "groupSummary"
-        });
     }
 
     render() {
+        if (Object.keys(this.state.groupInfo).length === 0) {
+            return <div></div>;
+        }
+
         const options = this.user.group.map((item, key) => {
             return <MenuItem key={key} value={item.id}>{item.name}</MenuItem>;
         });
@@ -147,6 +136,19 @@ class Dashboard extends React.Component {
                 </LoadingOverlay>
             </Container>
         );
+    }
+
+    updateGroupState() {
+        if (this.groupStatesHaveAllUpdated()) {
+            this.setState({
+                groupInfo: this.nextGroup.groupInfo,
+                groupUsers: this.nextGroup.groupUsers,
+                groupCourses: this.nextGroup.groupCourses,
+                groupCourseActivities: this.nextGroup.groupCourseActivities,
+                currentWindow: "groupSummary",
+                overlayActive: false
+            });
+        }
     }
 
     groupStatesHaveAllUpdated() {

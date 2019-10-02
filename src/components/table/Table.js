@@ -31,6 +31,13 @@ class Table extends React.Component {
                 order: "asc"
             });
         }
+
+        else if (prevProps.dashboardState.currentWindow !== this.props.dashboardState.currentWindow) {
+            this.setState({
+                count: this.getTableRowCount(),
+                page: 0
+            });
+        }
     }
 
     handlePageChange(e, newPage) {

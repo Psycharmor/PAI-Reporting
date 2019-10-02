@@ -17,7 +17,6 @@ class CourseTable extends Component {
 
         return(
             <div>
-                <h3>Course Progress</h3>
                 <Table>
                     <TableHead>
                         <TableRow>
@@ -70,7 +69,7 @@ class CourseTable extends Component {
                 <TableCell>{item.notStarted}</TableCell>
                 <TableCell>{item.inProgress}</TableCell>
                 <TableCell>{item.completed}</TableCell>
-                <TableCell>{(item.completed / this.props.users.count) * 100}%</TableCell>
+                <TableCell>{+((item.completed / this.props.users.count) * 100).toFixed(2)}%</TableCell>
             </TableRow>);
         });
     }
