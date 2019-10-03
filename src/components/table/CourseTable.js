@@ -10,6 +10,28 @@ import TableSortLabel from "@material-ui/core/TableSortLabel";
 
 class CourseTable extends Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            tableData: []
+        }
+    }
+
+    componentDidMount() {
+        this.setState({
+            tableData: this.combineCoursesAndActivities(this.props.courses, this.props.users)
+        });
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.groupChanged(prevProps)) {
+            this.setState({
+                tableData: this.combineCoursesAndActivities(this.props.courses, this.props.users)
+            });
+        }
+    }
+
     render() {
 
         const tableLabels = this.renderTableLabels();
@@ -61,7 +83,7 @@ class CourseTable extends Component {
             return [];
         }
 
-        return this.props.sorting(this.combineCoursesAndActivities(this.props.courses, this.props.users))
+        return this.props.sorting(this.state.tableData)
         .slice(this.props.tableState.page * this.props.tableState.rowsPerPage, this.props.tableState.page * this.props.tableState.rowsPerPage + this.props.tableState.rowsPerPage)
         .map((item, key) => {
             return (<TableRow key={key} onClick={() => this.props.handleClick(item.course)}>
@@ -72,6 +94,12 @@ class CourseTable extends Component {
                 <TableCell>{+((item.completed / this.props.users.count) * 100).toFixed(2)}%</TableCell>
             </TableRow>);
         });
+    }
+
+    groupChanged(prevProps) {
+        return (prevProps.courses !== this.props.courses ||
+            prevProps.users !== this.props.users ||
+            prevProps.activities !== this.props.activities);
     }
 
     combineCoursesAndActivities(courses, users) {

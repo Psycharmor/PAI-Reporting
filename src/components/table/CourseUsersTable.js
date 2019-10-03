@@ -10,6 +10,28 @@ import TableSortLabel from "@material-ui/core/TableSortLabel";
 
 class CourseUsersTable extends Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            tableData: []
+        }
+    }
+
+    componentDidMount() {
+        this.setState({
+            tableData: this.combineUsersAndActivities(this.props.users, this.props.course)
+        });
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.groupChanged(prevProps)) {
+            this.setState({
+                tableData: this.combineUsersAndActivities(this.props.users, this.props.course)
+            });
+        }
+    }
+
     render() {
 
         const tableLabels = this.renderTableLabels();
@@ -60,7 +82,7 @@ class CourseUsersTable extends Component {
                 return [];
         }
 
-        return this.props.sorting(this.combineUsersAndActivities(this.props.users, this.props.course))
+        return this.props.sorting(this.state.tableData)
                .slice(this.props.tableState.page * this.props.tableState.rowsPerPage, this.props.tableState.page * this.props.tableState.rowsPerPage + this.props.tableState.rowsPerPage)
                .map((item, key) => {
                    return(
@@ -72,6 +94,12 @@ class CourseUsersTable extends Component {
                        </TableRow>
                    );
                });
+    }
+
+    groupChanged(prevProps) {
+        return (prevProps.courses !== this.props.courses ||
+            prevProps.users !== this.props.users ||
+            prevProps.activities !== this.props.activities);
     }
 
     combineUsersAndActivities(users, course) {

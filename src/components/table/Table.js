@@ -16,7 +16,10 @@ class Table extends React.Component {
             rowsPerPage: 10,
             page: 0,
             orderBy: "title",
-            order: "asc"
+            order: "asc",
+            courseTableData: [],
+            courseUsersTableData: [],
+            userTableData: []
         };
     }
 
