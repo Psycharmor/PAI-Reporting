@@ -23,16 +23,17 @@ class LoginForm extends Component {
       password
     })
       .then( (user)=>{
-          if(user.user_role === "subscriber" ){
-            
+          if(user.data.user_role.includes( "administrator" ) || user.data.user_role.includes( "group_leader" ) ){
 
-              console.log(user.user_role)
+
+              console.log(user.data.user_role);
+              this.handleLoginSuccess(user.data);
           }else{
 
               throw new Error('SORRY, You don\'t have permissions to Psycharmor Reporting ');
           }
       })
-      .then(user => this.handleLoginSuccess(user.data))
+      // .then(user => this.handleLoginSuccess(user.data))
       .catch(error => this.handleLoginFail(error))
   }
 

@@ -67,3 +67,16 @@ code {
   text-align: center;
   padding-top: 16px;
 }
+
+/* charts */
+.inline-chart {
+    display: inline-block;
+    width: 50%;
+    min-height: 400px;
+}
+
+@media screen and (max-width: 767px) {
+    .inline-chart {
+        display: none;
+    }
+}
