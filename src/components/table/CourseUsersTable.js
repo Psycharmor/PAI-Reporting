@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
+import React from "react";
 
-import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -8,146 +7,220 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
 
-class CourseUsersTable extends Component {
+class CourseUsersTable extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            tableData: []
+            tableData: [],
+            orderBy: "",
+            order: "asc"
+        };
+
+        this.currentData = {
+            course: {},
+            users: {},
+            activities: {}
         }
     }
 
     componentDidMount() {
+        this.currentData = {
+            course: this.props.course,
+            users: this.props.users,
+            activities: this.props.activities
+        };
         this.setState({
-            tableData: this.combineUsersAndActivities(this.props.users, this.props.course)
+            tableData: this.getTableData(this.currentData.users, this.currentData.course, this.currentData.activities)
         });
     }
 
     componentDidUpdate(prevProps) {
         if (this.groupChanged(prevProps)) {
+            this.currentData = {
+                course: this.props.course,
+                users: this.props.users,
+                activities: this.props.activities
+            };
             this.setState({
-                tableData: this.combineUsersAndActivities(this.props.users, this.props.course)
+                tableData: this.getTableData(this.currentData.users, this.currentData.course, this.currentData.activities),
+                orderBy: "",
+                order: "asc"
+            });
+        }
+    }
+
+    handleSortingOrderChange(column) {
+        if (column === this.state.orderBy) {
+            this.setState({
+                order: (this.state.order === "desc" ? "asc" : "desc")
+            });
+        }
+        else {
+            this.setState({
+                orderBy: column,
+                order: "asc"
             });
         }
     }
 
     render() {
-
-        const tableLabels = this.renderTableLabels();
-        const tableBody = this.renderTableBody();
+        const tableLabels = this.renderTableLabels(this.currentData.users);
+        const tableBody = this.renderTableBody(this.state.tableData, this.currentData.users);
 
         return(
-            <div>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            {tableLabels}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        {tableLabels}
+                    </TableRow>
+                </TableHead>
+                <TableBody>
                         {tableBody}
-                    </TableBody>
-                </Table>
-            </div>
-        );
+                </TableBody>
+            </Table>
+        )
     }
 
-    renderTableLabels() {
-        let labels = [
-            {label: "Display Name", orderBy: "username"},
-            {label: "Email Address", orderBy: "email"},
-            {label: "% Completed", orderBy: "completed"},
-            {label: "Completion Date", orderBy: "date"}
+    /* render functions */
+
+    renderTableLabels(users) {
+        if (Object.keys(users).length === 0) {
+            return [];
+        }
+        users = users.result;
+        const labels = [
+            {label: "User", orderBy: "username"},
+            {label: "Progress %", orderBy: "percent"},
+            {label: "Started", orderBy: "startedDate"},
+            {label: "Completed", orderBy: "completedDate"}
         ];
-        labels = labels.map((item, key) => {
+
+        return labels.map((item, key) => {
             return(
                 <TableCell key={key}>
                     <TableSortLabel
-                        active={this.props.tableState.orderBy === item.orderBy}
-                        direction={this.props.tableState.order}
-                        onClick={() => this.props.changeSorting(item.orderBy)}
+                        active={this.state.orderBy === item.orderBy}
+                        direction={this.state.order}
+                        onClick={() => this.handleSortingOrderChange(item.orderBy)}
                     >
-                    {item.label}
+                        {item.label}
                     </TableSortLabel>
                 </TableCell>
             );
         });
-
-        return labels;
     }
 
-    renderTableBody() {
-        if (Object.keys(this.props.activities).length === 0 && Object.keys(this.props.users).length === 0) {
-                return [];
+    renderTableBody(tableData, users) {
+        if (tableData.length === 0) {
+            return [];
         }
 
-        return this.props.sorting(this.state.tableData)
+        return this.sortTable(tableData)
                .slice(this.props.tableState.page * this.props.tableState.rowsPerPage, this.props.tableState.page * this.props.tableState.rowsPerPage + this.props.tableState.rowsPerPage)
                .map((item, key) => {
+                   const percent = (item["courseCompletions"].percent).toFixed(2);
+                   const started = (item["courseCompletions"].startedDate === -1 ? "not recorded" : this.convertUnixTimestampToFormattedDate(item["courseCompletions"].startedDate));
+                   const completed = (item["courseCompletions"].completedDate === -1 ? "not recorded" : this.convertUnixTimestampToFormattedDate(item["courseCompletions"].completedDate));
+
                    return(
                        <TableRow key={key} onClick={() => this.props.handleClick(item.user)}>
-                           <TableCell>{item.username}</TableCell>
-                           <TableCell>{item.email}</TableCell>
-                           <TableCell>{+item.completed.toFixed(2)}%</TableCell>
-                           <TableCell>{(item.date > 0 ? this.getFormattedDate(item.date) : "not recorded")}</TableCell>
+                            <TableCell>{item.username}</TableCell>
+                            <TableCell>{+percent}%</TableCell>
+                            <TableCell>{started}</TableCell>
+                            <TableCell>{completed}</TableCell>
                        </TableRow>
                    );
                });
     }
 
+    /* utility functions */
+
     groupChanged(prevProps) {
-        return (prevProps.courses !== this.props.courses ||
-            prevProps.users !== this.props.users ||
-            prevProps.activities !== this.props.activities);
+        return (prevProps.users !== this.currentData.users ||
+            prevProps.activities !== this.currentData.activities);
     }
 
-    combineUsersAndActivities(users, course) {
-        let usersAndActivitiesCombined = [];
-        for (let i in users.result) {
-            let userEntry = {
-                user: users.result[i],
-                username: users.result[i].username,
-                email: users.result[i].email
-            };
-            const completionInfo = this.getCompletionInfo(course.id, users.result[i].id);
-            for (let key in completionInfo) {
-                userEntry[key] = completionInfo[key];
-            }
-
-            usersAndActivitiesCombined.push(userEntry);
+    getTableData(users, course, activities) {
+        if (Object.keys(users).length === 0 && Object.keys(activities).length === 0) {
+            return [];
         }
 
-        return usersAndActivitiesCombined;
-    }
+        users = users.result;
+        activities = activities.result;
 
-    getCompletionInfo(courseId, userId) {
-        let percentComplete = 0;
-        let dateComplete = 0;
-
-        for (let activityIndex in this.props.activities.result) {
-            const activity = this.props.activities.result[activityIndex];
-            if (activity["courseId"] === courseId && activity["userId"] === userId) {
-                if (activity["status"] === 1) {
-                    if (activity["completed"]) {
-                        dateComplete = activity["completed"];
-                    }
+        let tableData = [];
+        let userData = {};
+        for (let i in users) {
+            tableData[users[i].id] = {
+                user: users[i],
+                username: users[i].username,
+                courseCompletions: {
+                    percent: 0,
+                    startedDate: -1,
+                    completedDate: -1
                 }
-
-                percentComplete = activity["stepsCompleted"] / activity["stepsTotal"] * 100;
+            };
+        }
+        for (let i in activities) {
+            const activity = activities[i];
+            if (activity["courseId"] === course.id) {
+                tableData[activity["userId"]]["courseCompletions"]["percent"] = activity["stepsCompleted"] / activity["stepsTotal"] * 100;
+                tableData[activity["userId"]]["courseCompletions"]["startedDate"] = activity["started"];
+                tableData[activity["userId"]]["courseCompletions"]["completedDate"] = activity["completed"];
             }
         }
 
-        return {
-            completed: percentComplete,
-            date: dateComplete
-        };
+        return Object.values(tableData);
     }
 
-    getFormattedDate(unixTimeStamp) {
-        let date = new Date(unixTimeStamp * 1000);
-        date = [date.getFullYear(), date.getMonth() + 1, date.getDate()];
-        return date.join("-");
+    sortTable(tableData) {
+        let field = this.state.orderBy;
+        if (!field) {
+            return tableData;
+        }
+
+        function sortMethod(a, b) {
+            // need to check for string to do case-insensitive sorts
+            let aField = a[field];
+            let bField = b[field];
+
+            if (!(field in a) && !(field in b)) {
+                aField = a["courseCompletions"][field];
+                bField = b["courseCompletions"][field];
+            }
+
+            if (typeof aField === "string") {
+                aField = aField.toUpperCase();
+            }
+            if (typeof bField === "string") {
+                bField = bField.toUpperCase();
+            }
+
+            if (aField === bField) {
+                return 0;
+            }
+            else if (aField < bField) {
+                return -1;
+            }
+            else { // aField > bField
+                return 1;
+            }
+        }
+        return (this.state.order === "asc" ? tableData.sort(function(a,b) {return sortMethod(a,b)}) : tableData.sort(function(a,b) {return -sortMethod(a,b)}) );
+
+    }
+
+    convertUnixTimestampToFormattedDate(timestamp) {
+        const date = new Date(timestamp * 1000); // need to convert secs -> milisecs
+        const dateOptions = {
+            month: "short",
+            day: "2-digit",
+            year: "numeric"
+        };
+
+        return date.toLocaleDateString("en-us", dateOptions);
     }
 }
 export default CourseUsersTable;

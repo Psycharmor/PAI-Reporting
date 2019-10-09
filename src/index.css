@@ -68,15 +68,25 @@ code {
   padding-top: 16px;
 }
 
-/* charts */
-.inline-chart {
-    display: inline-block;
-    width: 50%;
-    min-height: 400px;
+.MuiPaper-root {
+    overflow-x: auto;
 }
 
-@media screen and (max-width: 767px) {
-    .inline-chart {
-        display: none;
-    }
+tr.MuiTableRow-root.MuiTableRow-head {
+    height: 200px;
+}
+
+th.MuiTableCell-head {
+    position: relative;
+}
+
+span.MuiTableSortLabel-root {
+    position: absolute;
+
+    transform-origin: bottom left;
+    transform:
+        translate(20px, 145px)
+        rotate(315deg);
+
+    width: 400px;
 }

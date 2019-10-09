@@ -1,6 +1,7 @@
 import React from 'react';
 
-import {TablePagination} from "@material-ui/core";
+import {makeStyles} from "@material-ui/core/styles";
+import {TablePagination, Container} from "@material-ui/core";
 
 import CourseTable from "./CourseTable";
 import CourseUsersTable from "./CourseUsersTable";
@@ -14,12 +15,7 @@ class Table extends React.Component {
         this.state = {
             count: 0,
             rowsPerPage: 10,
-            page: 0,
-            orderBy: "title",
-            order: "asc",
-            courseTableData: [],
-            courseUsersTableData: [],
-            userTableData: []
+            page: 0
         };
     }
 
@@ -29,13 +25,11 @@ class Table extends React.Component {
         if (prevProps.dashboardState.groupInfo !== this.props.dashboardState.groupInfo) {
             this.setState({
                 count: this.getTableRowCount(),
-                page: 0,
-                orderBy: "title",
-                order: "asc"
+                page: 0
             });
         }
 
-        else if (prevProps.dashboardState.currentWindow !== this.props.dashboardState.currentWindow) {
+        else if (prevProps.dashboardState.currentView !== this.props.dashboardState.currentView) {
             this.setState({
                 count: this.getTableRowCount(),
                 page: 0
@@ -55,25 +49,11 @@ class Table extends React.Component {
         });
     }
 
-    changeSorting(sortMethod) {
-        if (sortMethod === this.state.orderBy) {
-            this.setState({
-                order: (this.state.order === "desc" ? "asc" : "desc")
-            });
-        }
-        else {
-            this.setState({
-                orderBy: sortMethod,
-                order: "asc"
-            });
-        }
-    }
-
     render() {
         const table = this.getTable();
 
         return(
-            <div className="dashboard-table">
+            <Container>
                 {table}
                 <TablePagination
                     rowsPerPageOptions={[10, 20, 50]}
@@ -84,17 +64,17 @@ class Table extends React.Component {
                     onChangePage={(e, newPage) => this.handlePageChange(e, newPage)}
                     onChangeRowsPerPage={(e) => this.handleChangeRowsPerPage(e.target.value)}
                 />
-            </div>
+            </Container>
         )
     }
 
     getTableRowCount() {
-        switch (this.props.dashboardState.currentWindow) {
-            case "groupSummary":
-                return this.props.dashboardState.groupCourses.count;
-            case "courseSummary":
+        switch (this.props.dashboardState.currentView) {
+            case "groupView":
                 return this.props.dashboardState.groupUsers.count;
-            case "userSummary":
+            case "courseView":
+                return this.props.dashboardState.groupUsers.count;
+            case "userView":
                 return this.props.dashboardState.groupCourses.count;
             default:
                 return 0;
@@ -102,75 +82,42 @@ class Table extends React.Component {
     }
 
     getTable() {
-        switch (this.props.dashboardState.currentWindow) {
-            case "groupSummary":
+        switch (this.props.dashboardState.currentView) {
+            case "groupView":
                 return(
                     <CourseTable
                         tableState={this.state}
                         courses={this.props.dashboardState.groupCourses}
                         activities={this.props.dashboardState.groupCourseActivities}
                         users={this.props.dashboardState.groupUsers}
-                        sorting={(e) => this.sortJson(e)}
-                        handleClick={this.props.handleCourseClick}
-                        changeSorting={(e) => this.changeSorting(e)}
+                        handleClick={this.props.handleUserClick}
                         >
                     </CourseTable>
                 );
-            case "courseSummary":
+            case "courseView":
                 return(
                     <CourseUsersTable
                         tableState={this.state}
-                        course={this.props.dashboardState.courseWindow}
+                        course={this.props.dashboardState.courseView}
                         activities={this.props.dashboardState.groupCourseActivities}
                         users={this.props.dashboardState.groupUsers}
-                        sorting={(e) => this.sortJson(e)}
                         handleClick={this.props.handleUserClick}
-                        changeSorting={(e) => this.changeSorting(e)}>
+                        >
                     </CourseUsersTable>
                 );
-            case "userSummary":
+            case "userView":
                 return(
                     <UserTable
                         tableState={this.state}
-                        user={this.props.dashboardState.userWindow}
+                        user={this.props.dashboardState.userView}
                         courses={this.props.dashboardState.groupCourses}
                         activities={this.props.dashboardState.groupCourseActivities}
-                        users={this.props.dashboardState.groupUsers}
-                        sorting={(e) => this.sortJson(e)}
                         handleClick={this.props.handleCourseClick}
-                        changeSorting={(e) => this.changeSorting(e)}>
+                        >
                     </UserTable>
                 );
             default:
         }
-    }
-
-    sortJson(result) {
-        let field = this.state.orderBy;
-
-        function sortingMethod(a, b) {
-
-            // need to check for string to do case-insensitive sorts
-            let aField = a[field];
-            let bField = b[field];
-            if (typeof aField === "string") {
-                aField = aField.toUpperCase();
-            }
-            if (typeof bField === "string") {
-                bField = bField.toUpperCase();
-            }
-
-            if (aField === bField) {
-                return 0;
-            }
-            else if (aField < bField) {
-                return -1;
-            }
-            else { // aField > bField
-                return 1;
-            }
-        }
-        return (this.state.order === "asc" ? result.sort(function(a,b) {return sortingMethod(a,b)}) : result.sort(function(a,b) {return -sortingMethod(a,b)}) );
     }
 }
 export default Table;

@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
+import React from "react";
 
-import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -8,141 +7,212 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
 
-class CourseTable extends Component {
+class CourseTable extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            tableData: []
-        }
+            tableData: [],
+            orderBy: "",
+            order: "asc"
+        };
+
+        this.currentData = {
+            courses: {},
+            users: {},
+            activities: {}
+        };
     }
 
     componentDidMount() {
+        this.currentData = {
+            courses: this.props.courses,
+            users: this.props.users,
+            activities: this.props.activities
+        };
         this.setState({
-            tableData: this.combineCoursesAndActivities(this.props.courses, this.props.users)
+            tableData: this.getTableData(this.currentData.users, this.currentData.courses, this.currentData.activities)
         });
     }
 
     componentDidUpdate(prevProps) {
         if (this.groupChanged(prevProps)) {
+            this.currentData = {
+                courses: this.props.courses,
+                users: this.props.users,
+                activities: this.props.activities
+            };
             this.setState({
-                tableData: this.combineCoursesAndActivities(this.props.courses, this.props.users)
+                tableData: this.getTableData(this.currentData.users, this.currentData.courses, this.currentData.activities),
+                orderBy: "",
+                order: "asc"
             });
         }
     }
 
-    render() {
+    handleSortingOrderChange(column) {
+        if (column === this.state.orderBy) {
+            this.setState({
+                order: (this.state.order === "desc" ? "asc" : "desc")
+            });
+        }
+        else {
+            this.setState({
+                orderBy: column,
+                order: "asc"
+            })
+        }
+    }
 
-        const tableLabels = this.renderTableLabels();
-        const tableBody = this.renderTableBody();
+    render() {
+        const tableLabels = this.renderTableLabels(this.currentData.courses);
+        const tableBody = this.renderTableBody(this.state.tableData, this.currentData.courses);
 
         return(
-            <div>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            {tableLabels}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {tableBody}
-                    </TableBody>
-                </Table>
-            </div>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        {tableLabels}
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {tableBody}
+                </TableBody>
+            </Table>
         );
     }
 
-    renderTableLabels() {
-        let labels = [
-            {label: "Course", orderBy: "title"},
-            {label: "Not Started", orderBy: "notStarted"},
-            {label: "In Progress", orderBy: "inProgress"},
-            {label: "Completed", orderBy: "completed"},
-            {label: "% Completed", orderBy: "completed"}
-        ];
-        labels = labels.map((item, key) => {
+    /* render functions */
+    renderTableLabels(courses) {
+        if (Object.keys(courses).length === 0) {
+            return [];
+        }
+        courses = courses.result;
+        let labels = [{label: "Username", orderBy: "username"}];
+        for (let i in courses) {
+            labels.push({label: courses[i].title, orderBy: courses[i].id});
+        }
+
+        return labels.map((item, key) => {
             return(
                 <TableCell key={key}>
                     <TableSortLabel
-                        active={this.props.tableState.orderBy === item.orderBy}
-                        direction={this.props.tableState.order}
-                        onClick={() => this.props.changeSorting(item.orderBy)}
+                        active={this.state.orderBy === item.orderBy}
+                        direction={this.state.order}
+                        onClick={() => this.handleSortingOrderChange(item.orderBy)}
                     >
-                    {item.label}
+                        {item.label}
                     </TableSortLabel>
                 </TableCell>
             );
         });
-
-        return labels;
     }
 
-    renderTableBody() {
-        if (Object.keys(this.props.courses).length === 0 && Object.keys(this.props.activities).length === 0 && Object.keys(this.props.users).length === 0) {
+    renderTableBody(tableData, courses) {
+        if (Object.keys(courses).length === 0) {
+            return [];
+        }
+        courses = courses.result;
+        let keys = [];
+        for (let i in courses) {
+            keys.push({label: courses[i].title, key: courses[i].id});
+        }
+
+        return this.sortTable(tableData)
+               .slice(this.props.tableState.page * this.props.tableState.rowsPerPage, this.props.tableState.page * this.props.tableState.rowsPerPage + this.props.tableState.rowsPerPage)
+               .map((item, key) => {
+                   const tableCells = keys.map((course, cellKey) => {
+                       const percent = (item["courseCompletions"][course["key"]]).toFixed(2);
+                       return <TableCell key={cellKey}>{+percent}%</TableCell>
+                   });
+                   return(
+                       <TableRow key={key} onClick={() => this.props.handleClick(item.user)}>
+                            <TableCell>{item.username}</TableCell>
+                            {tableCells}
+                       </TableRow>
+                   );
+               });
+
+    }
+
+    /* utility functions */
+    groupChanged(prevProps) {
+        return (prevProps.courses !== this.currentData.courses ||
+            prevProps.users !== this.currentData.users ||
+            prevProps.activities !== this.currentData.activities);
+    }
+
+    getTableData(users, courses, activities) {
+        if (Object.keys(courses).length === 0 && Object.keys(activities).length === 0 && Object.keys(users).length === 0) {
             return [];
         }
 
-        return this.props.sorting(this.state.tableData)
-        .slice(this.props.tableState.page * this.props.tableState.rowsPerPage, this.props.tableState.page * this.props.tableState.rowsPerPage + this.props.tableState.rowsPerPage)
-        .map((item, key) => {
-            return (<TableRow key={key} onClick={() => this.props.handleClick(item.course)}>
-                <TableCell>{item.title}</TableCell>
-                <TableCell>{item.notStarted}</TableCell>
-                <TableCell>{item.inProgress}</TableCell>
-                <TableCell>{item.completed}</TableCell>
-                <TableCell>{+((item.completed / this.props.users.count) * 100).toFixed(2)}%</TableCell>
-            </TableRow>);
-        });
-    }
+        users = users.result;
+        courses = courses.result;
+        activities = activities.result;
 
-    groupChanged(prevProps) {
-        return (prevProps.courses !== this.props.courses ||
-            prevProps.users !== this.props.users ||
-            prevProps.activities !== this.props.activities);
-    }
+        let tableData = [];
 
-    combineCoursesAndActivities(courses, users) {
-
-        let coursesAndActivitiesCombined = [];
-        for (let i in courses.result) {
-            let courseEntry = {
-                course: courses.result[i],
-                title: courses.result[i].title
+        let userData = {};
+        for (let i in users) {
+            let courseCompletions = {};
+            for (let i in courses) {
+                courseCompletions[courses[i].id] = 0;
             }
-            const courseInfo = this.getCourseInfo(courses.result[i].id, users.count);
-            for (let key in courseInfo) {
-                courseEntry[key] = courseInfo[key];
-            }
-
-            coursesAndActivitiesCombined.push(courseEntry);
+            tableData[users[i].id] = {
+                user: users[i],
+                username: users[i].username,
+                courseCompletions: courseCompletions
+            };
         }
 
-        return coursesAndActivitiesCombined;
-    }
-
-    getCourseInfo(courseId, userCount) {
-        let notStarted = userCount;
-        let inProgress = 0;
-        let completed = 0;
-        for (let activityIndex in this.props.activities.result) {
-            const activity = this.props.activities.result[activityIndex];
-            if (activity["courseId"] === courseId) {
-                --notStarted;
-                if (activity["stepsCompleted"] < activity["stepsTotal"]) {
-                    ++inProgress;
-                }
-                if (activity["status"] === 1) {
-                    ++completed;
-                }
-            }
+        for (let i in activities) {
+            const activity = activities[i];
+            tableData[activity["userId"]]["courseCompletions"][activity["courseId"]] = activity["stepsCompleted"] / activity["stepsTotal"] * 100;
         }
 
-        return {
-            notStarted: notStarted,
-            inProgress: inProgress,
-            completed: completed
-        };
+
+
+        return Object.values(tableData);
     }
+
+    sortTable(tableData) {
+        let field = this.state.orderBy;
+
+        if (!field) {
+            return tableData;
+        }
+
+        function sortMethod(a, b) {
+            // need to check for string to do case-insensitive sorts
+            let aField = a[field];
+            let bField = b[field];
+
+            if (!(field in a) && !(field in b)) {
+                aField = a["courseCompletions"][field];
+                bField = b["courseCompletions"][field];
+            }
+
+            if (typeof aField === "string") {
+                aField = aField.toUpperCase();
+            }
+            if (typeof bField === "string") {
+                bField = bField.toUpperCase();
+            }
+
+            if (aField === bField) {
+                return 0;
+            }
+            else if (aField < bField) {
+                return -1;
+            }
+            else { // aField > bField
+                return 1;
+            }
+        }
+        return (this.state.order === "asc" ? tableData.sort(function(a,b) {return sortMethod(a,b)}) : tableData.sort(function(a,b) {return -sortMethod(a,b)}) );
+    }
+
 }
 export default CourseTable;
