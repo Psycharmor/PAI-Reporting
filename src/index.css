@@ -77,11 +77,16 @@ tr.MuiTableRow-root.MuiTableRow-head {
 }
 
 th.MuiTableCell-head {
-    transform-origin: left;
+    position: relative;
+}
+
+span.MuiTableSortLabel-root {
+    position: absolute;
+
+    transform-origin: bottom left;
     transform:
-        translate(20px, 90px)
+        translate(20px, 145px)
         rotate(315deg);
 
-    padding: 0;
-    white-space: nowrap;
+    width: 400px;
 }
