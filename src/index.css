@@ -72,12 +72,16 @@ code {
     overflow-x: auto;
 }
 
-tr.MuiTableRow-root.MuiTableRow-head {
-    height: 200px;
+#TableBox.MuiBox-root {
+    margin-top: 200px;
 }
 
 th.MuiTableCell-head {
     position: relative;
+}
+
+.MuiTableCell-root {
+    padding: 14px 20px !important;
 }
 
 span.MuiTableSortLabel-root {
@@ -85,8 +89,17 @@ span.MuiTableSortLabel-root {
 
     transform-origin: bottom left;
     transform:
-        translate(20px, 145px)
+        translate(20px, -27px)
         rotate(315deg);
 
     width: 400px;
+}
+
+.label-value-box {
+    padding: 10px;
+    height: 150px;
+}
+
+.label-value-box h2 {
+    text-align: center;
 }

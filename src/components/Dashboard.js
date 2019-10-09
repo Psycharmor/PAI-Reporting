@@ -1,6 +1,6 @@
 import React from "react";
 
-import {Button, Grid, Container, MenuItem, Select} from "@material-ui/core";
+import {Button, Grid, Container, Box, MenuItem, Select} from "@material-ui/core";
 
 import {AUTH_TOKEN} from "../helper";
 import WPAPI from "../service/wpClient";
@@ -93,13 +93,11 @@ class Dashboard extends React.Component {
                         />
                     </Grid>
                 </Grid>
-                <div>
-                    <Window
-                        dashboardState={this.state}
-                        handleCourseClick={(e) => this.handleCourseClick(e)}
-                        handleUserClick={(e) => this.handleUserClick(e)}
-                    />
-                </div>
+                <Window
+                    dashboardState={this.state}
+                    handleCourseClick={(e) => this.handleCourseClick(e)}
+                    handleUserClick={(e) => this.handleUserClick(e)}
+                />
             </Container>
         );
     }

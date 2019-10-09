@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {makeStyles} from "@material-ui/core/styles";
-import {TablePagination, Container} from "@material-ui/core";
+import {TablePagination, Box} from "@material-ui/core";
 
 import CourseTable from "./CourseTable";
 import CourseUsersTable from "./CourseUsersTable";
@@ -53,7 +53,7 @@ class Table extends React.Component {
         const table = this.getTable();
 
         return(
-            <Container>
+            <Box display={"flex"} flexWrap={"wrap"} id={"TableBox"}>
                 {table}
                 <TablePagination
                     rowsPerPageOptions={[10, 20, 50]}
@@ -64,7 +64,7 @@ class Table extends React.Component {
                     onChangePage={(e, newPage) => this.handlePageChange(e, newPage)}
                     onChangeRowsPerPage={(e) => this.handleChangeRowsPerPage(e.target.value)}
                 />
-            </Container>
+            </Box>
         )
     }
 

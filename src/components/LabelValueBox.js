@@ -6,7 +6,7 @@ class LabelValueBox extends React.Component {
 
     render() {
         return(
-            <Paper>
+            <Paper className={"label-value-box"}>
                 <h2>{this.props.boxContent.label}</h2>
                 <h2>{this.props.boxContent.value}</h2>
             </Paper>

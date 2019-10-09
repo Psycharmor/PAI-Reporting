@@ -3,7 +3,7 @@ import React from "react";
 import LoadingOverlay from "react-loading-overlay";
 
 import Table from "./table/Table";
-import Summary from "./summary/Summary";
+// import Summary from "./summary/Summary";
 
 class Window extends React.Component {
 

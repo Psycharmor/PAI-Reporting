@@ -11,6 +11,10 @@
 /build
 /dist
 
+/src/config/app.json
+/src/service/wpClient.js
+/src/components/LoginForm.js
+
 # misc
 .DS_Store
 .env.local
