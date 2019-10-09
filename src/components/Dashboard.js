@@ -1,13 +1,13 @@
 import React from "react";
 
-import {Select, MenuItem, Button, Container} from "@material-ui/core";
-import LoadingOverlay from "react-loading-overlay";
+import {Button, Grid, Container, MenuItem, Select} from "@material-ui/core";
 
-import {AUTH_TOKEN, getUserSnippet} from "../helper";
-import ApiCaller from "../items/ApiCaller";
+import {AUTH_TOKEN} from "../helper";
 import WPAPI from "../service/wpClient";
-import Table from "./table/Table";
-import Summary from "./summary/Summary";
+import ApiCaller from "../items/ApiCaller";
+
+import Window from "./Window";
+import LabelValueBox from "./LabelValueBox";
 
 class Dashboard extends React.Component {
 
@@ -15,129 +15,97 @@ class Dashboard extends React.Component {
         super(props);
 
         this.user = JSON.parse(localStorage.getItem(AUTH_TOKEN));
-        this.state = {
-            groupInfo: {},
-            groupUsers: {},
-            groupCourses: {},
-            groupCourseActivities: {},
-            currentWindow: "groupSummary",
-            courseWindow: {},
-            userWindow: {},
-            overlayActive: false
-        };
-
         this.nextGroup = {
             groupInfo: {},
             groupUsers: {},
             groupCourses: {},
             groupCourseActivities: {}
-        }
+        };
+
+        this.state = {
+            groupInfo: {},
+            groupUsers: {},
+            groupCourses: {},
+            groupCourseActivities: {},
+            currentView: "groupView",
+            courseView: {},
+            userView: {},
+            overlayActive: false
+        };
     }
 
     componentDidMount() {
-        /*
-            initialize the dashboard to a default group,
-            will be the first group listed by the user but
-            for now hardcoded
-            params:
-                none
-            return:
-                undefined
-        */
         this.setGroup(this.user.group[0].id);
     }
 
     handleGroupClick() {
         this.setState({
-            currentWindow: "groupSummary"
+            currentView: "groupView"
         });
     }
 
     handleCourseClick(course) {
-        /*
-            Whenever a course row gets clicked, go to the course summary window
-            params:
-                courseId        -> (int) course id
-            return:
-                undefined
-        */
-
         this.setState({
-            currentWindow: "courseSummary",
-            courseWindow: course
+            currentView: "courseView",
+            courseView: course
         });
     }
 
     handleUserClick(user) {
-        /*
-            Whenever a user row gets clicked, go to the user summary window
-            params:
-                userId        -> (int) user id
-            return:
-                undefined
-        */
         this.setState({
-            currentWindow: "userSummary",
-            userWindow: user
+            currentView: "userView",
+            userView: user
         });
-    }
-
-    setGroup(groupId) {
-        this.setState({
-            overlayActive: true
-        });
-        this.setGroupState(groupId, WPAPI.groupsEndpoint, "groupInfo");
-        this.setGroupState(groupId, WPAPI.usersEndpoint, "groupUsers");
-        this.setGroupState(groupId, WPAPI.coursesEndpoint, "groupCourses");
-        this.setGroupState(groupId, WPAPI.courseActivitiesEndpoint, "groupCourseActivities");
     }
 
     render() {
-        if (Object.keys(this.state.groupInfo).length === 0) {
-            return <div></div>;
-        }
-
-        const options = this.user.group.map((item, key) => {
+        const teams = this.user.group.map((item, key) => {
             return <MenuItem key={key} value={item.id}>{item.name}</MenuItem>;
         });
 
         return(
             <Container>
-                <div className="Dashboard-container">
-                    <div className="user-snippet">
-                        <h1>{getUserSnippet(this.user.user_display_name)}</h1>
-                    </div>
-                    <h2>{this.user.user_display_name}</h2>
-                    <Button variant="contained" color="primary" onClick={() => {
-                        localStorage.removeItem(AUTH_TOKEN);
-                        this.props.history.push("/");
-                    }}
-                    >Log Out</Button>
-                </div>
+                <Button variant="contained" color="primary" onClick={() => {
+                            localStorage.removeItem(AUTH_TOKEN);
+                            this.props.history.push("/");
+                        }}
+                >
+                    Log Out
+                </Button>
                 <div>
-                    <h2 onClick={(e) => this.handleGroupClick(e)}>{(this.state.groupInfo.result ? this.state.groupInfo.result[0].title : "")}</h2>
+                    <h2 onClick={() => this.handleGroupClick()}>{(this.state.groupInfo.result ? this.state.groupInfo.result[0].title : "")}</h2>
                     <Select
                         value={(this.state.groupInfo.result ? this.state.groupInfo.result[0].id : this.user.group[0].id)}
                         onChange={(e) => this.setGroup(e.target.value)}
                         >
-                        {options}
+                        {teams}
                     </Select>
                 </div>
-                <LoadingOverlay
-                    active={this.state.overlayActive}
-                    spinner
-                >
-                <Summary dashboardState={this.state} />
-                <Table
-                    dashboardState={this.state}
-                    handleCourseClick={(e) => this.handleCourseClick(e)}
-                    handleUserClick={(e) => this.handleUserClick(e)}
-                />
-                </LoadingOverlay>
+                <Grid container spacing={3}>
+                    <Grid item md={3} xs={12}>
+                        <LabelValueBox
+                            boxContent={this.getUserCount()}
+                        />
+                    </Grid>
+                    <Grid item md={3} xs={12}>
+                        <LabelValueBox
+                            boxContent={this.getCourseCompletionCount()}
+                        />
+                    </Grid>
+                </Grid>
+                <div>
+                    <Window
+                        dashboardState={this.state}
+                        handleCourseClick={(e) => this.handleCourseClick(e)}
+                        handleUserClick={(e) => this.handleUserClick(e)}
+                    />
+                </div>
             </Container>
         );
     }
 
+
+    /* Utility functions */
     updateGroupState() {
         if (this.groupStatesHaveAllUpdated()) {
             this.setState({
@@ -145,7 +113,7 @@ class Dashboard extends React.Component {
                 groupUsers: this.nextGroup.groupUsers,
                 groupCourses: this.nextGroup.groupCourses,
                 groupCourseActivities: this.nextGroup.groupCourseActivities,
-                currentWindow: "groupSummary",
+                currentView: "groupView",
                 overlayActive: false
             });
         }
@@ -167,6 +135,23 @@ class Dashboard extends React.Component {
         }
 
         return true;
+    }
+
+    setGroup(groupId) {
+        if (this.sameGroupId(groupId)) {
+            return;
+        }
+        this.setState({
+            overlayActive: true
+        });
+        this.setGroupState(groupId, WPAPI.groupsEndpoint, "groupInfo");
+        this.setGroupState(groupId, WPAPI.usersEndpoint, "groupUsers");
+        this.setGroupState(groupId, WPAPI.coursesEndpoint, "groupCourses");
+        this.setGroupState(groupId, WPAPI.courseActivitiesEndpoint, "groupCourseActivities");
+    }
+
+    sameGroupId(groupId) {
+        return (this.state.groupInfo.result && this.state.groupInfo.result[0].id === groupId);
     }
 
     setGroupState(groupId, endpoint, stateKey) {
@@ -191,6 +176,29 @@ class Dashboard extends React.Component {
             const msg = "setGroupState " + endpoint + " failed";
             console.log(msg, err);
         });
+    }
+
+    getUserCount() {
+        if (Object.keys(this.state.groupUsers).length === 0) {
+            return {};
+        }
+        return {label: "Total Users", value: this.state.groupUsers.count};
+    }
+
+    getCourseCompletionCount() {
+        if (Object.keys(this.state.groupCourseActivities).length === 0) {
+            return {};
+        }
+
+        let value = 0;
+        for (let i in this.state.groupCourseActivities.result) {
+            const activity = this.state.groupCourseActivities.result[i];
+            if (activity["status"] === 1) {
+                ++value;
+            }
+        }
+
+        return {label: "Total Course Completions", value: value};
     }
 }
 export default Dashboard;
