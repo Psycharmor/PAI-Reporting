@@ -42,7 +42,7 @@ code {
   }
 }
 
-.Dashboard-container {
+/* .Dashboard-container {
   margin: 2em;
   padding: 2em;
   box-shadow: 3px 3px 15px 0 #dadada;
@@ -72,21 +72,62 @@ code {
     overflow-x: auto;
 }
 
-tr.MuiTableRow-root.MuiTableRow-head {
+#TableBox.MuiBox-root {
+    margin-top: 200px;
+}
+
+.MuiTableCell-root {
+    padding: 14px 20px !important;
+}
+
+.label-value-box {
+    padding: 10px;
+    height: 150px;
+}
+
+.label-value-box h2 {
+    text-align: center;
+} */
+
+.box-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 200px;
     height: 200px;
+    padding: 5px;
+    margin: 0 auto;
 }
 
-th.MuiTableCell-head {
-    position: relative;
+.select-box {
+    width: 200px;
 }
 
-span.MuiTableSortLabel-root {
-    position: absolute;
+.window-class {
+    margin-top: 20px;
+}
 
-    transform-origin: bottom left;
-    transform:
-        translate(20px, 145px)
-        rotate(315deg);
+.container-margin {
+    margin-bottom: 30px;
+}
 
-    width: 400px;
+.select-grid-container {
+    display: flex;
+    justify-content: center;
+}
+
+.MuiTableSortLabel-root:hover {
+    color: #FFFFFF !important;
+}
+
+.MuiTableSortLabel-root.MuiTableSortLabel-active {
+    color: #FFFFFF !important;
+}
+
+.MuiTableSortLabel-root.MuiTableSortLabel-active.MuiTableSortLabel-root.MuiTableSortLabel-active .MuiTableSortLabel-icon {
+    color: #FFFFFF !important;
+}
+
+.MuiTableSortLabel-root:hover .MuiTableSortLabel-icon {
+    color: #FFFFFF !important;
 }

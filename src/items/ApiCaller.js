@@ -1,41 +1,41 @@
-import { AUTH_TOKEN } from '../helper';
+import {AUTH_TOKEN} from "../helper";
 
 class ApiCaller {
 
-    constructor(endPoint) {
+    constructor() {
         this.user = JSON.parse(localStorage.getItem(AUTH_TOKEN));
     }
 
-    getApiResult(groupId, endpoint) {
-        const request = this.createRequestObject(groupId, endpoint);
+    getApiResult(id, queryArg, endpoint) {
+        const request = this.createRequestObject(id, queryArg, endpoint);
         return fetch(request)
-            .then((response) => {
-                if (response.ok) {
-                    return response.json();
-                }
-                else {
-                    throw new Error("Bad Response");
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+               .then((response) => {
+                   if (response.ok) {
+                       return response.json();
+                   }
+                   else {
+                       throw new Error("getApiResult: Bad Response");
+                   }
+               })
+               .catch((err) => {
+                   console.log("getApiResult", err);
+               });
     }
 
-    createRequestObject(groupId, endpoint) {
-        const activityUrlWithQueryArgs = endpoint + this.createQueryArgs(groupId);
-        console.log(activityUrlWithQueryArgs);
+    createRequestObject(id, queryArg, endpoint) {
+        const url = endpoint + this.createQueryArgs(id, queryArg);
+        console.log(url);
         const requestOptions = {
             method: "GET",
-            headers: { Authorization: "Bearer " + this.user.token },
+            headers: {Authorization: "Bearer " + this.user.token},
             mode: "cors"
         };
 
-        return new Request(activityUrlWithQueryArgs, requestOptions);
+        return new Request(url, requestOptions);
     }
 
-    createQueryArgs(groupId) {
-        return "?groupid=" + groupId;
+    createQueryArgs(id, queryArg) {
+        return "?" + queryArg + "=" + id;
     }
 }
 export default ApiCaller;

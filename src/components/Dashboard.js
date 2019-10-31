@@ -1,13 +1,19 @@
 import React from "react";
+import { forwardRef } from 'react';
 
-import {Button, Grid, Container, MenuItem, Select} from "@material-ui/core";
+// all this just for a dumb table...
+import {AddBox, ArrowUpward, Check, ChevronLeft, ChevronRight,
+        Clear, DeleteOutline, Edit, FilterList, FirstPage,
+        LastPage, Remove, SaveAlt, Search, ViewColumn
+        } from "@material-ui/icons";
+
+import MaterialTable from "material-table";
+import "react-table/react-table.css";
+import {Grid, Paper, Typography, Container, Select, MenuItem, Button} from "@material-ui/core";
 
 import {AUTH_TOKEN} from "../helper";
 import WPAPI from "../service/wpClient";
 import ApiCaller from "../items/ApiCaller";
-
-import Window from "./Window";
-import LabelValueBox from "./LabelValueBox";
 
 class Dashboard extends React.Component {
 
@@ -15,121 +21,353 @@ class Dashboard extends React.Component {
         super(props);
 
         this.user = JSON.parse(localStorage.getItem(AUTH_TOKEN));
-        this.nextGroup = {
-            groupInfo: {},
-            groupUsers: {},
-            groupCourses: {},
-            groupCourseActivities: {}
+        this.role = this.getUserRole();
+        this.nextApi = {
+            apiInfo: [],
+            apiUsers: [],
+            apiCourses: [],
+            apiActivities: []
         };
 
+        this.group = {
+            users: [],
+            courses: [],
+            activities: []
+        };
+
+        this.subgroups = {};
+
         this.state = {
-            groupInfo: {},
-            groupUsers: {},
-            groupCourses: {},
-            groupCourseActivities: {},
-            currentView: "groupView",
-            courseView: {},
-            userView: {},
-            overlayActive: false
+            apiInfo: [],
+            apiUsers: [],
+            apiCourses: [],
+            apiActivities: [],
+
+            viewHeaders: [],
+            viewRows: [],
+            groupId: this.user["group"][0]["id"],
+            subGroupId: 0
         };
     }
 
     componentDidMount() {
-        this.setGroup(this.user.group[0].id);
+        this.setApi(this.user["group"][0]["id"]);
+        // this.setApi(353011); // TESTING PURPOSES
     }
 
-    handleGroupClick() {
-        this.setState({
-            currentView: "groupView"
-        });
+    handleGroupChange(e) {
+        this.setApi(e.target["value"]);
     }
 
-    handleCourseClick(course) {
-        this.setState({
-            currentView: "courseView",
-            courseView: course
-        });
-    }
-
-    handleUserClick(user) {
-        this.setState({
-            currentView: "userView",
-            userView: user
-        });
-    }
-
-    render() {
-        const teams = this.user.group.map((item, key) => {
-            return <MenuItem key={key} value={item.id}>{item.name}</MenuItem>;
-        });
-
-        return(
-            <Container>
-                <Button variant="contained" color="primary" onClick={() => {
-                            localStorage.removeItem(AUTH_TOKEN);
-                            this.props.history.push("/");
-                        }}
-                >
-                    Log Out
-                </Button>
-                <div>
-                    <h2 onClick={() => this.handleGroupClick()}>{(this.state.groupInfo.result ? this.state.groupInfo.result[0].title : "")}</h2>
-                    <Select
-                        value={(this.state.groupInfo.result ? this.state.groupInfo.result[0].id : this.user.group[0].id)}
-                        onChange={(e) => this.setGroup(e.target.value)}
-                        >
-                        {teams}
-                    </Select>
-                </div>
-                <Grid container spacing={3}>
-                    <Grid item md={3} xs={12}>
-                        <LabelValueBox
-                            boxContent={this.getUserCount()}
-                        />
-                    </Grid>
-                    <Grid item md={3} xs={12}>
-                        <LabelValueBox
-                            boxContent={this.getCourseCompletionCount()}
-                        />
-                    </Grid>
-                </Grid>
-                <div>
-                    <Window
-                        dashboardState={this.state}
-                        handleCourseClick={(e) => this.handleCourseClick(e)}
-                        handleUserClick={(e) => this.handleUserClick(e)}
-                    />
-                </div>
-            </Container>
-        );
-    }
-
-
-    /* Utility functions */
-    updateGroupState() {
-        if (this.groupStatesHaveAllUpdated()) {
+    handleSubGroupChange(e) {
+        if (e.target["value"] === 0) {
+            const tableData = this.setDataAndHeaders(0);
             this.setState({
-                groupInfo: this.nextGroup.groupInfo,
-                groupUsers: this.nextGroup.groupUsers,
-                groupCourses: this.nextGroup.groupCourses,
-                groupCourseActivities: this.nextGroup.groupCourseActivities,
-                currentView: "groupView",
-                overlayActive: false
+                subGroupId: 0,
+                viewHeaders: tableData["headers"],
+                viewRows: tableData["data"]
+            });
+        }
+        else {
+            const tableData = this.setDataAndHeaders(e.target["value"]);
+            this.setState({
+                subGroupId: e.target["value"],
+                viewHeaders: tableData["headers"],
+                viewRows: tableData["data"]
             });
         }
     }
 
-    groupStatesHaveAllUpdated() {
-        const groupFields = [
-            "groupInfo",
-            "groupUsers",
-            "groupCourses",
-            "groupCourseActivities"
+    handleLogOut() {
+        localStorage.removeItem(AUTH_TOKEN);
+        this.props["history"].push("/");
+    }
+
+    render() {
+        const table = this.renderTable();
+        const dropDown = this.user["group"].map((group, key) => {
+            return (
+                <MenuItem key={key} value={group["id"]}>{group["name"]}</MenuItem>
+            );
+        });
+        const subGroups = this.renderSubGroupDropdown();
+        const totalUsersBox = this.renderBox("users");
+        const totalCourseCompletionsBox = this.renderBox("courseCompletions");
+
+        return (
+            <Container className="window-class">
+                <Container className="container-margin">
+                    <Grid container justify="flex-start" alignItems="center" spacing={2}>
+                        <Grid item className="select-grid-container" xs={12} md={3}>
+                            <Select autoWidth={true} className="select-box" value={this.state["groupId"]} onChange={(e) => this.handleGroupChange(e)}>
+                                {dropDown}
+                            </Select>
+                        </Grid>
+                        <Grid item className="select-grid-container" xs={12} md={3}>
+                            {subGroups}
+                        </Grid>
+                        <Grid item className="select-grid-container" xs={12} md={3}>
+                        </Grid>
+                        <Grid item className="select-grid-container" xs={12} md={3}>
+                            <Button variant="outlined" onClick={(e) => this.handleLogOut(e)}>Log Out</Button>
+                        </Grid>
+                    </Grid>
+                </Container>
+                <Container className="container-margin">
+                    <Grid container justify="flex-start" alignItems="center" spacing={2}>
+                        <Grid item xs={12} md={3}>
+                            {totalUsersBox}
+                        </Grid>
+                        <Grid item xs={12} md={3}>
+                            {totalCourseCompletionsBox}
+                        </Grid>
+                    </Grid>
+                </Container>
+                {table}
+            </Container>
+        );
+    }
+
+    // RENDER FUNCTIONS
+    renderBox(box) {
+        let title = "";
+        let data = 0;
+
+        if (box === "users") {
+            title = "Total Users";
+            data = this.state["viewRows"].length;
+        }
+        else if (box === "courseCompletions") {
+            title = "Total Course Completions";
+            for (let i = 0; i < this.state["viewRows"].length; ++i) {
+                for (let courseId in this.state["viewRows"][i]) {
+                    const progress = this.state["viewRows"][i][courseId];
+                    if( progress >= 100 ) {
+                        ++data;
+                    }
+                }
+            }
+        }
+
+        return (
+            <Paper className="box-container">
+                <Typography variant="h5" align="center">
+                    {title}
+                </Typography>
+                <Typography variant="h5" align="center">
+                    {data}
+                </Typography>
+            </Paper>
+        );
+    }
+
+    renderTable() {
+        if (this.state["viewRows"].length === 0) {
+            return;
+        }
+
+        const tableIcons = {
+            Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
+            Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
+            Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+            Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
+            DetailPanel: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+            Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
+            Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
+            Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
+            FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
+            LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
+            NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+            PreviousPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref} />),
+            ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+            Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
+            SortArrow: forwardRef((props, ref) => <ArrowUpward {...props} ref={ref} />),
+            ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
+            ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
+          };
+
+        return (
+            <Container className="container-margin">
+                <MaterialTable
+                    title="Course Completions"
+                    icons={tableIcons}
+                    data={this.state["viewRows"]}
+                    columns={this.state["viewHeaders"]}
+                    options={{
+                      sorting: true,
+                      pageSize: 10,
+                      showTitle: false,
+                      headerStyle: {
+                          padding: "5px 0 5px 5px",
+                          backgroundColor: "#4168B1",
+                          color: "#FFFFFF"
+                      }
+                    }}
+                />
+            </Container>
+        );
+    }items
+
+    renderSubGroupDropdown() {
+        const groupInfo = this.nextApi["apiInfo"][Object.keys(this.nextApi["apiInfo"])[0]];
+        if (!groupInfo) {
+            return;
+        }
+        if (!groupInfo["subGroups"] || Object.keys(groupInfo["subGroups"]).length === 0) {
+            return;
+        }
+
+        let subGroups = [];
+        for (let key in groupInfo["subGroups"]) {
+            subGroups.push(
+                <MenuItem key={key} value={parseInt(key)}>{groupInfo["subGroups"][key]["title"]}</MenuItem>
+            );
+        }
+
+        return (
+            <Select className="select-box" value={this.state["subGroupId"]} onChange={(e) => this.handleSubGroupChange(e)}>
+                <MenuItem key={0} value={0}>Filter by SubGroup</MenuItem>
+                {subGroups}
+            </Select>
+        );
+    }
+
+
+    // UTILITY FUNCTIONS
+    getUserRole() {
+        /*
+            Get main user role to be used for the app. Certain permissions
+            are given depending on the user role.
+            Priority: administrator -> group_leader -> subgroup_leader
+            Params:
+                none
+            Return:
+                string          -> user role to be used
+        */
+
+        const roles = this.user.user_role;
+        if (roles.includes("administrator")) {
+            return "administrator";
+        }
+        if (roles.includes("group_leader")) {
+            return "groupLeader";
+        }
+        if (roles.includes("subgroup_leader")) {
+            return "subGroupLeader";
+        }
+    }
+
+    setApi(id) {
+        if (this.sameApiId(id)) {
+            return;
+        }
+
+        this.setApiState(id, WPAPI.groupsEndpoint, "apiInfo");
+        this.setApiState(id, WPAPI.usersEndpoint, "apiUsers");
+        this.setApiState(id, WPAPI.coursesEndpoint, "apiCourses");
+        this.setApiState(id, WPAPI.courseActivitiesEndpoint, "apiActivities");
+    }
+
+    sameApiId(id) {
+        return this.state["apiInfo"]["result"] && this.state["apiInfo"]["result"][0]["id"] === id;
+    }
+
+    setApiState(id, endpoint, stateKey) {
+        const apiCaller = new ApiCaller();
+
+        let queryArg = "groupid";
+        if (this.role === "subGroupLeader") {
+            queryArg = "subgroupid";
+        }
+
+        apiCaller.getApiResult(id, queryArg, endpoint)
+        .then((jsonData) => {
+            this.nextApi[stateKey] = jsonData["result"];
+            this.updateApiState();
+            console.log("setApiState " + stateKey + " successful");
+        })
+        .catch((err) => {
+            console.log("setApiState " + endpoint + " failed", err);
+        });
+    }
+
+    setDataAndHeaders(subgroup) {
+        let group = this.group;
+        if (subgroup !== 0) {
+            group = this.subgroups[subgroup];
+        }
+
+        let headers = [{
+            title: "Username",
+            field: "username",
+            cellStyle: {
+                padding: "5px 0 5px 5px"
+            }
+        }];
+        for (let key in group["courses"]) {
+            headers.push({
+                title: group["courses"][key]["title"],
+                field: group["courses"][key]["id"].toString(),
+                cellStyle: {
+                    padding: "5px 0 5px 5px"
+                }
+            });
+        }
+
+        let data = [];
+        for (let key in group["users"]) {
+            let userData = { username: group["users"][key]["username"] };
+            for (let courseId in group["courses"]) {
+                let progress = 0;
+                const activityKey = key + "_" + courseId;
+                if (activityKey in group["activities"]) {
+                    const stepsCompleted = group["activities"][activityKey]["stepsCompleted"];
+                    const stepsTotal = group["activities"][activityKey]["stepsTotal"];
+                    progress = +(stepsCompleted / stepsTotal * 100).toFixed(2);
+                }
+
+                userData[group["courses"][courseId]["id"].toString()] = progress;
+            }
+            data.push(userData);
+        }
+
+        return {
+            data: data,
+            headers: headers
+        }
+    }
+
+    updateApiState() {
+        if (this.apiStatesHaveAllUpdated()) {
+            this.updateData();
+
+            const view = this.setDataAndHeaders(0);
+
+            // update state api/view
+            this.setState({
+                apiInfo: this.nextApi["apiInfo"],
+                apiUsers: this.nextApi["apiUsers"],
+                apiCourses: this.nextApi["apiCourses"],
+                apiActivities: this.nextApi["apiActivities"],
+
+                viewHeaders: view["headers"],
+                viewRows: view["data"],
+                groupId: this.nextApi["apiInfo"][Object.keys(this.nextApi["apiInfo"])[0]]["id"]
+            });
+        }
+    }
+
+    apiStatesHaveAllUpdated() {
+        const deepEqual = require("deep-equal");
+        const fields = [
+            "apiInfo",
+            "apiUsers",
+            "apiCourses",
+            "apiActivities"
         ];
 
-        for (let i = 0; i < groupFields.length; ++i) {
-            const groupField = groupFields[i];
-            if (JSON.stringify(this.nextGroup[groupField]) === JSON.stringify(this.state[groupField])) {
+        for (let i = 0; i < fields.length; ++i) {
+            if (deepEqual(this.nextApi[fields[i]], this.state[fields[i]], {strict: true})) {
                 return false;
             }
         }
@@ -137,68 +375,87 @@ class Dashboard extends React.Component {
         return true;
     }
 
-    setGroup(groupId) {
-        if (this.sameGroupId(groupId)) {
+    updateData() {
+
+        this.group = {
+            users: [],
+            courses: [],
+            activities: []
+        };
+        this.subgroups = {};
+
+        if (this.role === "subGroupLeader") {
+            this.group = {
+                users: this.nextApi["apiUsers"],
+                courses: this.nextApi["apiCourses"],
+                activities: []
+            };
+            for (let key in this.nextApi["apiActivities"]) {
+                const activity = this.nextApi["apiActivities"][key];
+                if (activity["userId"] in this.group["users"] && activity["courseId"] in this.group["courses"]) {
+                    this.group["activities"][activity["userId"] + "_" + activity["courseId"]] = activity;
+                }
+            }
+
             return;
         }
-        this.setState({
-            overlayActive: true
-        });
-        this.setGroupState(groupId, WPAPI.groupsEndpoint, "groupInfo");
-        this.setGroupState(groupId, WPAPI.usersEndpoint, "groupUsers");
-        this.setGroupState(groupId, WPAPI.coursesEndpoint, "groupCourses");
-        this.setGroupState(groupId, WPAPI.courseActivitiesEndpoint, "groupCourseActivities");
-    }
 
-    sameGroupId(groupId) {
-        return (this.state.groupInfo.result && this.state.groupInfo.result[0].id === groupId);
-    }
+        const groupInfo = this.nextApi["apiInfo"][Object.keys(this.nextApi["apiInfo"])[0]];
 
-    setGroupState(groupId, endpoint, stateKey) {
-        /*
-            call the API using the given endpoint to get info about the group
-            params:
-                groupId         -> (int) group id
-                endpoint        -> (str) api url to get
-                stateKey        -> (str) which state property to modify
-            return:
-                undefined
-        */
-        const apiCaller = new ApiCaller();
+        // set most of subgroups' properties
+        for (let key in groupInfo["subGroups"]) {
+            let users = {};
+            for (let i = 0; i < groupInfo["subGroups"][key]["enrolledUsers"].length; ++i) {
+                const userId = groupInfo["subGroups"][key]["enrolledUsers"][i];
+                users[userId] = this.nextApi["apiUsers"][userId];
+            }
 
-        apiCaller.getApiResult(groupId, endpoint)
-        .then((jsonData) => {
-            this.nextGroup[stateKey] = jsonData;
-            this.updateGroupState();
-            console.log("setGroupState" + stateKey + " successful", this.nextGroup[stateKey]);
-        })
-        .catch((err) => {
-            const msg = "setGroupState " + endpoint + " failed";
-            console.log(msg, err);
-        });
-    }
+            let courses = {};
+            for (let i = 0; i < groupInfo["subGroups"][key]["courses"].length; ++i) {
+                const courseId = groupInfo["subGroups"][key]["courses"][i];
+                courses[courseId] = this.nextApi["apiCourses"][courseId];
+            }
 
-    getUserCount() {
-        if (Object.keys(this.state.groupUsers).length === 0) {
-            return {};
-        }
-        return {label: "Total Users", value: this.state.groupUsers.count};
-    }
-
-    getCourseCompletionCount() {
-        if (Object.keys(this.state.groupCourseActivities).length === 0) {
-            return {};
+            this.subgroups[key] = {
+                users: users,
+                courses: courses,
+                activities: {}
+            };
         }
 
-        let value = 0;
-        for (let i in this.state.groupCourseActivities.result) {
-            const activity = this.state.groupCourseActivities.result[i];
-            if (activity["status"] === 1) {
-                ++value;
+        // set most of group's properties
+        let users = {};
+        for (let i = 0; i < groupInfo["enrolledUsers"].length; ++i) {
+            const userId = groupInfo["enrolledUsers"][i];
+            users[userId] = this.nextApi["apiUsers"][userId];
+        }
+
+        let courses = {};
+        for (let i = 0; i < groupInfo["courses"].length; ++i) {
+            const courseId = groupInfo["courses"][i];
+            courses[courseId] = this.nextApi["apiCourses"][courseId];
+        }
+
+        this.group = {
+            users: users,
+            courses: courses,
+            activities: {}
+        };
+
+        // now loop through the activities and place them to the respective
+        // group or subgroup(s)
+        for (let key in this.nextApi["apiActivities"]) {
+            const activity = this.nextApi["apiActivities"][key];
+            if (activity["userId"] in this.group["users"] && activity["courseId"] in this.group["courses"]) {
+                this.group["activities"][activity["userId"] + "_" + activity["courseId"]] = activity;
+            }
+
+            for (let subGroupId in this.subgroups) {
+                if (activity["userId"] in this.subgroups[subGroupId]["users"] && activity["courseId"] in this.subgroups[subGroupId]["courses"]) {
+                    this.subgroups[subGroupId]["activities"][activity["userId"] + "_" + activity["courseId"]] = activity;
+                }
             }
         }
-
-        return {label: "Total Course Completions", value: value};
     }
 }
 export default Dashboard;
