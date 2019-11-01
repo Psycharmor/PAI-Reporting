@@ -14,7 +14,7 @@ code {
     monospace;
 }
 
-.container {
+/* .container {
   width: 100%;
   margin: 0 auto;
   overflow: hidden;
@@ -40,94 +40,4 @@ code {
     padding: 4em;
     box-shadow: 3px 3px 15px 0 #dadada;
   }
-}
-
-/* .Dashboard-container {
-  margin: 2em;
-  padding: 2em;
-  box-shadow: 3px 3px 15px 0 #dadada;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  text-align: center;
-}
-
-.user-snippet {
-  background: #981d9a;
-  padding: 40px;
-  width: 150px;
-  height: 150px;
-  margin: 50px;
-  border-radius: 75px;
-}
-
-.user-snippet h1 {
-  color: #ffffff;
-  text-align: center;
-  padding-top: 16px;
-}
-
-.MuiPaper-root {
-    overflow-x: auto;
-}
-
-#TableBox.MuiBox-root {
-    margin-top: 200px;
-}
-
-.MuiTableCell-root {
-    padding: 14px 20px !important;
-}
-
-.label-value-box {
-    padding: 10px;
-    height: 150px;
-}
-
-.label-value-box h2 {
-    text-align: center;
 } */
-
-.box-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 200px;
-    height: 200px;
-    padding: 5px;
-    margin: 0 auto;
-}
-
-.select-box {
-    width: 200px;
-}
-
-.window-class {
-    margin-top: 20px;
-}
-
-.container-margin {
-    margin-bottom: 30px;
-}
-
-.select-grid-container {
-    display: flex;
-    justify-content: center;
-}
-
-.MuiTableSortLabel-root:hover {
-    color: #FFFFFF !important;
-}
-
-.MuiTableSortLabel-root.MuiTableSortLabel-active {
-    color: #FFFFFF !important;
-}
-
-.MuiTableSortLabel-root.MuiTableSortLabel-active.MuiTableSortLabel-root.MuiTableSortLabel-active .MuiTableSortLabel-icon {
-    color: #FFFFFF !important;
-}
-
-.MuiTableSortLabel-root:hover .MuiTableSortLabel-icon {
-    color: #FFFFFF !important;
-}

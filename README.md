@@ -6,6 +6,14 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Run the project
 
+### DEPENDENCIES
+install the following packages:
+
+material-ui<br>
+material-table<br>
+deepcopy<br>
+deep-equal<br>
+
 In the project directory, you can run:
 
 ### `npm start`
@@ -26,7 +34,6 @@ Go to `app.json` file and change the `siteUrl` value to yours.
 >> Server side form validations<br>
 >> WordPress Authentication (login) with JWT<br>
 >> Protected route with [React Router](https://reacttraining.com/react-router/)
-
 
 <!--
 function my_customize_rest_cors() {
