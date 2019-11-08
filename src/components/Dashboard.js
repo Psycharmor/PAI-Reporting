@@ -3,6 +3,8 @@ import React from "react";
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import StarIcon from '@material-ui/icons/Star';
 import PostAddIcon from '@material-ui/icons/PostAdd';
+import axios from "axios";
+import LoadingOverlay from "react-loading-overlay";
 
 import {AUTH_TOKEN} from "../helper";
 import WPAPI from "../service/wpClient";
@@ -81,6 +83,7 @@ class Dashboard extends React.Component {
 
         this.state = {
             // front end view
+            loading: false,
             view: "dashboard",
             mobileDrawerOpen: false,
 
@@ -91,7 +94,12 @@ class Dashboard extends React.Component {
             apiActivities: [],
 
             groupId: this.user["group"][0]["id"], // current group id to display
-            subgroupId: 0                         // current subgroup id to display
+            subgroupId: 0,                         // current subgroup id to display
+
+            // batching
+            progress: -1,
+            doneSoFar: 0,
+            totalNeeded: 0
         };
 
     }
@@ -143,7 +151,8 @@ class Dashboard extends React.Component {
 
         this.setState({
             view: newView,
-            mobileDrawerOpen: false
+            mobileDrawerOpen: false,
+            progress: -1
         });
     }
 
@@ -158,23 +167,114 @@ class Dashboard extends React.Component {
         }
     }
 
+    handleUserUpload(file, courses) {
+        if (!file) {
+            console.log("No file given");
+            return;
+        }
+
+        console.log(file);
+        this.setState({
+            loading: true
+        });
+        const papa = require('papaparse');
+        papa.parse(file, {
+            header: true,
+            skipEmptyLines: true,
+            complete: (result) => {
+                const data = result["data"];
+                let start = 0;
+                let end = start + 100;
+                this.setState({
+                    progress: 0,
+                    doneSoFar: 0,
+                    totalNeeded: data.length
+                });
+                this.makePutRequest(data, courses, start, end);
+            }
+        });
+    }
+
+    makePutRequest(data, courses, start, end) {
+        let batchedData = this.deepCopy(data.slice(start, end));
+        for (let i = 0; i < batchedData.length; ++i) {
+            batchedData[i]["courses"] = courses;
+            batchedData[i]["groupId"] = this.state["groupId"];
+        }
+
+        axios.put("http://localhost/psycharmor-local/wp-json/pai/v1/upload", batchedData)
+            .then((response) => {
+                console.log(response);
+                if (response["status"] !== 200) {
+                    this.setState({
+                        loading: false
+                    });
+                    return;
+                }
+
+                const count = response["data"];
+                console.log(count);
+                this.setState({
+                    progress: Math.min((start + count) / (data.length - 1) * 100, 100),
+                    doneSoFar: this.state["doneSoFar"] + count
+                });
+                console.log(this.state["progress"]);
+                if (count < 100) {
+                    console.log("done batching");
+                    this.setState({
+                        loading: false
+                    });
+                    return;
+                }
+
+                this.makePutRequest(data, courses, start + count, start + count + 100);
+            })
+            .catch((err) => {
+                console.log(err);
+                this.setState({
+                    loading: false
+                });
+            });
+    }
+
     render() {
         /*
             Use the FrontEnd component to display the current page and pass
             all the necessary event handlers to the component
         */
+
         return (
             <div>
-                <FrontEnd
-                    menus={this.deepCopy(this.menus)}
-                    view={this.state["view"]}
-                    openDrawer={this.state["mobileDrawerOpen"]}
-                    mobileDrawerHandler={this.handleMobileDrawerToggle.bind(this)}
-                    logOutHandler={this.handleUserLogOut.bind(this)}
-                    viewChangeHandler={this.handleViewChange.bind(this)}
-                    groupChangeHandler={this.handleGroupChange.bind(this)}
-                    groupId={this.state["groupId"]}
-                />
+                <LoadingOverlay
+                    active={this.state["loading"]}
+                    styles={{
+                        wrapper: {},
+                        overlay: (base) => ({
+                          ...base,
+                          background: 'rgba(255, 0, 0, 0)'
+                        }),
+                        content: {},
+                        spinner: {}
+                    }}
+                >
+                    <FrontEnd
+                        menus={this.deepCopy(this.menus)}
+                        view={this.state["view"]}
+                        openDrawer={this.state["mobileDrawerOpen"]}
+                        groupId={this.state["groupId"]}
+                        file={this.state["file"]}
+                        batchProgress={this.state["progress"]}
+                        groupInfo={this.deepCopy(this.group)}
+                        loading={this.state["loading"]}
+                        doneSoFar={this.state["doneSoFar"]}
+                        totalNeeded={this.state["totalNeeded"]}
+                        mobileDrawerHandler={this.handleMobileDrawerToggle.bind(this)}
+                        logOutHandler={this.handleUserLogOut.bind(this)}
+                        viewChangeHandler={this.handleViewChange.bind(this)}
+                        groupChangeHandler={this.handleGroupChange.bind(this)}
+                        userUploadHandler={this.handleUserUpload.bind(this)}
+                    />
+                </LoadingOverlay>
             </div>
         );
     }
@@ -216,6 +316,9 @@ class Dashboard extends React.Component {
         if (this.isSameApi(id)) {
             return;
         }
+        this.setState({
+            loading: true
+        });
 
         this.setApiState(id, WPAPI.groupsEndpoint, "apiInfo", doCourseTag);
         this.setApiState(id, WPAPI.usersEndpoint, "apiUsers", doCourseTag);
@@ -386,34 +489,35 @@ class Dashboard extends React.Component {
                 case "dashboard":
                     headers = TableDataProcessor.getDashboardHeaders(this.group, this.subgroups);
                     break;
+                case "vrhpo":
+                    headers = TableDataProcessor.getVrhpoHeaders(this.group, this.subgroups);
+                    break;
                 default:
             }
 
-            // only run if the result of getting the headers is not empty
             // give the results to this.menu["certain menu page"][headers] under group
             // and subgroups key.
-            if (Object.entries(headers).length !== 0 && headers.constructor === Object) {
-                this.menus[menu]["group"] = {
-                    headers: headers["group"],
+            this.menus[menu]["group"] = {
+                headers: headers["group"],
+                data: []
+            };
+            this.menus[menu]["subgroups"] = {};
+            for (let subgroupId in this.subgroups) {
+                // only do if headers subgroups is defined
+                this.menus[menu]["subgroups"][subgroupId] = {
+                    headers: headers["subgroups"][subgroupId],
                     data: []
                 };
-                this.menus[menu]["subgroups"] = {};
-                for (let subgroupId in this.subgroups) {
-
-                    this.menus[menu]["subgroups"][subgroupId] = {
-                        headers: headers["subgroups"][subgroupId],
-                        data: []
-                    };
-                }
             }
         }
 
         // then do the same with each menu's table data (rows)
         for (let userId in this.group["users"]) {
             for (let menu in this.menus) {
+                let tableData = {};
                 switch(menu) {
                     case "dashboard":
-                        const tableData = TableDataProcessor.getDashboardData(userId, this.group, this.subgroups);
+                        tableData = TableDataProcessor.getDashboardData(userId, this.group, this.subgroups);
                         this.menus[menu]["group"]["data"].push(tableData["group"]);
 
                         // now add to the subgroup data for the respective menu page
@@ -423,6 +527,10 @@ class Dashboard extends React.Component {
                                 this.menus[menu]["subgroups"][subgroupId]["data"].push(tableData["subgroups"][subgroupId]);
                             }
                         }
+                        break;
+                    case "vrhpo":
+                        tableData = TableDataProcessor.getVrhpoData(userId, this.group, this.subgroups);
+                        // console.log(tableData);
                         break;
                     default:
                 }
@@ -439,6 +547,8 @@ class Dashboard extends React.Component {
                 undefined
         */
         this.setState({
+            loading: false,
+
             apiInfo: this.nextApi["apiInfo"],
             apiUsers: this.nextApi["apiUsers"],
             apiCourses: this.nextApi["apiCourses"],

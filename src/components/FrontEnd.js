@@ -26,6 +26,7 @@ const useStyles = makeStyles(theme => ({
         }
     },
     drawerPaper: {
+        zIndex: 0,
         width: drawerWidth
     },
     appBar: {
@@ -98,8 +99,14 @@ const FrontEnd = (props) => {
                 styles={classes}
                 menus={props["menus"]}
                 view={props["view"]}
-                groupChangeHandler={props["groupChangeHandler"]}
                 groupId={props["groupId"]}
+                batchProgress={props["batchProgress"]}
+                groupInfo={props["groupInfo"]}
+                loading={props["loading"]}
+                doneSoFar={props["doneSoFar"]}
+                totalNeeded={props["totalNeeded"]}
+                groupChangeHandler={props["groupChangeHandler"]}
+                userUploadHandler={props["userUploadHandler"]}
             />
         </div>
     )

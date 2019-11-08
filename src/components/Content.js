@@ -22,7 +22,12 @@ const Content = (props) => {
         case "update":
             content = (
                 <ContentUpdate
-                    tableData={tableData}
+                    userUploadHandler={props["userUploadHandler"]}
+                    batchProgress={props["batchProgress"]}
+                    groupInfo={props["groupInfo"]}
+                    loading={props["loading"]}
+                    doneSoFar={props["doneSoFar"]}
+                    totalNeeded={props["totalNeeded"]}
                 />
             );
             break;

@@ -82,6 +82,96 @@ const TableDataProcessor = {
         };
     },
 
+    getVrhpoHeaders: (group, subgroups) => {
+        const groupHeaders = [
+            {
+                title: "Username",
+                field: "username",
+                customSort: (a, b) => {
+                    if (a["username"].toUpperCase() < b["username"].toUpperCase()) {
+                        return -1;
+                    }
+                    else if (a["username"].toUpperCase() > b["username"].toUpperCase()) {
+                        return 1;
+                    }
+                    else {
+                        return 0;
+                    }
+                }
+            },
+            {
+                title: "Requirements Met?",
+                field: "reqsMet",
+                customSort: (a, b) => {
+                    if (a["reqsMet"] === "YES") {
+                        if (b["reqsMet"] === "YES") {
+                            return 0;
+                        }
+                        else {
+                            return -1;
+                        }
+                    }
+                    else {
+                        if (b["reqsMet"] === "YES") {
+                            return 1;
+                        }
+                        else {
+                            return 0;
+                        }
+                    }
+                }
+            }
+        ];
+
+        let subgroupHeaders = {};
+        for (let subgroupId in subgroups) {
+            subgroupHeaders[subgroupId] = [
+                {
+                    title: "Username",
+                    field: "username",
+                    customSort: (a, b) => {
+                        if (a["username"].toUpperCase() < b["username"].toUpperCase()) {
+                            return -1;
+                        }
+                        else if (a["username"].toUpperCase() > b["username"].toUpperCase()) {
+                            return 1;
+                        }
+                        else {
+                            return 0;
+                        }
+                    }
+                },
+                {
+                    title: "Requirements Met?",
+                    field: "reqsMet",
+                    customSort: (a, b) => {
+                        if (a["reqsMet"] === "YES") {
+                            if (b["reqsMet"] === "YES") {
+                                return 0;
+                            }
+                            else {
+                                return -1;
+                            }
+                        }
+                        else {
+                            if (b["reqsMet"] === "YES") {
+                                return 1;
+                            }
+                            else {
+                                return 0;
+                            }
+                        }
+                    }
+                }
+            ];
+        }
+
+        return {
+            group: groupHeaders,
+            subgroups: subgroupHeaders
+        };
+    },
+
     getDashboardData: (userId, group, subgroups) => {
 
         let groupUserData = {username: group["users"][userId]["username"]};
@@ -116,6 +206,16 @@ const TableDataProcessor = {
                 }
             }
         }
+
+        return {
+            group: groupUserData,
+            subgroups: subgroupUserData
+        };
+    },
+
+    getVrhpoData: (userId, group, subgroups) => {
+        let groupUserData = {};
+        let subgroupUserData = {};
 
         return {
             group: groupUserData,

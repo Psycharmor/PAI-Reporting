@@ -1,54 +1,104 @@
-import React, {forwardRef} from "react";
+import React, {useState} from "react";
 
-import {AddBox, ArrowUpward, Check, ChevronLeft, ChevronRight,
-        Clear, DeleteOutline, Edit, FilterList, FirstPage,
-        LastPage, Remove, SaveAlt, Search, ViewColumn
-        } from "@material-ui/icons";
+import {Container, Input, Button, LinearProgress,
+        FormControl, InputLabel, Select, MenuItem,
+        ListItemText, Checkbox, Chip, CircularProgress} from "@material-ui/core";
+import {makeStyles} from "@material-ui/core/styles";
 
-import MaterialTable from "material-table";
-
-const tableIcons = {
-    Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
-    Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
-    Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-    Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
-    DetailPanel: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
-    Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
-    Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
-    Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
-    FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
-    LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
-    NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
-    PreviousPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref} />),
-    ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-    Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
-    SortArrow: forwardRef((props, ref) => <ArrowUpward {...props} ref={ref} />),
-    ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
-    ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
-};
+const useStyles = makeStyles(theme => ({
+    bar: {
+        height: "10px",
+        marginBottom: "20px"
+    },
+    input: {
+        display: "block",
+        marginBottom: "20px"
+    },
+    button: {
+        marginRight: "10px"
+    },
+    formControl: {
+        display: "block",
+        marginBottom: "20px",
+        minWidth: 100,
+        maxWidth: 300
+    },
+    chips: {
+        display: "flex",
+        flexWrap: "wrap"
+    },
+    selectInput: {
+        minWidth: 100
+    },
+    box: {
+        display: "flex",
+        marginBottom: "20px"
+    }
+}));
 
 const ContentUpdate = (props) => {
-    const tableData = props["tableData"];
 
-    let headers = [];
-    if (tableData["group"] && tableData["group"]["headers"]) {
-        headers = tableData["group"]["headers"];
+    const [file, setFile] = useState(undefined);
+    const [courses, setCourses] = useState([]);
+    const classes = useStyles();
+
+    let progress;
+    if (props["batchProgress"] !== -1) {
+        progress = <LinearProgress className={classes["bar"]} variant="determinate" value={props["batchProgress"]}/>;
+        console.log(props["doneSoFar"], props["totalNeeded"]);
     }
 
-    let data = [];
-    if (tableData["group"] && tableData["group"]["data"]) {
-        data = tableData["group"]["data"];
+    let availableCourses = [];
+    if (props["groupInfo"] && Object.keys(props["groupInfo"]).length > 0) {
+        for (let courseId in props["groupInfo"]["courses"]) {
+            const title = props["groupInfo"]["courses"][courseId]["title"];
+            availableCourses.push(
+                <MenuItem key={courseId} value={courseId}>
+                    <Checkbox checked={courses.includes(courseId)}/>
+                    <ListItemText primary={title}/>
+                </MenuItem>
+            );
+        }
     }
 
-    return (<MaterialTable
-                icons={tableIcons}
-                columns={[]}
-                data={[]}
-                options={{
-                    sorting: true,
-                    pageSize: 10,
-                    showTitle: false
-                }}
-            />);
+    let waiting;
+    if (props["loading"]) {
+        waiting = <CircularProgress />;
+    }
+
+    const handleChange = e => {
+        setCourses(e.target["value"]);
+    };
+
+    return (
+        <Container>
+            <Input className={classes["input"]} type="file" onChange={(e) => setFile(e.target["files"][0])}/>
+            <FormControl className={classes["formControl"]}>
+                <InputLabel htmlFor="course-select">Courses</InputLabel>
+                <Select
+                    multiple
+                    value={courses}
+                    onChange={handleChange}
+                    input={<Input className={classes["selectInput"]} id="course-select"/>}
+                    renderValue={selected => (
+                        <div className={classes["chips"]}>
+                            {selected.map(value => (
+                                <Chip key={value} label={props["groupInfo"]["courses"][value]["title"]}/>
+                            ))}
+                        </div>
+                    )}
+                >
+                    {availableCourses}
+                </Select>
+            </FormControl>
+            <div className={classes["box"]}>
+                <Button className={classes["button"]} variant="contained" onClick={() => props["userUploadHandler"](file, courses)}>
+                    Upload
+                </Button>
+                {waiting}
+            </div>
+            {progress}
+        </Container>
+    );
 };
 export default ContentUpdate;

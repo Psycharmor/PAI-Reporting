@@ -13,6 +13,7 @@ material-ui<br>
 material-table<br>
 deepcopy<br>
 deep-equal<br>
+papaparse<br>
 
 In the project directory, you can run:
 
@@ -49,7 +50,7 @@ function my_customize_rest_cors() {
 add_action( 'rest_api_init', 'my_customize_rest_cors', 15 ); -->
 
 
-<!-- 
+<!--
 // // iterate localStorage
 // for (var i = 0; i < localStorage.length; i++) {
 //
