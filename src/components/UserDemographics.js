@@ -47,17 +47,20 @@ const UserDemographics = (props) => {
                     for (let courseKey in props["entries"][portfolioKey]["courses"]) {
                         for (let i = 0; i < props["entries"][portfolioKey]["courses"][courseKey]["entries"].length; ++i) {
                             const entry = props["entries"][portfolioKey]["courses"][courseKey]["entries"][i];
-                            if (!(entry["userId"] in data)) {
-                                data[entry["userId"]] = {
-                                    email: entry["email"],
-                                    firstName: entry["firstName"],
-                                    lastName: entry["lastName"],
-                                    organization: entry["organization"],
-                                    roleWithVeterans: entry["roleWithVeterans"],
-                                    refferalSource: entry["refferalSource"],
-                                    courseCompleteCount: entry["courseCompleteCount"],
-                                    team: entry["team"]
-                                };
+                            const submitted = entry["dateSubmitted"];
+                            if (submitted >= (props["startDate"].getTime() / 1000) && submitted <= (props["endDate"].getTime() / 1000)) {
+                                if (!(entry["userId"] in data)) {
+                                    data[entry["userId"]] = {
+                                        email: entry["email"],
+                                        firstName: entry["firstName"],
+                                        lastName: entry["lastName"],
+                                        organization: entry["organization"],
+                                        roleWithVeterans: entry["roleWithVeterans"],
+                                        refferalSource: entry["refferalSource"],
+                                        courseCompleteCount: entry["courseCompleteCount"],
+                                        team: entry["team"]
+                                    };
+                                }
                             }
                         }
                     }

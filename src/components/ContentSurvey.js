@@ -25,8 +25,8 @@ class ContentSurvey extends React.Component {
             frq: true,
             before: true,
             now: true,
-            startDate: "2010/01/01",
-            endDate: new Date()
+            startDate: new Date("2010/01/01"),
+            endDate: new Date((new Date()).setHours(23,59,59,999))
         };
 
         this.handlePortfolioChange.bind(this);
@@ -58,17 +58,18 @@ class ContentSurvey extends React.Component {
         });
     }
 
-    handleDateChange(date) {
+    handleDateChange(date, property) {
         if (!isNaN(date)) {
-            console.log(this, date);
-            this.setState({
-                startDate: date
-            });
+            if (property === "startDate") {
+                this.getQuestionRates(date, this.state["endDate"]);
+            }
+            else if (property === "endDate") {
+                this.getQuestionRates(this.state["startDate"], date);
+            }
         }
     }
 
     render() {
-        const deepcopy = require("deepcopy");
         let portfolioOptions = [
             <MenuItem key={-1} value={-1} selected={(this.state["portfolio"] === -1) ? "selected" : ""}>{"All Portfolios"}</MenuItem>
         ];
@@ -108,7 +109,6 @@ class ContentSurvey extends React.Component {
         const before = this.renderBeforeGraphs();
         const now = this.renderNowGraphs();
         const checkbox = this.renderCheckboxGraphs();
-
         return(
             <div>
                 <Box display="flex">
@@ -124,36 +124,36 @@ class ContentSurvey extends React.Component {
                 </Box>
                 <Container>
                     <QuestionResultBar
-                        answerRates={deepcopy(this.state["answerRates"])}
-                        entries={deepcopy(this.entries)}
+                        answerRates={this.state["answerRates"]}
+                        entries={this.entries}
                         question={"I learned something new as a result of this training."}
                         portfolio={this.state["portfolio"]}
                         courseId={this.state["courseId"]}
                     />
                     <QuestionResultBar
-                        answerRates={deepcopy(this.state["answerRates"])}
-                        entries={deepcopy(this.entries)}
+                        answerRates={this.state["answerRates"]}
+                        entries={this.entries}
                         question={"The information presented was relevant to my goals."}
                         portfolio={this.state["portfolio"]}
                         courseId={this.state["courseId"]}
                     />
                     <QuestionResultBar
-                        answerRates={deepcopy(this.state["answerRates"])}
-                        entries={deepcopy(this.entries)}
+                        answerRates={this.state["answerRates"]}
+                        entries={this.entries}
                         question={"After taking this course, I will use what I learned."}
                         portfolio={this.state["portfolio"]}
                         courseId={this.state["courseId"]}
                     />
                     <QuestionResultBar
-                        answerRates={deepcopy(this.state["answerRates"])}
-                        entries={deepcopy(this.entries)}
+                        answerRates={this.state["answerRates"]}
+                        entries={this.entries}
                         question={"I would recommend PsychArmor training to someone else."}
                         portfolio={this.state["portfolio"]}
                         courseId={this.state["courseId"]}
                     />
                     <QuestionResultBar
-                        answerRates={deepcopy(this.state["answerRates"])}
-                        entries={deepcopy(this.entries)}
+                        answerRates={this.state["answerRates"]}
+                        entries={this.entries}
                         question={"Would you participate in more detailed evaluation?"}
                         portfolio={this.state["portfolio"]}
                         courseId={this.state["courseId"]}
@@ -163,11 +163,13 @@ class ContentSurvey extends React.Component {
                     {before}
                     {now}
                     <UserDemographics
-                        answerRates={deepcopy(this.state["answerRates"])}
-                        entries={deepcopy(this.entries)}
+                        answerRates={this.state["answerRates"]}
+                        entries={this.entries}
                         question={"Would you participate in more detailed evaluation?"}
                         portfolio={this.state["portfolio"]}
                         courseId={this.state["courseId"]}
+                        startDate={this.state["startDate"]}
+                        endDate={this.state["endDate"]}
                     />
                 </Container>
             </div>
@@ -175,6 +177,7 @@ class ContentSurvey extends React.Component {
     }
 
     renderFilters() {
+        console.log(this.state["startDate"], this.state["endDate"]);
         return (
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <KeyboardDatePicker
@@ -185,14 +188,23 @@ class ContentSurvey extends React.Component {
                     id={"start-date"}
                     value={this.state["startDate"]}
                     maxDate={this.state["endDate"]}
-                    onChange={(e) => this.handleDateChange(e)}
+                    onChange={(e) => this.handleDateChange(e, "startDate")}
+                />
+                <KeyboardDatePicker
+                    disableToolbar
+                    variant={"inline"}
+                    format={"yyyy/MM/dd"}
+                    margin={"normal"}
+                    id={"end-date"}
+                    value={this.state["endDate"]}
+                    minDate={this.state["startDate"]}
+                    onChange={(e) => this.handleDateChange(e, "endDate")}
                 />
             </MuiPickersUtilsProvider>
         )
     }
 
     renderCheckboxGraphs() {
-        const deepcopy = require("deepcopy");
         if (Object.keys(this.state["answerRates"]).length !== 0) {
             return (
                 <Paper>
@@ -212,8 +224,8 @@ class ContentSurvey extends React.Component {
                         <Grid container justify={"center"} alignItems={"center"} spacing={3}>
                             <Grid item xs={6}>
                                 <CheckboxPie
-                                    answerRates={deepcopy(this.state["answerRates"])}
-                                    entries={deepcopy(this.entries)}
+                                    answerRates={this.state["answerRates"]}
+                                    entries={this.entries}
                                     question={"Why did you take this course?"}
                                     portfolio={this.state["portfolio"]}
                                     courseId={this.state["courseId"]}
@@ -227,8 +239,6 @@ class ContentSurvey extends React.Component {
     }
 
     renderFrq() {
-        const deepcopy = require("deepcopy");
-
         if (Object.keys(this.state["answerRates"]).length !== 0) {
             return (
                 <Paper>
@@ -248,8 +258,8 @@ class ContentSurvey extends React.Component {
                         <Grid container spacing={3}>
                             <Grid item xs={6}>
                                 <FrqResultPie
-                                    answerRates={deepcopy(this.state["answerRates"])}
-                                    entries={deepcopy(this.entries)}
+                                    answerRates={this.state["answerRates"]}
+                                    entries={this.entries}
                                     question={"What aspects of the course did you find especially helpful"}
                                     portfolio={this.state["portfolio"]}
                                     courseId={this.state["courseId"]}
@@ -257,8 +267,8 @@ class ContentSurvey extends React.Component {
                             </Grid>
                             <Grid item xs={6}>
                                 <FrqResultPie
-                                    answerRates={deepcopy(this.state["answerRates"])}
-                                    entries={deepcopy(this.entries)}
+                                    answerRates={this.state["answerRates"]}
+                                    entries={this.entries}
                                     question={"What aspects of the course would you like to see changed"}
                                     portfolio={this.state["portfolio"]}
                                     courseId={this.state["courseId"]}
@@ -268,8 +278,8 @@ class ContentSurvey extends React.Component {
                         <Grid container spacing={3}>
                             <Grid item xs={6}>
                                 <FrqResultPie
-                                    answerRates={deepcopy(this.state["answerRates"])}
-                                    entries={deepcopy(this.entries)}
+                                    answerRates={this.state["answerRates"]}
+                                    entries={this.entries}
                                     question={"Application: We are interested in understanding how you applied the content"}
                                     portfolio={this.state["portfolio"]}
                                     courseId={this.state["courseId"]}
@@ -277,8 +287,8 @@ class ContentSurvey extends React.Component {
                             </Grid>
                             <Grid item xs={6}>
                                 <FrqResultPie
-                                    answerRates={deepcopy(this.state["answerRates"])}
-                                    entries={deepcopy(this.entries)}
+                                    answerRates={this.state["answerRates"]}
+                                    entries={this.entries}
                                     question={"Would you be interested in having your name entered into a drawing for FREE follow-up coaching sessions?"}
                                     portfolio={this.state["portfolio"]}
                                     courseId={this.state["courseId"]}
@@ -292,8 +302,6 @@ class ContentSurvey extends React.Component {
     }
 
     renderBeforeGraphs() {
-        const deepcopy = require("deepcopy");
-
         if (Object.keys(this.state["answerRates"]).length !== 0) {
             return (
                 <Paper>
@@ -313,8 +321,8 @@ class ContentSurvey extends React.Component {
                         <Grid container spacing={3}>
                             <Grid item xs={4} s={4}>
                                 <RatingResultPie
-                                    answerRates={deepcopy(this.state["answerRates"])}
-                                    entries={deepcopy(this.entries)}
+                                    answerRates={this.state["answerRates"]}
+                                    entries={this.entries}
                                     question={"Knowledge in this area"}
                                     portfolio={this.state["portfolio"]}
                                     courseId={this.state["courseId"]}
@@ -323,8 +331,8 @@ class ContentSurvey extends React.Component {
                             </Grid>
                             <Grid item xs={4} s={4}>
                                 <RatingResultPie
-                                    answerRates={deepcopy(this.state["answerRates"])}
-                                    entries={deepcopy(this.entries)}
+                                    answerRates={this.state["answerRates"]}
+                                    entries={this.entries}
                                     question={"Skills related to topic"}
                                     portfolio={this.state["portfolio"]}
                                     courseId={this.state["courseId"]}
@@ -333,8 +341,8 @@ class ContentSurvey extends React.Component {
                             </Grid>
                             <Grid item xs={4} s={4}>
                                 <RatingResultPie
-                                    answerRates={deepcopy(this.state["answerRates"])}
-                                    entries={deepcopy(this.entries)}
+                                    answerRates={this.state["answerRates"]}
+                                    entries={this.entries}
                                     question={"Confidence with topic"}
                                     portfolio={this.state["portfolio"]}
                                     courseId={this.state["courseId"]}
@@ -349,8 +357,6 @@ class ContentSurvey extends React.Component {
     }
 
     renderNowGraphs() {
-        const deepcopy = require("deepcopy");
-
         if (Object.keys(this.state["answerRates"]).length !== 0) {
             return (
                 <Paper>
@@ -370,8 +376,8 @@ class ContentSurvey extends React.Component {
                         <Grid container spacing={3}>
                             <Grid item xs={4} s={4}>
                                 <RatingResultPie
-                                    answerRates={deepcopy(this.state["answerRates"])}
-                                    entries={deepcopy(this.entries)}
+                                    answerRates={this.state["answerRates"]}
+                                    entries={this.entries}
                                     question={"Knowledge in this area"}
                                     portfolio={this.state["portfolio"]}
                                     courseId={this.state["courseId"]}
@@ -380,8 +386,8 @@ class ContentSurvey extends React.Component {
                             </Grid>
                             <Grid item xs={4} s={4}>
                                 <RatingResultPie
-                                    answerRates={deepcopy(this.state["answerRates"])}
-                                    entries={deepcopy(this.entries)}
+                                    answerRates={this.state["answerRates"]}
+                                    entries={this.entries}
                                     question={"Skills related to topic"}
                                     portfolio={this.state["portfolio"]}
                                     courseId={this.state["courseId"]}
@@ -390,8 +396,8 @@ class ContentSurvey extends React.Component {
                             </Grid>
                             <Grid item xs={4} s={4}>
                                 <RatingResultPie
-                                    answerRates={deepcopy(this.state["answerRates"])}
-                                    entries={deepcopy(this.entries)}
+                                    answerRates={this.state["answerRates"]}
+                                    entries={this.entries}
                                     question={"Confidence with topic"}
                                     portfolio={this.state["portfolio"]}
                                     courseId={this.state["courseId"]}
@@ -432,7 +438,6 @@ class ContentSurvey extends React.Component {
     }
 
     setEntries(newEntries, limit, offset) {
-        const deepcopy = require("deepcopy");
         let count = 0;
         for (let portfolioKey in newEntries) {
             if (!(portfolioKey in this.entries)) {
@@ -450,9 +455,7 @@ class ContentSurvey extends React.Component {
                 }
                 for (let i = 0; i < newEntries[portfolioKey]["courses"][courseKey]["entries"].length; ++i) {
                     const entry = newEntries[portfolioKey]["courses"][courseKey]["entries"][i];
-                    this.entries[portfolioKey]["courses"][courseKey]["entries"].push(
-                        deepcopy(entry)
-                    );
+                    this.entries[portfolioKey]["courses"][courseKey]["entries"].push(entry);
                     ++count;
                 }
             }
@@ -462,14 +465,13 @@ class ContentSurvey extends React.Component {
             this.getApiEntries(limit, offset + count);
         }
         else {
-            this.getQuestionRates();
+            this.getQuestionRates(this.state["startDate"], this.state["endDate"]);
         }
     }
 
-    getQuestionRates() {
+    getQuestionRates(startDate, endDate) {
         console.log(this.entries);
         let answerRates = {};
-        const deepcopy = require("deepcopy");
         for (let portfolioKey in this.entries) {
             for (let courseKey in this.entries[portfolioKey]["courses"]) {
                 answerRates[courseKey] = {
@@ -494,18 +496,23 @@ class ContentSurvey extends React.Component {
                     "Would you be interested in having your name entered into a drawing for FREE follow-up coaching sessions?": {}
                 };
                 for (let i = 0; i < this.entries[portfolioKey]["courses"][courseKey]["entries"].length; ++i) {
-                    const results = this.entries[portfolioKey]["courses"][courseKey]["entries"][i]["results"];
-                    this.getIntialQuestionsResults(answerRates, results, courseKey);
+                    const submitted = parseInt(this.entries[portfolioKey]["courses"][courseKey]["entries"][i]["dateSubmitted"]);
+                    if (submitted >= (startDate.getTime() / 1000) && submitted <= (endDate.getTime() / 1000)) {
+                        const results = this.entries[portfolioKey]["courses"][courseKey]["entries"][i]["results"];
+                        this.getIntialQuestionsResults(answerRates, results, courseKey);
+                    }
                 }
             }
         }
-        this.getFreeResponseResults(answerRates);
-        this.getRatingResults(answerRates);
-        this.getCheckboxResults(answerRates);
+        this.getFreeResponseResults(answerRates, startDate, endDate);
+        this.getRatingResults(answerRates, startDate, endDate);
+        this.getCheckboxResults(answerRates, startDate, endDate);
 
         console.log(answerRates);
         this.setState({
-            answerRates: deepcopy(answerRates)
+            answerRates: answerRates,
+            startDate: startDate,
+            endDate: endDate
         });
     }
 
@@ -528,7 +535,7 @@ class ContentSurvey extends React.Component {
         }
     }
 
-    getFreeResponseResults(answerRates) {
+    getFreeResponseResults(answerRates, startDate, endDate) {
         const stopwords = require("stopwords").english;
         const questions = [
             "What aspects of the course did you find especially helpful",
@@ -547,16 +554,19 @@ class ContentSurvey extends React.Component {
                 };
 
                 for (let i = 0; i < this.entries[portfolioKey]["courses"][courseKey]["entries"].length; ++i) {
-                    const results = this.entries[portfolioKey]["courses"][courseKey]["entries"][i]["results"];
-                    for (let j = 0; j < questions.length; ++j) {
-                        const question = questions[j];
-                        const tokens = results[question].toLowerCase().match(/\S+/g) || []; // match all non whitespace that are >= 1
-                        for (let k = 0; k < tokens.length; ++k) {
-                            if(stopwords.indexOf(tokens[k]) === -1) {
-                                if (!(tokens[k] in tokenCount[question])) {
-                                    tokenCount[question][tokens[k]] = 0;
+                    const submitted = parseInt(this.entries[portfolioKey]["courses"][courseKey]["entries"][i]["dateSubmitted"]);
+                    if (submitted >= (startDate.getTime() / 1000) && submitted <= (endDate.getTime() / 1000)) {
+                        const results = this.entries[portfolioKey]["courses"][courseKey]["entries"][i]["results"];
+                        for (let j = 0; j < questions.length; ++j) {
+                            const question = questions[j];
+                            const tokens = results[question].toLowerCase().match(/\S+/g) || []; // match all non whitespace that are >= 1
+                            for (let k = 0; k < tokens.length; ++k) {
+                                if(stopwords.indexOf(tokens[k]) === -1) {
+                                    if (!(tokens[k] in tokenCount[question])) {
+                                        tokenCount[question][tokens[k]] = 0;
+                                    }
+                                    ++tokenCount[question][tokens[k]];
                                 }
-                                ++tokenCount[question][tokens[k]];
                             }
                         }
                     }
@@ -569,7 +579,7 @@ class ContentSurvey extends React.Component {
         }
     }
 
-    getRatingResults(answerRates) {
+    getRatingResults(answerRates, startDate, endDate) {
         const questions = [
             "Knowledge in this area",
             "Skills related to topic",
@@ -578,16 +588,18 @@ class ContentSurvey extends React.Component {
 
         for (let portfolioKey in this.entries) {
             for (let courseKey in this.entries[portfolioKey]["courses"]) {
-
                 for (let i = 0; i < this.entries[portfolioKey]["courses"][courseKey]["entries"].length; ++i) {
-                    const results = this.entries[portfolioKey]["courses"][courseKey]["entries"][i]["results"];
-                    for (let j = 0; j < questions.length; ++j) {
-                        const question = questions[j];
-                        if (results[question]["before"] !== "") {
-                            ++answerRates[courseKey][question]["before"][parseInt(results[question]["before"]) - 1];
-                        }
-                        if (results[question]["now"] !== "") {
-                            ++answerRates[courseKey][question]["now"][parseInt(results[question]["now"]) - 1];
+                    const submitted = parseInt(this.entries[portfolioKey]["courses"][courseKey]["entries"][i]["dateSubmitted"]);
+                    if (submitted >= (startDate.getTime() / 1000) && submitted <= (endDate.getTime() / 1000)) {
+                        const results = this.entries[portfolioKey]["courses"][courseKey]["entries"][i]["results"];
+                        for (let j = 0; j < questions.length; ++j) {
+                            const question = questions[j];
+                            if (results[question]["before"] !== "") {
+                                ++answerRates[courseKey][question]["before"][parseInt(results[question]["before"]) - 1];
+                            }
+                            if (results[question]["now"] !== "") {
+                                ++answerRates[courseKey][question]["now"][parseInt(results[question]["now"]) - 1];
+                            }
                         }
                     }
                 }
@@ -595,15 +607,17 @@ class ContentSurvey extends React.Component {
         }
     }
 
-    getCheckboxResults(answerRates) {
+    getCheckboxResults(answerRates, startDate, endDate) {
         for (let portfolioKey in this.entries) {
             for (let courseKey in this.entries[portfolioKey]["courses"]) {
-
                 for (let i = 0; i < this.entries[portfolioKey]["courses"][courseKey]["entries"].length; ++i) {
-                    const results = this.entries[portfolioKey]["courses"][courseKey]["entries"][i]["results"];
-                    const question = "Why did you take this course?";
-                    for (let j = 0; j < results[question].length; ++j) {
-                        ++answerRates[courseKey][question][results[question][j]];
+                    const submitted = parseInt(this.entries[portfolioKey]["courses"][courseKey]["entries"][i]["dateSubmitted"]);
+                    if (submitted >= (startDate.getTime() / 1000) && submitted <= (endDate.getTime() / 1000)) {
+                        const results = this.entries[portfolioKey]["courses"][courseKey]["entries"][i]["results"];
+                        const question = "Why did you take this course?";
+                        for (let j = 0; j < results[question].length; ++j) {
+                            ++answerRates[courseKey][question][results[question][j]];
+                        }
                     }
                 }
             }
