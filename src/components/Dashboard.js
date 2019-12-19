@@ -3,6 +3,7 @@ import React from "react";
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import StarIcon from '@material-ui/icons/Star';
 import PostAddIcon from '@material-ui/icons/PostAdd';
+import HowToVoteIcon from '@material-ui/icons/HowToVote';
 import axios from "axios";
 import LoadingOverlay from "react-loading-overlay";
 
@@ -61,7 +62,11 @@ class Dashboard extends React.Component {
             this.menus["vrhpo"] = {
                 icon: <StarIcon/>,
                 text: "VRHPO"
-            }
+            };
+            this.menus["survey"] = {
+                icon: <HowToVoteIcon/>,
+                text: "Survey Results"
+            };
         }
 
         // needed to copy the this.menu data because some libraries

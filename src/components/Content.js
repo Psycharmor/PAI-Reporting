@@ -2,6 +2,8 @@ import React from "react";
 
 import ContentDashboard from "./ContentDashboard";
 import ContentUpdate from "./ContentUpdate";
+import ContentSurvey from "./ContentSurvey";
+
 
 const Content = (props) => {
 
@@ -29,6 +31,11 @@ const Content = (props) => {
                     doneSoFar={props["doneSoFar"]}
                     totalNeeded={props["totalNeeded"]}
                 />
+            );
+            break;
+        case "survey":
+            content = (
+                <ContentSurvey/>
             );
             break;
         default:

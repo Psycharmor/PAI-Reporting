@@ -1,7 +1,7 @@
 {
   "domain": {
     "env": {
-      "siteUrl": "http://localhost:80/psycharmor-local/"
+      "siteUrl": "http://staging.psycharmor.org/"
     }
   },
   "API": {

@@ -41,3 +41,16 @@ code {
     box-shadow: 3px 3px 15px 0 #dadada;
   }
 } */
+
+.question-result-bar {
+    margin-bottom: 10px;
+}
+
+.select-margin {
+    margin: 5px;
+}
+
+.data-header {
+    height: 20px;
+    background-color: blue;
+}
