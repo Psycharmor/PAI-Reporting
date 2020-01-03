@@ -13,6 +13,9 @@
 
 /src/config/app.json
 /src/components/LoginForm.js
+/src/config/app.json
+/src/service/wpClient.js
+
 
 # misc
 .DS_Store

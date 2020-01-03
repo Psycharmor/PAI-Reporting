@@ -1,7 +1,7 @@
 {
   "domain": {
     "env": {
-      "siteUrl": "http://staging.psycharmor.org/"
+     "siteUrl": "http://staging.psycharmor.org/"
     }
   },
   "API": {
