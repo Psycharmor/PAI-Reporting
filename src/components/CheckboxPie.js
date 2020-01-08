@@ -1,7 +1,7 @@
 import React from "react";
 
 import {Pie} from "react-chartjs-2";
-import {Typography} from "@material-ui/core";
+import {Typography, Hidden} from "@material-ui/core";
 
 const CheckboxPie = (props) => {
     if (Object.keys(props["answerRates"]).length !== 0) {
@@ -50,31 +50,77 @@ const CheckboxPie = (props) => {
             }
         }
 
+        const data = {
+            labels: labels,
+            datasets: [{
+                data: Object.values(resultCount),
+                backgroundColor: [
+                    '#FFDD00',
+                    '#AA33CB',
+                    '#FF9923',
+                    "#44DDFF",
+                    "#006599"
+                ],
+                hoverBackgroundColor: [
+                    '#FFDD00',
+                    '#AA33CB',
+                    '#FF9923',
+                    "#44DDFF",
+                    "#006599"
+                ]
+            }]
+        };
+
         return (
             <div>
-                <Typography align={"center"} variant="h6">{props["question"]}</Typography>
-                <Pie
-                    data={{
-                        labels: labels,
-                        datasets: [{
-                            data: Object.values(resultCount),
-                            backgroundColor: [
-                                '#FFDD00',
-                                '#AA33CB',
-                                '#FF9923',
-                                "#44DDFF",
-                                "#006599"
-                            ],
-                            hoverBackgroundColor: [
-                                '#FFDD00',
-                                '#AA33CB',
-                                '#FF9923',
-                                "#44DDFF",
-                                "#006599"
-                            ]
-                        }]
-                    }}
-                />
+                <Hidden smUp implementation="css">
+                    <Typography align={"center"} variant="subtitle2">{props["question"]}</Typography>
+                    <Pie
+                        height={null} // https://github.com/jerairrest/react-chartjs-2/issues/368
+                        width={null}
+                        data={data}
+                        options={{
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            aspectRatio: 1,
+                            legend: {
+                                align: "start",
+                                labels: {
+                                    boxWidth: 10
+                                }
+                            }
+                        }}
+                    />
+                </Hidden>
+                <Hidden only={["xs", "lg", "xl"]} implementation="css">
+                    <Typography align={"center"} variant="subtitle2">{props["question"]}</Typography>
+                    <Pie
+                        height={null} // https://github.com/jerairrest/react-chartjs-2/issues/368
+                        width={null}
+                        data={data}
+                        options={{
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            aspectRatio: 1
+                        }}
+                    />
+                </Hidden>
+                <Hidden mdDown implementation="css">
+                    <Typography align={"center"} variant="subtitle2">{props["question"]}</Typography>
+                    <Pie
+                        height={null} // https://github.com/jerairrest/react-chartjs-2/issues/368
+                        width={null}
+                        data={data}
+                        options={{
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            aspectRatio: 2,
+                            legend: {
+                                position: "right"
+                            }
+                        }}
+                    />
+                </Hidden>
             </div>
         );
     }

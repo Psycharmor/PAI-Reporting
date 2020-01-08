@@ -1,7 +1,7 @@
 import React from "react";
 
 import {Pie} from "react-chartjs-2";
-import {Typography} from "@material-ui/core";
+import {Typography, Grid} from "@material-ui/core";
 
 function getMostUsedTokens(tokenCount) {
     const topN = 5;
@@ -68,31 +68,48 @@ const FrqResultPie = (props) => {
         }
 
         return (
-            <div>
-                <Typography align={"center"} variant="h6">{props["question"]}</Typography>
-                <Pie
-                    data={{
-                        labels: labels,
-                        datasets: [{
-                            data: data,
-                            backgroundColor: [
-                                '#FE88BA',
-                                '#55DDED',
-                                '#FBD87A',
-                                "#99DD88",
-                                "#DEBBFF"
-                            ],
-                            hoverBackgroundColor: [
-                                '#FE88BA',
-                                '#55DDED',
-                                '#FBD87A',
-                                "#99DD88",
-                                "#DEBBFF"
-                            ]
-                        }]
-                    }}
-                />
-            </div>
+            <Grid container direction={"column"} justify={"space-between"}>
+                <Grid item xs>
+                    <Typography align={"center"} variant="subtitle2">{props["question"]}</Typography>
+                </Grid>
+                <Grid item xs>
+                    <Pie
+                        height={null} // https://github.com/jerairrest/react-chartjs-2/issues/368
+                        width={null}
+                        data={{
+                            labels: labels,
+                            datasets: [{
+                                data: data,
+                                backgroundColor: [
+                                    '#FE88BA',
+                                    '#55DDED',
+                                    '#FBD87A',
+                                    "#99DD88",
+                                    "#DEBBFF"
+                                ],
+                                hoverBackgroundColor: [
+                                    '#FE88BA',
+                                    '#55DDED',
+                                    '#FBD87A',
+                                    "#99DD88",
+                                    "#DEBBFF"
+                                ]
+                            }]
+                        }}
+                        options={{
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            aspectRatio: 1.34,
+                            legend: {
+                                position: "right",
+                                labels: {
+                                    boxWidth: 10
+                                }
+                            }
+                        }}
+                    />
+                </Grid>
+            </Grid>
         );
     }
 

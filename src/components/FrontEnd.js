@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
         display: "flex"
     },
     drawer: {
-        [theme.breakpoints.up("sm")]: {
+        [theme.breakpoints.up("md")]: {
             width: drawerWidth,
             flexShrink: 0
         }
@@ -31,13 +31,13 @@ const useStyles = makeStyles(theme => ({
     },
     appBar: {
         marginLeft: drawerWidth,
-        [theme.breakpoints.up("sm")]: {
+        [theme.breakpoints.up("md")]: {
             width: "calc(100% - " + drawerWidth + "px)"
         }
     },
     menuButton: {
         marginRight: theme.spacing(2),
-        [theme.breakpoints.up("sm")]: {
+        [theme.breakpoints.up("md")]: {
             display: "none"
         }
     },
@@ -73,7 +73,7 @@ const FrontEnd = (props) => {
                 logOutHandler={props["logOutHandler"]}
             />
             <nav className={classes["drawer"]}>
-                <Hidden smUp implementation="css">
+                <Hidden mdUp implementation="css">
                     <NavBar
                         styles={classes}
                         menus={props["menus"]}
@@ -84,7 +84,7 @@ const FrontEnd = (props) => {
                         viewChangeHandler={props["viewChangeHandler"]}
                     />
                 </Hidden>
-                <Hidden xsDown implementation="css">
+                <Hidden smDown implementation="css">
                     <NavBar
                         styles={classes}
                         menus={props["menus"]}

@@ -1,7 +1,7 @@
 import React from "react";
 
 import AssignmentIcon from '@material-ui/icons/Assignment';
-import StarIcon from '@material-ui/icons/Star';
+// import StarIcon from '@material-ui/icons/Star';
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import HowToVoteIcon from '@material-ui/icons/HowToVote';
 import axios from "axios";
@@ -55,14 +55,14 @@ class Dashboard extends React.Component {
 
         // add additional menus only if the user is an admin
         if (this.role === "administrator") {
-            this.menus["vro"] = {
-                icon: <StarIcon/>,
-                text: "VRO"
-            };
-            this.menus["vrhpo"] = {
-                icon: <StarIcon/>,
-                text: "VRHPO"
-            };
+            // this.menus["vro"] = {
+            //     icon: <StarIcon/>,
+            //     text: "VRO"
+            // };
+            // this.menus["vrhpo"] = {
+            //     icon: <StarIcon/>,
+            //     text: "VRHPO"
+            // };
             this.menus["survey"] = {
                 icon: <HowToVoteIcon/>,
                 text: "Survey Results"
@@ -123,9 +123,11 @@ class Dashboard extends React.Component {
             Return:
                 undefined
         */
-        this.setState({
-            mobileDrawerOpen: !this.state["mobileDrawerOpen"]
-        });
+        if (!this.state["loading"]) {
+            this.setState({
+                mobileDrawerOpen: !this.state["mobileDrawerOpen"]
+            });
+        }
     }
 
     handleUserLogOut() {

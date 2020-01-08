@@ -1,16 +1,16 @@
 import React from "react";
 
-import {Container, Box, Grid, Select, MenuItem, Collapse, AppBar, Toolbar, Switch, Paper, Typography} from "@material-ui/core";
+import {Box, Grid, Select, MenuItem, Collapse, AppBar, Toolbar, Switch, Paper, Typography, Tabs, Tab} from "@material-ui/core";
 import DateFnsUtils from "@date-io/date-fns";
 import {MuiPickersUtilsProvider, KeyboardDatePicker} from "@material-ui/pickers";
 
 import {AUTH_TOKEN} from "../helper";
 import WPAPI from "../service/wpClient";
-import QuestionResultBar from "./QuestionResultBar";
 import UserDemographics from "./UserDemographics";
-import RatingResultPie from "./RatingResultPie";
 import FrqResultPie from "./FrqResultPie";
 import CheckboxPie from "./CheckboxPie";
+import BeforeAfterBarGraph from "./BeforeAfterBarGraph";
+import YesNoBarGraph from "./YesNoBarGraph";
 
 class ContentSurvey extends React.Component {
     constructor(props) {
@@ -21,6 +21,7 @@ class ContentSurvey extends React.Component {
             portfolio: -1,
             courseId: -1,
             answerRates: {},
+            tab: 0,
             checkbox: true,
             frq: true,
             before: true,
@@ -30,6 +31,7 @@ class ContentSurvey extends React.Component {
         };
 
         this.handlePortfolioChange.bind(this);
+        this.handleTabChange.bind(this);
         this.handleCourseChange.bind(this);
         this.handleDropDown.bind(this);
         this.handleDateChange.bind(this);
@@ -37,6 +39,12 @@ class ContentSurvey extends React.Component {
 
     componentDidMount() {
         this.getApiEntries(1000, 0);
+    }
+
+    handleTabChange(e, newTab) {
+        this.setState({
+            tab: newTab
+        });
     }
 
     handlePortfolioChange(portfolio) {
@@ -104,10 +112,8 @@ class ContentSurvey extends React.Component {
         }
 
         const filters = this.renderFilters();
-
+        const yesNo = this.renderYesNoGraph();
         const firstFrq = this.renderFrq();
-        const before = this.renderBeforeGraphs();
-        const now = this.renderNowGraphs();
         const checkbox = this.renderCheckboxGraphs();
         return(
             <div>
@@ -122,46 +128,18 @@ class ContentSurvey extends React.Component {
                     {courseDropdown}
                     {filters}
                 </Box>
-                <Container>
-                    <QuestionResultBar
-                        answerRates={this.state["answerRates"]}
-                        entries={this.entries}
-                        question={"I learned something new as a result of this training."}
-                        portfolio={this.state["portfolio"]}
-                        courseId={this.state["courseId"]}
-                    />
-                    <QuestionResultBar
-                        answerRates={this.state["answerRates"]}
-                        entries={this.entries}
-                        question={"The information presented was relevant to my goals."}
-                        portfolio={this.state["portfolio"]}
-                        courseId={this.state["courseId"]}
-                    />
-                    <QuestionResultBar
-                        answerRates={this.state["answerRates"]}
-                        entries={this.entries}
-                        question={"After taking this course, I will use what I learned."}
-                        portfolio={this.state["portfolio"]}
-                        courseId={this.state["courseId"]}
-                    />
-                    <QuestionResultBar
-                        answerRates={this.state["answerRates"]}
-                        entries={this.entries}
-                        question={"I would recommend PsychArmor training to someone else."}
-                        portfolio={this.state["portfolio"]}
-                        courseId={this.state["courseId"]}
-                    />
-                    <QuestionResultBar
-                        answerRates={this.state["answerRates"]}
-                        entries={this.entries}
-                        question={"Would you participate in more detailed evaluation?"}
-                        portfolio={this.state["portfolio"]}
-                        courseId={this.state["courseId"]}
-                    />
+                <AppBar position="static">
+                    <Tabs value={this.state["tab"]} onChange={(e, value) => {this.handleTabChange(e, value);}} aria-label={"tabs"}>
+                        <Tab label={"Tab 1"} id={"tab-0"} aria-controls={"tabpanel-0"}/>
+                        <Tab label={"Tab 2"} id={"tab-1"} aria-controls={"tabpanel-1"}/>
+                    </Tabs>
+                </AppBar>
+                <Box role={"tabpanel"} hidden={this.state["tab"] !== 0} id={"tabpanel-0"} aria-labelledby={"tab-0"}>
+                    {yesNo}
                     {checkbox}
                     {firstFrq}
-                    {before}
-                    {now}
+                </Box>
+                <Box role={"tabpanel"} hidden={this.state["tab"] !== 1} id={"tabpanel-1"} aria-labelledby={"tab-1"}>
                     <UserDemographics
                         answerRates={this.state["answerRates"]}
                         entries={this.entries}
@@ -171,13 +149,12 @@ class ContentSurvey extends React.Component {
                         startDate={this.state["startDate"]}
                         endDate={this.state["endDate"]}
                     />
-                </Container>
+                </Box>
             </div>
         );
     }
 
     renderFilters() {
-        console.log(this.state["startDate"], this.state["endDate"]);
         return (
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <KeyboardDatePicker
@@ -204,36 +181,58 @@ class ContentSurvey extends React.Component {
         )
     }
 
+    renderYesNoGraph() {
+        if (Object.keys(this.state["answerRates"]).length !== 0) {
+            return (
+                <Grid container justify={"center"} alignItems={"center"} spacing={3}>
+                    <Grid item xs>
+                        <Paper>
+                            <YesNoBarGraph
+                                answerRates={this.state["answerRates"]}
+                                entries={this.entries}
+                                questions={["I learned something new as a result of this training.",
+                                            "The information presented was relevant to my goals.",
+                                            "After taking this course, I will use what I learned.",
+                                            "I would recommend PsychArmor training to someone else.",
+                                            "Would you participate in more detailed evaluation?"]
+                            }
+                                portfolio={this.state["portfolio"]}
+                                courseId={this.state["courseId"]}
+                            />
+                        </Paper>
+                    </Grid>
+                </Grid>
+            )
+        }
+    }
+
     renderCheckboxGraphs() {
         if (Object.keys(this.state["answerRates"]).length !== 0) {
             return (
-                <Paper>
-                    <AppBar position={"static"}>
-                        <Toolbar>
-                            <Switch
-                                checked={this.state["checkbox"]}
-                                onChange={(e) => this.handleDropDown("checkbox")}
-                                value={"checkbox"}
+                <Grid container spacing={3}>
+                    <Grid item xs={12} sm={6}>
+                        <Paper className={"height-100"}>
+                            <CheckboxPie
+                                answerRates={this.state["answerRates"]}
+                                entries={this.entries}
+                                question={"Why did you take this course?"}
+                                portfolio={this.state["portfolio"]}
+                                courseId={this.state["courseId"]}
                             />
-                            <Typography variant="h6">
-                                {"Multiple Choice Question Results"}
-                            </Typography>
-                        </Toolbar>
-                    </AppBar>
-                    <Collapse in={this.state["checkbox"]}>
-                        <Grid container justify={"center"} alignItems={"center"} spacing={3}>
-                            <Grid item xs={6}>
-                                <CheckboxPie
-                                    answerRates={this.state["answerRates"]}
-                                    entries={this.entries}
-                                    question={"Why did you take this course?"}
-                                    portfolio={this.state["portfolio"]}
-                                    courseId={this.state["courseId"]}
-                                />
-                            </Grid>
-                        </Grid>
-                    </Collapse>
-                </Paper>
+                        </Paper>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <Paper className={"height-100"}>
+                            <BeforeAfterBarGraph
+                                answerRates={this.state["answerRates"]}
+                                entries={this.entries}
+                                questions={["Knowledge in this area", "Skills related to topic", "Confidence with topic"]}
+                                portfolio={this.state["portfolio"]}
+                                courseId={this.state["courseId"]}
+                            />
+                        </Paper>
+                    </Grid>
+                </Grid>
             );
         }
     }
@@ -241,62 +240,52 @@ class ContentSurvey extends React.Component {
     renderFrq() {
         if (Object.keys(this.state["answerRates"]).length !== 0) {
             return (
-                <Paper>
-                    <AppBar position={"static"}>
-                        <Toolbar>
-                            <Switch
-                                checked={this.state["frq"]}
-                                onChange={(e) => this.handleDropDown("frq")}
-                                value={"frq"}
+                <Grid container spacing={3}>
+                    <Grid item xs={12} sm={6} lg={3}>
+                        <Paper className={"height-100"}>
+                            <FrqResultPie
+                                answerRates={this.state["answerRates"]}
+                                entries={this.entries}
+                                question={"What aspects of the course did you find especially helpful"}
+                                portfolio={this.state["portfolio"]}
+                                courseId={this.state["courseId"]}
                             />
-                            <Typography variant="h6">
-                                {"Free Response Question Results"}
-                            </Typography>
-                        </Toolbar>
-                    </AppBar>
-                    <Collapse in={this.state["frq"]}>
-                        <Grid container spacing={3}>
-                            <Grid item xs={6}>
-                                <FrqResultPie
-                                    answerRates={this.state["answerRates"]}
-                                    entries={this.entries}
-                                    question={"What aspects of the course did you find especially helpful"}
-                                    portfolio={this.state["portfolio"]}
-                                    courseId={this.state["courseId"]}
-                                />
-                            </Grid>
-                            <Grid item xs={6}>
-                                <FrqResultPie
-                                    answerRates={this.state["answerRates"]}
-                                    entries={this.entries}
-                                    question={"What aspects of the course would you like to see changed"}
-                                    portfolio={this.state["portfolio"]}
-                                    courseId={this.state["courseId"]}
-                                />
-                            </Grid>
-                        </Grid>
-                        <Grid container spacing={3}>
-                            <Grid item xs={6}>
-                                <FrqResultPie
-                                    answerRates={this.state["answerRates"]}
-                                    entries={this.entries}
-                                    question={"Application: We are interested in understanding how you applied the content"}
-                                    portfolio={this.state["portfolio"]}
-                                    courseId={this.state["courseId"]}
-                                />
-                            </Grid>
-                            <Grid item xs={6}>
-                                <FrqResultPie
-                                    answerRates={this.state["answerRates"]}
-                                    entries={this.entries}
-                                    question={"Would you be interested in having your name entered into a drawing for FREE follow-up coaching sessions?"}
-                                    portfolio={this.state["portfolio"]}
-                                    courseId={this.state["courseId"]}
-                                />
-                            </Grid>
-                        </Grid>
-                    </Collapse>
-                </Paper>
+                        </Paper>
+                    </Grid>
+                    <Grid item xs={12} sm={6} lg={3}>
+                        <Paper className={"height-100"}>
+                            <FrqResultPie
+                                answerRates={this.state["answerRates"]}
+                                entries={this.entries}
+                                question={"What aspects of the course would you like to see changed"}
+                                portfolio={this.state["portfolio"]}
+                                courseId={this.state["courseId"]}
+                            />
+                        </Paper>
+                    </Grid>
+                    <Grid item xs={12} sm={6} lg={3}>
+                        <Paper className={"height-100"}>
+                            <FrqResultPie
+                                answerRates={this.state["answerRates"]}
+                                entries={this.entries}
+                                question={"Application: We are interested in understanding how you applied the content"}
+                                portfolio={this.state["portfolio"]}
+                                courseId={this.state["courseId"]}
+                            />
+                        </Paper>
+                    </Grid>
+                    <Grid item xs={12} sm={6} lg={3}>
+                        <Paper className={"height-100"}>
+                            <FrqResultPie
+                                answerRates={this.state["answerRates"]}
+                                entries={this.entries}
+                                question={"Would you be interested in having your name entered into a drawing for FREE follow-up coaching sessions?"}
+                                portfolio={this.state["portfolio"]}
+                                courseId={this.state["courseId"]}
+                            />
+                        </Paper>
+                    </Grid>
+                </Grid>
             );
         }
     }
@@ -313,95 +302,19 @@ class ContentSurvey extends React.Component {
                                 value={"before"}
                             />
                             <Typography variant="h6">
-                                {"Before Taking the Course Results"}
+                                {"Before and Now Results"}
                             </Typography>
                         </Toolbar>
                     </AppBar>
                     <Collapse in={this.state["before"]}>
-                        <Grid container spacing={3}>
-                            <Grid item xs={4} s={4}>
-                                <RatingResultPie
+                        <Grid container justify={"center"} alignItems={"center"} spacing={3}>
+                            <Grid item xs={6}>
+                                <BeforeAfterBarGraph
                                     answerRates={this.state["answerRates"]}
                                     entries={this.entries}
-                                    question={"Knowledge in this area"}
+                                    questions={["Knowledge in this area", "Skills related to topic", "Confidence with topic"]}
                                     portfolio={this.state["portfolio"]}
                                     courseId={this.state["courseId"]}
-                                    choice={"before"}
-                                />
-                            </Grid>
-                            <Grid item xs={4} s={4}>
-                                <RatingResultPie
-                                    answerRates={this.state["answerRates"]}
-                                    entries={this.entries}
-                                    question={"Skills related to topic"}
-                                    portfolio={this.state["portfolio"]}
-                                    courseId={this.state["courseId"]}
-                                    choice={"before"}
-                                />
-                            </Grid>
-                            <Grid item xs={4} s={4}>
-                                <RatingResultPie
-                                    answerRates={this.state["answerRates"]}
-                                    entries={this.entries}
-                                    question={"Confidence with topic"}
-                                    portfolio={this.state["portfolio"]}
-                                    courseId={this.state["courseId"]}
-                                    choice={"before"}
-                                />
-                            </Grid>
-                        </Grid>
-                    </Collapse>
-                </Paper>
-            );
-        }
-    }
-
-    renderNowGraphs() {
-        if (Object.keys(this.state["answerRates"]).length !== 0) {
-            return (
-                <Paper>
-                    <AppBar position={"static"}>
-                        <Toolbar>
-                            <Switch
-                                checked={this.state["now"]}
-                                onChange={(e) => this.handleDropDown("now")}
-                                value={"now"}
-                            />
-                            <Typography variant="h6">
-                                {"After Taking the Course Results"}
-                            </Typography>
-                        </Toolbar>
-                    </AppBar>
-                    <Collapse in={this.state["now"]}>
-                        <Grid container spacing={3}>
-                            <Grid item xs={4} s={4}>
-                                <RatingResultPie
-                                    answerRates={this.state["answerRates"]}
-                                    entries={this.entries}
-                                    question={"Knowledge in this area"}
-                                    portfolio={this.state["portfolio"]}
-                                    courseId={this.state["courseId"]}
-                                    choice={"now"}
-                                />
-                            </Grid>
-                            <Grid item xs={4} s={4}>
-                                <RatingResultPie
-                                    answerRates={this.state["answerRates"]}
-                                    entries={this.entries}
-                                    question={"Skills related to topic"}
-                                    portfolio={this.state["portfolio"]}
-                                    courseId={this.state["courseId"]}
-                                    choice={"now"}
-                                />
-                            </Grid>
-                            <Grid item xs={4} s={4}>
-                                <RatingResultPie
-                                    answerRates={this.state["answerRates"]}
-                                    entries={this.entries}
-                                    question={"Confidence with topic"}
-                                    portfolio={this.state["portfolio"]}
-                                    courseId={this.state["courseId"]}
-                                    choice={"now"}
                                 />
                             </Grid>
                         </Grid>
@@ -536,13 +449,15 @@ class ContentSurvey extends React.Component {
     }
 
     getFreeResponseResults(answerRates, startDate, endDate) {
-        const stopwords = require("stopwords").english;
+        const stopwords = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', "you're", "you've", "you'll", "you'd", 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', "she's", 'her', 'hers', 'herself', 'it', "it's", 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', "that'll", 'these', 'those', 'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does', 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 's', 't', 'can', 'will', 'just', 'don', "don't", 'should', "should've", 'now', 'd', 'll', 'm', 'o', 're', 've', 'y', 'ain', 'aren', "aren't", 'couldn', "couldn't", 'didn', "didn't", 'doesn', "doesn't", 'hadn', "hadn't", 'hasn', "hasn't", 'haven', "haven't", 'isn', "isn't", 'ma', 'mightn', "mightn't", 'mustn', "mustn't", 'needn', "needn't", 'shan', "shan't", 'shouldn', "shouldn't", 'wasn', "wasn't", 'weren', "weren't", 'won', "won't", 'wouldn', "wouldn't", 'n'];
         const questions = [
             "What aspects of the course did you find especially helpful",
             "What aspects of the course would you like to see changed",
             "Application: We are interested in understanding how you applied the content",
             "Would you be interested in having your name entered into a drawing for FREE follow-up coaching sessions?"
         ];
+        const natural = require("natural");
+        const tokenizer = new natural.AggressiveTokenizer();
 
         for (let portfolioKey in this.entries) {
             for (let courseKey in this.entries[portfolioKey]["courses"]) {
@@ -559,7 +474,7 @@ class ContentSurvey extends React.Component {
                         const results = this.entries[portfolioKey]["courses"][courseKey]["entries"][i]["results"];
                         for (let j = 0; j < questions.length; ++j) {
                             const question = questions[j];
-                            const tokens = results[question].toLowerCase().match(/\S+/g) || []; // match all non whitespace that are >= 1
+                            const tokens = tokenizer.tokenize(results[question].toLowerCase()) || []; // match all non whitespace that are >= 1
                             for (let k = 0; k < tokens.length; ++k) {
                                 if(stopwords.indexOf(tokens[k]) === -1) {
                                     if (!(tokens[k] in tokenCount[question])) {

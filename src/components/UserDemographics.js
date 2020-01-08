@@ -31,14 +31,14 @@ const UserDemographics = (props) => {
     let data = {};
     if (Object.keys(props["entries"]).length !== 0) {
         columns = [
-            {title: "Email", field: "email"},
             {title: "First Name", field: "firstName"},
             {title: "Last Name", field: "lastName"},
+            {title: "Email", field: "email"},
+            {title: "Team", field: "team"},
             {title: "Organization", field: "organization"},
             {title: "Role With Veterans", field: "roleWithVeterans"},
-            {title: "Referral Source", field: "refferalSource"},
             {title: "Courses Completed", field: "courseCompleteCount"},
-            {title: "Team", field: "team"}
+            {title: "Referral Source", field: "refferalSource"}
         ];
 
         if (props["portfolio"] === -1) {
@@ -115,7 +115,8 @@ const UserDemographics = (props) => {
                 data={Object.values(data)}
                 options={{
                     showTitle: false,
-                    pageSize: 10,
+                    pageSize: 50,
+                    pageSizeOptions: [50, 100, 200, 500],
                     draggable: false,
                     headerStyle: {
                         paddingTop: 0,
