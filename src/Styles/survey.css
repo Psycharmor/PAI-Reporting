@@ -20,6 +20,33 @@
     color: #5e72e4;
 }
 
+/* Date */
+.date-card-header {
+    margin: 0;
+}
+
+.date-card-header svg {
+    color: #f5365c;
+    font-size: 1.5rem;
+}
+
+.date-card-header h5 {
+    display: inline-block;
+    margin: 0;
+    margin-left: 10px;
+}
+
+.pa-date input {
+    border: none;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+}
+
+.pa-date input:focus {
+    border: none;
+    box-shadow: none;
+}
+
 /* Tabs */
 .survey-tabs {
     border-bottom: none;

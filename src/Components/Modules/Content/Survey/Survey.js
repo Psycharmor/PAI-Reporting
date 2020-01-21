@@ -19,7 +19,7 @@ class Survey extends React.Component {
         super(props);
 
         this.state = {
-            startDate: new Date("2010/01/01"),
+            startDate: new Date("2019/09/01"),
             endDate: new Date((new Date()).setHours(23, 59, 59, 999)),
             portfolioId: 0,
             courseId: 0,
