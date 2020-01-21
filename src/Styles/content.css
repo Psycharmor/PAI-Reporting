@@ -1,0 +1,25 @@
+/*
+    CSS related to the view's content
+*/
+
+.view-content {
+    position: absolute;
+    top: 80px;
+    width: 100%;
+}
+
+.loading-overlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.loading-spinner {
+    width: 4rem;
+    height: 4rem;
+}

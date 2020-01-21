@@ -1,0 +1,144 @@
+/*
+    CSS related to the Team Reporting content
+*/
+
+/* Table */
+.table-card {
+    margin-bottom: 50px;
+    border: 0;
+    box-shadow: 0 0 2rem 0 rgba(136,152,170,.15);
+}
+
+.card-header {
+    background-color: inherit;
+    margin-bottom: 10px;
+    border-bottom: none;
+}
+
+.table-card .card-header h3 {
+    margin-bottom: 0;
+}
+
+.table-card .card-header p {
+    margin-bottom: 0;
+    font-size: 0.875rem;
+}
+
+.react-bootstrap-table-pagination {
+    margin-top: 1.5rem;
+}
+
+.pagination {
+    border-radius: .375rem;
+}
+
+.page-item.active .page-link {
+    color: #FFFFFF;
+    background-color: #5E72E4;
+    border-color: #5E72E4;
+    box-shadow: 0 7px 14px rgba(50,50,93,.1), 0 3px 6px rgba(0,0,0,.08);
+}
+
+.page-link {
+    position: relative;
+    display: block;
+    padding: .5rem .75rem;
+    margin-left: -1px;
+    line-height: 1.25;
+    color: #292A2B;
+    background-color: #FFFFFF;
+    border: 1px solid #dEE2E6;
+}
+
+.page-item .page-link, .page-item span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0 3px;
+    border-radius: 50% !important;
+    width: 36px;
+    height: 36px;
+    font-size: .875rem;
+}
+
+.page-link:focus {
+    box-shadow: none;
+}
+
+.page-link:hover {
+    z-index: 2;
+    color: #292A2B;
+    text-decoration: none;
+    background-color: #DEE2E6;
+    border-color: #DEE2E6;
+}
+
+.react-bootstrap-table-pagination .react-bootstrap-table-pagination-list .pagination {
+    justify-content: flex-end;
+    padding-right: 1.5rem;
+}
+
+.react-bootstrap-table-pagination .dropdown-menu {
+    top: unset;
+    bottom: 100%;
+}
+
+.react-bs-table-sizePerPage-dropdown.dropdown {
+    padding-left: 1.5rem;
+}
+
+#pageDropDown.dropdown-toggle {
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    color: #292a2b;
+    font-size: 0.875rem;
+}
+
+.react-bootstrap-table-pagination-total {
+    font-size: 0.875rem;
+    color: #525f7f;
+}
+
+
+/* Summary Cards */
+.team-report-row {
+    margin-bottom: 30px;
+}
+
+.team-report-card {
+    height: 100%;
+}
+
+.team-report-card-body {
+    padding: 1rem 1.5rem;
+}
+
+.team-report-card-body h3 {
+    color: #292a2b;
+    margin-bottom: 0;
+}
+
+.team-report-card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    color: #ffffff;
+    font-size: 1.5rem;
+}
+
+.team-report-user-icon {
+    background: linear-gradient(87deg, #f5365c, #f56036);
+}
+
+.team-report-course-icon {
+    background: linear-gradient(87deg, #fb6340, #fbb140);
+}
+
+/* filters */
+.team-report-dropdown {
+    font-size: 0.875rem;
+}
