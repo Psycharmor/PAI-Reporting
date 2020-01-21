@@ -3,10 +3,11 @@ import React from "react";
 import {Spinner, Container, Nav, NavItem, TabContent, Row, Col} from "reactstrap";
 import Datetime from "react-datetime";
 
-import PortfolioDropdown from "./PortfolioDropdown";
-import CourseDropdown from "./CourseDropdown";
+import PortfolioDropdown from "./Filters/PortfolioDropdown";
+import CourseDropdown from "./Filters/CourseDropdown";
+import DateFilters from "./Filters/DateFilters";
 import SurveyResults from "./SurveyResults";
-import UserDemographics from "./UserDemographics";
+import UserDemographics from "./UserDemographics/UserDemographics";
 import SurveyFunctions from "../../../../Lib/Content/Survey/SurveyFunctions";
 
 /*
@@ -29,6 +30,8 @@ class Survey extends React.Component {
         this.handleActiveTabChange = this.handleActiveTabChange.bind(this);
         this.handlePortfolioChange = this.handlePortfolioChange.bind(this);
         this.handleCourseChange = this.handleCourseChange.bind(this);
+        this.handleStartDateChange = this.handleStartDateChange.bind(this);
+        this.handleEndDateChange = this.handleEndDateChange.bind(this);
     }
 
     // Lifecycle Methods
@@ -89,6 +92,55 @@ class Survey extends React.Component {
         });
     }
 
+    /*
+        Set the new start date for the filter
+        Params:
+            date -> (Moment) the new start date
+        Return:
+            undefined
+    */
+    handleStartDateChange(date) {
+        if ((typeof date) === "string") {
+            return;
+        }
+        const results = SurveyFunctions.getQuestionResults(
+            this.props["surveyEntries"],
+            date.unix(),
+            this.state["endDate"].getTime() / 1000
+        );
+        this.setState({
+            results: results,
+            startDate: date.toDate(),
+            portfolioId: 0,
+            courseId: 0
+        });
+    }
+
+    /*
+        Set the new end date for the filter
+        Params:
+            date -> (Moment) the new end date
+        Return:
+            undefined
+    */
+    handleEndDateChange(date) {
+        if ((typeof date) === "string") {
+            return;
+        }
+
+        const results = SurveyFunctions.getQuestionResults(
+            this.props["surveyEntries"],
+            this.state["startDate"].getTime() / 1000,
+            date.unix()
+        );
+        this.setState({
+            results: results,
+            endDate: date.toDate(),
+            portfolioId: 0,
+            courseId: 0
+        });
+    }
+
     // Render Methods
 
     /*
@@ -125,14 +177,12 @@ class Survey extends React.Component {
                 <Col xs={3}>
                     {courseDropdown}
                 </Col>
-                <Col xs={3}>
-                    <Datetime
-                        value={this.state["startDate"]}
-                        isValidDate={(current) => {
-                            return current.isBefore(this.state["endDate"])
-                        }}
-                    />
-                </Col>
+                <DateFilters
+                    startDate={this.state["startDate"]}
+                    endDate={this.state["endDate"]}
+                    startDateHandler={this.handleStartDateChange}
+                    endDateHandler={this.handleEndDateChange}
+                />
             </Row>
         );
     }
