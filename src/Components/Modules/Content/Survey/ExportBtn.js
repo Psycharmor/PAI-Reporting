@@ -2,6 +2,7 @@ import React from "react";
 
 import {Button} from "reactstrap";
 import {CSVLink} from "react-csv";
+import moment from "moment";
 
 export default function ExportBtn(props) {
     const csvData = createCsvData(
@@ -103,7 +104,7 @@ function getData(csvData, entries, startDate, endDate) {
 */
 function createRow(entry) {
     return [
-        new Date(entry["dateSubmitted"] * 1000).toLocaleString("en-US", {month: "short", day: "2-digit", year: "numeric"}),
+        moment(new Date(entry["dateSubmitted"] * 1000)).format("MMM DD, YYYY"),
         entry["firstName"],
         entry["lastName"],
         entry["email"],
