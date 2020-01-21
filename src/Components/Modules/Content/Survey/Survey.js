@@ -1,11 +1,11 @@
 import React from "react";
 
 import {Spinner, Container, Nav, NavItem, TabContent, Row, Col} from "reactstrap";
-import Datetime from "react-datetime";
 
 import PortfolioDropdown from "./Filters/PortfolioDropdown";
 import CourseDropdown from "./Filters/CourseDropdown";
 import DateFilters from "./Filters/DateFilters";
+import ExportBtn from "./ExportBtn";
 import SurveyResults from "./SurveyResults";
 import UserDemographics from "./UserDemographics/UserDemographics";
 import SurveyFunctions from "../../../../Lib/Content/Survey/SurveyFunctions";
@@ -257,7 +257,20 @@ class Survey extends React.Component {
         return (
             <Container fluid={true}>
                 {this.renderFilters()}
-                {this.renderTabs()}
+                <Row>
+                    <Col>
+                        {this.renderTabs()}
+                    </Col>
+                    <Col cs={"auto"}>
+                        <ExportBtn
+                            surveyEntries={this.props["surveyEntries"]}
+                            portfolioId={this.state["portfolioId"]}
+                            courseId={this.state["courseId"]}
+                            startDate={this.state["startDate"].getTime() / 1000}
+                            endDate={this.state["endDate"].getTime() / 1000}
+                        />
+                    </Col>
+                </Row>
                 {this.renderMainContent()}
             </Container>
         );

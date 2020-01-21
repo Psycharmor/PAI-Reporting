@@ -120,7 +120,7 @@ function getYesNoResults(results, courseEntries, portfolioId, courseId, startDat
                 if (entryResults[question] === "Yes") {
                     ++results[portfolioId][courseId][question]["yes"];
                 }
-                else {
+                else if (entryResults[question] === "No") {
                     ++results[portfolioId][courseId][question]["no"];
                 }
             }

@@ -7,6 +7,19 @@
     margin-bottom: 30px;
 }
 
+/* Export btn */
+.pa-btn {
+    float: right;
+    padding: 10px;
+    background-color: #ffffff;
+    color: #5e72e4;
+}
+
+.pa-btn:hover {
+    background-color: #ffffff;
+    color: #5e72e4;
+}
+
 /* Tabs */
 .survey-tabs {
     border-bottom: none;
