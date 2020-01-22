@@ -40,11 +40,13 @@ class Controller extends React.Component {
         }
 
         this.state = {
-            view: "teamReport"
+            view: "teamReport",
+            sidebarOpen: false
         };
 
         this.handleViewChange = this.handleViewChange.bind(this);
         this.handleUserLogout = this.handleUserLogout.bind(this);
+        this.handleSidebarToggle = this.handleSidebarToggle.bind(this);
     }
 
     // Event Handler Methods
@@ -73,6 +75,19 @@ class Controller extends React.Component {
     handleUserLogout() {
         localStorage.removeItem("USER");
         this.props["history"].push("/");
+    }
+
+    /*
+        Toggle the sidebar open or closed on responsive view
+        Params:
+            none
+        Return:
+            undefined
+    */
+    handleSidebarToggle() {
+        this.setState({
+            sidebarOpen: !this.state["sidebarOpen"]
+        });
     }
 
     // Utility Methods

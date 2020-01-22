@@ -59,6 +59,7 @@ class TeamReport extends React.Component {
             JSX -> The elements to render onto the browser
     */
     renderFilters() {
+        const groups = ("subGroups" in this.props["groupInfo"]) ? this.props["groupInfo"]["subGroups"] : {};
         return (
             <Row className={"team-report-row"}>
                 <Col md={3}>
@@ -69,7 +70,7 @@ class TeamReport extends React.Component {
                 </Col>
                 <Col md={3}>
                     <GroupDropdown
-                        groups={this.props["groupInfo"]["subGroups"]}
+                        groups={groups}
                         groupChangeHandler={this.handleGroupChange}
                     />
                 </Col>

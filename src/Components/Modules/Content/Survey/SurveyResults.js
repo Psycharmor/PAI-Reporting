@@ -67,7 +67,7 @@ function renderYesNoGraph(results, portfolioId, courseId) {
 function renderMultScaleGraphs(results, portfolioId, courseId) {
     return (
         <Row className={"survey-row-margin"}>
-            <Col xs={12} sm={6}>
+            <Col xs={12} xl={6}>
                 <MultChoicePieChart
                     question={"Why did you take this course?"}
                     results={results}
@@ -75,7 +75,7 @@ function renderMultScaleGraphs(results, portfolioId, courseId) {
                     courseId={courseId}
                 />
             </Col>
-            <Col xs={12} sm={6}>
+            <Col xs={12} xl={6}>
                 <BeforeNowBarGraph
                     questions={[
                         "Knowledge in this area",
@@ -105,7 +105,7 @@ function renderFrqCharts(results, portfolioId, courseId) {
     return (
         <>
             <Row className={"survey-row-margin"}>
-                <Col xs={12} sm={6}>
+                <Col xs={12} xl={6}>
                     <FrqPieChart
                         question={"What aspects of the course did you find especially helpful"}
                         results={results}
@@ -113,7 +113,7 @@ function renderFrqCharts(results, portfolioId, courseId) {
                         courseId={courseId}
                     />
                 </Col>
-                <Col xs={12} sm={6}>
+                <Col xs={12} xl={6}>
                     <FrqPieChart
                         question={"What aspects of the course would you like to see changed"}
                         results={results}
@@ -123,7 +123,7 @@ function renderFrqCharts(results, portfolioId, courseId) {
                 </Col>
             </Row>
             <Row className={"survey-row-margin"}>
-                <Col xs={12} sm={6}>
+                <Col xs={12} xl={6}>
                     <FrqPieChart
                         question={"Application: We are interested in understanding how you applied the content"}
                         results={results}
@@ -131,7 +131,7 @@ function renderFrqCharts(results, portfolioId, courseId) {
                         courseId={courseId}
                     />
                 </Col>
-                <Col xs={12} sm={6}>
+                <Col xs={12} xl={6}>
                     <FrqPieChart
                         question={"Would you be interested in having your name entered into a drawing for FREE follow-up coaching sessions?"}
                         results={results}

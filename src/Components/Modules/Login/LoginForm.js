@@ -36,7 +36,7 @@ class LoginForm extends Component {
             password
         })
         .then((user) => {
-            if (user.data["user_role"].includes("administrator") || user.data["user_role"].includes("group_leader")) {
+            if (user.data["user_role"].includes("administrator") || user.data["user_role"].includes("group_leader") || user.data["user_role"].includes("subgroup_leader")) {
                 console.log(user.data["user_role"]);
                 this.handleLoginSuccess(user.data);
             }

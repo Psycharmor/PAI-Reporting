@@ -22,6 +22,8 @@ class Content extends React.Component {
             apiSurveyEntries: {}
         };
 
+        this.reportEndpoint = this.getReportEndpoint();
+
         this.state = {
             loading: false,
             reportDone: true,
@@ -76,6 +78,25 @@ class Content extends React.Component {
     // Utility Methods
 
     /*
+        Get the endpoint that will be used to fetch api. Either groupId (team)
+        or subgroupId (group)
+        Params:
+            none
+        Return:
+            string/undefined -> the endpoint to use
+    */
+    getReportEndpoint() {
+        const user = JSON.parse(localStorage.getItem("USER"));
+        const roles = user["user_role"];
+        if (roles.includes("administrator") || roles.includes("group_leader")) {
+            return "groupid";
+        }
+        if (roles.includes("subgroup_leader")) {
+            return "subgroupid";
+        }
+    }
+
+    /*
         Run all the get API calls one menu at a time. This should only run once
         which is during the component mount.
         Params:
@@ -109,6 +130,11 @@ class Content extends React.Component {
         if ("survey" in this.props["menus"]) {
             this.doSurveyApiCalls(1000, 0);
         }
+        else {
+            this.setState({
+                surveyDone: true
+            });
+        }
     }
 
     /*
@@ -121,19 +147,19 @@ class Content extends React.Component {
     doReportApiCalls(teamId) {
         const calls = [
             {
-                url: this.url + "wp-json/pai/v1/groups/?groupid=" + teamId,
+                url: this.url + "wp-json/pai/v1/groups/?" + this.reportEndpoint + "=" + teamId,
                 state: "apiReportGroupInfo"
             },
             {
-                url: this.url + "wp-json/pai/v1/users/?groupid=" + teamId,
+                url: this.url + "wp-json/pai/v1/users/?" + this.reportEndpoint + "=" + teamId,
                 state: "apiReportGroupUsers"
             },
             {
-                url: this.url + "wp-json/pai/v1/courses/?groupid=" + teamId,
+                url: this.url + "wp-json/pai/v1/courses/?" + this.reportEndpoint + "=" + teamId,
                 state: "apiReportGroupCourses"
             },
             {
-                url: this.url + "wp-json/pai/v1/course-activities/?groupid=" + teamId,
+                url: this.url + "wp-json/pai/v1/course-activities/?" + this.reportEndpoint + "=" + teamId,
                 state: "apiReportGroupActivities"
             },
         ];
