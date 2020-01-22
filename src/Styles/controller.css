@@ -25,7 +25,22 @@
     padding-top: 64px;
     padding-left: 0;
     padding-right: 0;
+    background-color: #ffffff;
     transition: all 0.15s ease;
+}
+
+.sidenav.responsive {
+    display: none;
+}
+
+.sidebar-responsive-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 .navbar-vertical {
@@ -70,6 +85,12 @@
     background-color: #11cdef;
 }
 
+.sidebar-toggle-btn {
+    display: none;
+    color: #ffffff;
+    cursor: pointer;
+}
+
 .log-out-btn {
     margin-left: auto;
     background-color: inherit;
@@ -106,5 +127,33 @@
 
     .main-content {
         margin-left: 0;
+    }
+
+    .sidebar-toggle-btn {
+        display: block;
+    }
+
+    .sidebar-responsive-overlay.show {
+        display: block;
+        z-index: 1;
+    }
+
+    .sidenav.responsive {
+        display: block;
+        z-index: 2;
+        width: 0;
+        transition: width 0.5s ease;
+    }
+
+    .sidenav.responsive .navbar-nav {
+        display: none;
+    }
+
+    .sidenav.responsive.show {
+        width: 250px;
+    }
+
+    .sidenav.responsive.show .navbar-nav {
+        display: block;
     }
 }

@@ -4,13 +4,26 @@ import {Navbar, Nav, NavItem} from "reactstrap";
 
 export default function Sidebar(props) {
     const menuItems = getMenuItems(props["menus"], props["view"], props["viewChangeHandler"]);
-
+    const displayResponsive = (props["responsiveOpen"]) ? "show" : "";
     return (
-        <Navbar className={"sidenav navbar-vertical"}>
-            <Nav className={"navbar-nav"}>
-                {menuItems}
-            </Nav>
-        </Navbar>
+        <>
+            <Navbar className={"sidenav navbar-vertical"}>
+                <Nav className={"navbar-nav"}>
+                    {menuItems}
+                </Nav>
+            </Navbar>
+            <div>
+                <div
+                    className={"sidebar-responsive-overlay " + displayResponsive}
+                    onClick={props["sidebarToggleHandler"]}
+                />
+                <Navbar className={"sidenav navbar-vertical responsive " + displayResponsive}>
+                    <Nav className={"navbar-nav"}>
+                        {menuItems}
+                    </Nav>
+                </Navbar>
+            </div>
+        </>
     );
 }
 

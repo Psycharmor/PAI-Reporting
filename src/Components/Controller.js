@@ -61,7 +61,8 @@ class Controller extends React.Component {
     handleViewChange(event) {
         const newView = event.target.getAttribute("value");
         this.setState({
-            view: newView
+            view: newView,
+            sidebarOpen: false
         });
     }
 
@@ -116,11 +117,16 @@ class Controller extends React.Component {
             <div>
                 <Sidebar
                     menus={this.menus}
+                    responsiveOpen={this.state["sidebarOpen"]}
                     view={this.state["view"]}
                     viewChangeHandler={this.handleViewChange}
+                    sidebarToggleHandler={this.handleSidebarToggle}
                 />
                 <div className={"main-content"}>
-                    <Topbar userLogoutHandler={this.handleUserLogout}/>
+                    <Topbar
+                        userLogoutHandler={this.handleUserLogout}
+                        sidebarToggleHandler={this.handleSidebarToggle}
+                    />
                     <Content view={this.state["view"]} menus={this.menus}/>
                 </div>
             </div>
