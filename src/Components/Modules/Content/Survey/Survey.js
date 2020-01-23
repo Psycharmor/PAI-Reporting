@@ -4,7 +4,7 @@ import {Spinner, Container, Nav, NavItem, TabContent, Row, Col} from "reactstrap
 
 import PortfolioDropdown from "./Filters/PortfolioDropdown";
 import CourseDropdown from "./Filters/CourseDropdown";
-import DateFilters from "./Filters/DateFilters";
+import ExtraSurveyFilters from "./Filters/ExtraSurveyFilters";
 import ExportBtn from "./ExportBtn";
 import SurveyResults from "./SurveyResults";
 import UserDemographics from "./UserDemographics/UserDemographics";
@@ -23,6 +23,9 @@ class Survey extends React.Component {
             endDate: new Date((new Date()).setHours(23, 59, 59, 999)),
             portfolioId: 0,
             courseId: 0,
+            team: 0,
+            organization: 0,
+            role: 0,
             results: {},
             tab: "results"
         };
@@ -32,14 +35,22 @@ class Survey extends React.Component {
         this.handleCourseChange = this.handleCourseChange.bind(this);
         this.handleStartDateChange = this.handleStartDateChange.bind(this);
         this.handleEndDateChange = this.handleEndDateChange.bind(this);
+        this.handleTeamChange = this.handleTeamChange.bind(this);
+        this.handleOrgChange = this.handleOrgChange.bind(this);
+        this.handleRoleChange = this.handleRoleChange.bind(this);
     }
 
     // Lifecycle Methods
     componentDidMount() {
         const results = SurveyFunctions.getQuestionResults(
             this.props["surveyEntries"],
-            this.state["startDate"].getTime() / 1000,
-            this.state["endDate"].getTime() / 1000
+            {
+                startDate: this.state["startDate"].getTime() / 1000,
+                endDate: this.state["endDate"].getTime() / 1000,
+                team: this.state["team"],
+                organization: this.state["organization"],
+                role: this.state["role"],
+            }
         );
         this.setState({
             results: results,
@@ -105,8 +116,13 @@ class Survey extends React.Component {
         }
         const results = SurveyFunctions.getQuestionResults(
             this.props["surveyEntries"],
-            date.unix(),
-            this.state["endDate"].getTime() / 1000
+            {
+                startDate: date.unix(),
+                endDate: this.state["endDate"].getTime() / 1000,
+                team: this.state["team"],
+                organization: this.state["organization"],
+                role: this.state["role"],
+            }
         );
         this.setState({
             results: results,
@@ -130,14 +146,100 @@ class Survey extends React.Component {
 
         const results = SurveyFunctions.getQuestionResults(
             this.props["surveyEntries"],
-            this.state["startDate"].getTime() / 1000,
-            date.unix()
+            {
+                startDate: this.state["startDate"].getTime() / 1000,
+                endDate: date.unix(),
+                team: this.state["team"],
+                organization: this.state["organization"],
+                role: this.state["role"],
+            }
         );
         this.setState({
             results: results,
             endDate: date.toDate(),
             portfolioId: 0,
             courseId: 0
+        });
+    }
+
+    /*
+        Set the team to be the new team
+        Params:
+            event -> (Event) the event that was triggered
+        Return:
+            undefined
+    */
+    handleTeamChange(event) {
+        const team = (event.target["value"] === "0") ? 0 : event.target["value"];
+        const results = SurveyFunctions.getQuestionResults(
+            this.props["surveyEntries"],
+            {
+                startDate: this.state["startDate"].getTime() / 1000,
+                endDate: this.state["endDate"].getTime() / 1000,
+                team: team,
+                organization: this.state["organization"],
+                role: this.state["role"],
+            }
+        );
+        this.setState({
+            results: results,
+            portfolioId: 0,
+            courseId: 0,
+            team: team
+        });
+    }
+
+    /*
+        Set the org to be the new org
+        Params:
+            event -> (Event) the event that was triggered
+        Return:
+            undefined
+    */
+    handleOrgChange(event) {
+        const org = (event.target["value"] === "0") ? 0 : event.target["value"];
+        const results = SurveyFunctions.getQuestionResults(
+            this.props["surveyEntries"],
+            {
+                startDate: this.state["startDate"].getTime() / 1000,
+                endDate: this.state["endDate"].getTime() / 1000,
+                team: this.state["team"],
+                organization: org,
+                role: this.state["role"],
+            }
+        );
+        this.setState({
+            results: results,
+            portfolioId: 0,
+            courseId: 0,
+            organization: org
+        });
+    }
+
+    /*
+        Set the role with veterans to be the new role
+        Params:
+            event -> (Event) the event that was triggered
+        Return:
+            undefined
+    */
+    handleRoleChange(event) {
+        const role = (event.target["value"] === "0") ? 0 : event.target["value"];
+        const results = SurveyFunctions.getQuestionResults(
+            this.props["surveyEntries"],
+            {
+                startDate: this.state["startDate"].getTime() / 1000,
+                endDate: this.state["endDate"].getTime() / 1000,
+                team: this.state["team"],
+                organization: this.state["organization"],
+                role: role,
+            }
+        );
+        this.setState({
+            results: results,
+            portfolioId: 0,
+            courseId: 0,
+            role: role
         });
     }
 
@@ -177,12 +279,21 @@ class Survey extends React.Component {
                 <Col xs={3}>
                     {courseDropdown}
                 </Col>
-                <DateFilters
-                    startDate={this.state["startDate"]}
-                    endDate={this.state["endDate"]}
-                    startDateHandler={this.handleStartDateChange}
-                    endDateHandler={this.handleEndDateChange}
-                />
+                <Col xs={6}>
+                    <ExtraSurveyFilters
+                        surveyEntries={this.props["surveyEntries"]}
+                        startDate={this.state["startDate"]}
+                        endDate={this.state["endDate"]}
+                        team={this.state["team"]}
+                        organization={this.state["organization"]}
+                        role={this.state["role"]}
+                        startDateHandler={this.handleStartDateChange}
+                        endDateHandler={this.handleEndDateChange}
+                        teamHandler={this.handleTeamChange}
+                        orgHandler={this.handleOrgChange}
+                        roleHandler={this.handleRoleChange}
+                    />
+                </Col>
             </Row>
         );
     }
@@ -236,8 +347,13 @@ class Survey extends React.Component {
                     surveyEntries={this.props["surveyEntries"]}
                     portfolioId={this.state["portfolioId"]}
                     courseId={this.state["courseId"]}
-                    startDate={this.state["startDate"].getTime() / 1000}
-                    endDate={this.state["endDate"].getTime() / 1000}
+                    filters={{
+                        startDate: this.state["startDate"].getTime() / 1000,
+                        endDate: this.state["endDate"].getTime() / 1000,
+                        team: this.state["team"],
+                        organization: this.state["organization"],
+                        role: this.state["role"]
+                    }}
                 />
             </TabContent>
         );
@@ -266,8 +382,13 @@ class Survey extends React.Component {
                             surveyEntries={this.props["surveyEntries"]}
                             portfolioId={this.state["portfolioId"]}
                             courseId={this.state["courseId"]}
-                            startDate={this.state["startDate"].getTime() / 1000}
-                            endDate={this.state["endDate"].getTime() / 1000}
+                            filters={{
+                                startDate: this.state["startDate"].getTime() / 1000,
+                                endDate: this.state["endDate"].getTime() / 1000,
+                                team: this.state["team"],
+                                organization: this.state["organization"],
+                                role: this.state["role"]
+                            }}
                         />
                     </Col>
                 </Row>

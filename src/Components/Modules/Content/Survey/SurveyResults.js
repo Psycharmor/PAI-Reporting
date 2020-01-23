@@ -48,7 +48,8 @@ function renderYesNoGraph(results, portfolioId, courseId) {
                         "The information presented was relevant to my goals.",
                         "After taking this course, I will use what I learned.",
                         "I would recommend PsychArmor training to someone else.",
-                        "Would you participate in more detailed evaluation?"
+                        "Would you participate in more detailed evaluation?",
+                        "I am more aware of available resources as a result of this course."
                     ]}
                     results={results}
                     portfolioId={portfolioId}

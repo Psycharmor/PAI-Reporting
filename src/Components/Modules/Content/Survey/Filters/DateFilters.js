@@ -7,8 +7,8 @@ import {IoMdCalendar} from "react-icons/io";
 export default function DateFilters(props) {
     return (
         <>
-            <Col xs={3}>
-                <Card>
+            <Col sm={6}>
+                <Card className={"filter-card"}>
                     <CardHeader className={"date-card-header"}>
                         <IoMdCalendar/>
                         <h5>{"Start Date"}</h5>
@@ -27,8 +27,8 @@ export default function DateFilters(props) {
                     />
                 </Card>
             </Col>
-            <Col xs={3}>
-                <Card>
+            <Col sm={6}>
+                <Card className={"filter-card"}>
                     <CardHeader className={"date-card-header"}>
                         <IoMdCalendar/>
                         <h5>{"End Date"}</h5>

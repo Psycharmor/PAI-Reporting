@@ -76,14 +76,14 @@ function createDatasets(results, labels, pPortfolioId, pCourseId) {
             backgroundColor: "#5e72e4",
             barThickness: 10,
             stack: "Stack 0",
-            data: [0, 0, 0, 0, 0]
+            data: [0, 0, 0, 0, 0, 0]
         },
         {
             label: "No",
             backgroundColor: "#dc3545",
             barThickness: 10,
             stack: "Stack 0",
-            data: [0, 0, 0, 0, 0]
+            data: [0, 0, 0, 0, 0, 0]
         }
     ];
 

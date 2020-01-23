@@ -3,9 +3,11 @@ import React from "react";
 import {CSVLink} from "react-csv";
 import moment from "moment";
 
+import SurveyFunctions from "../../../../Lib/Content/Survey/SurveyFunctions";
+
 export default function ExportBtn(props) {
     const csvData = createCsvData(
-        props["surveyEntries"], props["portfolioId"], props["courseId"], props["startDate"], props["endDate"]);
+        props["surveyEntries"], props["portfolioId"], props["courseId"], props["filters"]);
 
     return (
         <CSVLink
@@ -26,10 +28,9 @@ export default function ExportBtn(props) {
         surveyEntries -> (object) all the user entries obtained from the api
         pPortfolioId  -> (int) the portfolio id
         pCourseId     -> (int) the course id
-        startDate     -> (int) timestamp to start getting entries from
-        endDate       -> (int) timestamp to stop getting entries from
+        filters -> (object) all the additional filters
 */
-function createCsvData(surveyEntries, pPortfolioId, pCourseId, startDate, endDate) {
+function createCsvData(surveyEntries, pPortfolioId, pCourseId, filters) {
     let csvData = [
         ["Date Submitted",
          "First Name",
@@ -58,18 +59,18 @@ function createCsvData(surveyEntries, pPortfolioId, pCourseId, startDate, endDat
     if ((pPortfolioId === 0) && (pCourseId === 0)) {
         for (let portfolioId in surveyEntries) {
             for (let courseId in surveyEntries[portfolioId]["courses"]) {
-                getData(csvData, surveyEntries[portfolioId]["courses"][courseId]["entries"], startDate, endDate);
+                getData(csvData, surveyEntries[portfolioId]["courses"][courseId]["entries"], filters);
             }
         }
     }
     else {
         if (pCourseId === 0) {
             for (let courseId in surveyEntries[pPortfolioId]["courses"]) {
-                getData(csvData, surveyEntries[pPortfolioId]["courses"][courseId]["entries"], startDate, endDate);
+                getData(csvData, surveyEntries[pPortfolioId]["courses"][courseId]["entries"], filters);
             }
         }
         else {
-            getData(csvData, surveyEntries[pPortfolioId]["courses"][pCourseId]["entries"], startDate, endDate);
+            getData(csvData, surveyEntries[pPortfolioId]["courses"][pCourseId]["entries"], filters);
         }
     }
 
@@ -81,13 +82,12 @@ function createCsvData(surveyEntries, pPortfolioId, pCourseId, startDate, endDat
     Params:
         csvData  -> (array) the data that will be sent to the csv file
         entries  -> (array) all the survey submissions
-        startDate > (int) timestamp to start getting entries from
-        endDate  -> (int) timestamp to stop getting entries from
+        filters -> (object) all the additional filters
 */
-function getData(csvData, entries, startDate, endDate) {
+function getData(csvData, entries, filters) {
     for (let i = 0; i < entries.length; ++i) {
         const entry = entries[i];
-        if ((entry["dateSubmitted"] >= startDate) && (entry["dateSubmitted"] <= endDate)) {
+        if (SurveyFunctions.entryPassesFilters(entry, filters)) {
             csvData.push(createRow(entry));
         }
     }

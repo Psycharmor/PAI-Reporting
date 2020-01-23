@@ -8,23 +8,35 @@ const SurveyFunctions = {
         Get all the results of the survey where the keys are the questions
         Params:
             surveyEntries -> (object) all the survey entries obtained by the api
-            startDate     -> (int) the timestamp in seconds to start filtering for entries (inclusive)
-            endDate       -> (int) the timestamp in seconds to stop filtering for entries (inclusive)
+            filters -> (object) all the additional filters
         Return:
             object -> all the survey results with the questions as the keys
     */
-    getQuestionResults: function(surveyEntries, startDate, endDate) {
+    getQuestionResults: function(surveyEntries, filters) {
         let results = {};
         for (let portfolioId in surveyEntries) {
             results[portfolioId] = {};
             for (let courseId in surveyEntries[portfolioId]["courses"]) {
                 results[portfolioId][courseId] = initResultObj();
                 const courseEntries = surveyEntries[portfolioId]["courses"][courseId]["entries"];
-                getCourseSurveyResults(results, portfolioId, courseId, courseEntries, startDate, endDate);
+                getCourseSurveyResults(results, portfolioId, courseId, courseEntries, filters);
             }
         }
 
         return results;
+    },
+    /*
+        True if the entry passes all filters.
+        Params:
+            submission   -> (object) the entry
+            filters -> (object) all the additional filters
+    */
+    entryPassesFilters: function entryPassesFilters(submission, filters) {
+        return (submission["dateSubmitted"] >= filters["startDate"]) &&
+            (submission["dateSubmitted"] <= filters["endDate"]) &&
+            (filters["team"] === 0 || (submission["team"] === filters["team"])) &&
+            (filters["organization"] === 0 || (submission["organization"] === filters["organization"])) &&
+            (filters["role"] === 0 || (submission["roleWithVeterans"] === filters["role"]));
     }
 };
 export default SurveyFunctions;
@@ -44,6 +56,7 @@ function initResultObj() {
         "After taking this course, I will use what I learned.": {yes: 0, no: 0},
         "I would recommend PsychArmor training to someone else.": {yes: 0, no: 0},
         "Would you participate in more detailed evaluation?": {yes: 0, no: 0},
+        "I am more aware of available resources as a result of this course.": {yes: 0, no: 0},
         "Why did you take this course?": {
             "Interested in topic": 0,
             "To improve performance": 0,
@@ -68,28 +81,15 @@ function initResultObj() {
         courseEntries -> (object) the survey results for the course
         portfolioId   -> (int) the portfolio/school id
         courseId      -> (int) the course id
-        startDate     -> (int) the timestamp in seconds to start filtering for entries (inclusive)
-        endDate       -> (int) the timestamp in seconds to stop filtering for entries (inclusive)
+        filters -> (object) all the additional filters
     Return:
         undefined
 */
-function getCourseSurveyResults(results, portfolioId, courseId, courseEntries, startDate, endDate) {
-    getYesNoResults(results, courseEntries, portfolioId, courseId, startDate, endDate);
-    getMultChoiceResults(results, courseEntries, portfolioId, courseId, startDate, endDate);
-    getFrqResults(results, courseEntries, portfolioId, courseId, startDate, endDate);
-    getScaleResults(results, courseEntries, portfolioId, courseId, startDate, endDate);
-}
-
-/*
-    True if the date the entry was submitted is within the given dates. False
-    otherwise.
-    Params:
-        submissionDate -> (int) the timestamp the entry was submitted in seconds
-        startDate      -> (int) the timestamp in seconds to start filtering for entries (inclusive)
-        endDate      -> (int) the timestamp in seconds to stop filtering for entries (inclusive)
-*/
-function entryWithinDate(submissionDate, startDate, endDate) {
-    return (submissionDate >= startDate) && (submissionDate <= endDate);
+function getCourseSurveyResults(results, portfolioId, courseId, courseEntries, filters) {
+    getYesNoResults(results, courseEntries, portfolioId, courseId, filters);
+    getMultChoiceResults(results, courseEntries, portfolioId, courseId, filters);
+    getFrqResults(results, courseEntries, portfolioId, courseId, filters);
+    getScaleResults(results, courseEntries, portfolioId, courseId, filters);
 }
 
 /*
@@ -99,21 +99,21 @@ function entryWithinDate(submissionDate, startDate, endDate) {
         courseEntries -> (object) the survey results for the course
         portfolioId   -> (int) the portfolio/school id
         courseId      -> (int) the course id
-        startDate     -> (int) the timestamp in seconds to start filtering for entries (inclusive)
-        endDate       -> (int) the timestamp in seconds to stop filtering for entries (inclusive)
+        filters -> (object) all the additional filters
     Return:
         undefined
 */
-function getYesNoResults(results, courseEntries, portfolioId, courseId, startDate, endDate) {
+function getYesNoResults(results, courseEntries, portfolioId, courseId, filters) {
     const yesNoQuestions = [
         "I learned something new as a result of this training.",
         "The information presented was relevant to my goals.",
         "After taking this course, I will use what I learned.",
         "I would recommend PsychArmor training to someone else.",
-        "Would you participate in more detailed evaluation?"
+        "Would you participate in more detailed evaluation?",
+        "I am more aware of available resources as a result of this course."
     ];
     for (let i = 0; i < courseEntries.length; ++i) {
-        if (entryWithinDate(courseEntries[i]["dateSubmitted"], startDate, endDate)) {
+        if (SurveyFunctions.entryPassesFilters(courseEntries[i], filters)) {
             const entryResults = courseEntries[i]["results"];
             for (let i = 0; i < yesNoQuestions.length; ++i) {
                 const question = yesNoQuestions[i];
@@ -135,14 +135,13 @@ function getYesNoResults(results, courseEntries, portfolioId, courseId, startDat
         courseEntries -> (object) the survey results for the course
         portfolioId   -> (int) the portfolio/school id
         courseId      -> (int) the course id
-        startDate     -> (int) the timestamp in seconds to start filtering for entries (inclusive)
-        endDate       -> (int) the timestamp in seconds to stop filtering for entries (inclusive)
+        filters -> (object) all the additional filters
     Return:
         undefined
 */
-function getMultChoiceResults(results, courseEntries, portfolioId, courseId, startDate, endDate) {
+function getMultChoiceResults(results, courseEntries, portfolioId, courseId, filters) {
     for (let i = 0; i < courseEntries.length; ++i) {
-        if (entryWithinDate(courseEntries[i]["dateSubmitted"], startDate, endDate)) {
+        if (SurveyFunctions.entryPassesFilters(courseEntries[i], filters)) {
             const entryResults = courseEntries[i]["results"];
             const question = "Why did you take this course?";
             for (let j = 0; j < entryResults[question].length; ++j) {
@@ -159,12 +158,11 @@ function getMultChoiceResults(results, courseEntries, portfolioId, courseId, sta
         courseEntries -> (object) the survey results for the course
         portfolioId   -> (int) the portfolio/school id
         courseId      -> (int) the course id
-        startDate     -> (int) the timestamp in seconds to start filtering for entries (inclusive)
-        endDate       -> (int) the timestamp in seconds to stop filtering for entries (inclusive)
+        filters -> (object) all the additional filters
     Return:
         undefined
 */
-function getScaleResults(results, courseEntries, portfolioId, courseId, startDate, endDate) {
+function getScaleResults(results, courseEntries, portfolioId, courseId, filters) {
     const questions = [
         "Knowledge in this area",
         "Skills related to topic",
@@ -172,7 +170,7 @@ function getScaleResults(results, courseEntries, portfolioId, courseId, startDat
     ];
 
     for (let i = 0; i < courseEntries.length; ++i) {
-        if (entryWithinDate(courseEntries[i]["dateSubmitted"], startDate, endDate)) {
+        if (SurveyFunctions.entryPassesFilters(courseEntries[i], filters)) {
             const entryResults = courseEntries[i]["results"];
             for (let j = 0; j < questions.length; ++j) {
                 const question = questions[j];
@@ -196,12 +194,11 @@ function getScaleResults(results, courseEntries, portfolioId, courseId, startDat
         courseEntries -> (object) the survey results for the course
         portfolioId   -> (int) the portfolio/school id
         courseId      -> (int) the course id
-        startDate     -> (int) the timestamp in seconds to start filtering for entries (inclusive)
-        endDate       -> (int) the timestamp in seconds to stop filtering for entries (inclusive)
+        filters -> (object) all the additional filters
     Return:
         undefined
 */
-function getFrqResults(results, courseEntries, portfolioId, courseId, startDate, endDate) {
+function getFrqResults(results, courseEntries, portfolioId, courseId, filters) {
     const tokenizer = new natural.AggressiveTokenizer();
 
     let tokenCount = {
@@ -211,7 +208,7 @@ function getFrqResults(results, courseEntries, portfolioId, courseId, startDate,
         "Would you be interested in having your name entered into a drawing for FREE follow-up coaching sessions?": {}
     };
     for (let i = 0; i < courseEntries.length; ++i) {
-        if (entryWithinDate(courseEntries[i]["dateSubmitted"], startDate, endDate)) {
+        if (SurveyFunctions.entryPassesFilters(courseEntries[i], filters)) {
             const entryResults = courseEntries[i]["results"];
             for (let question in tokenCount) {
                 const tokens = tokenizer.tokenize(entryResults[question].toLowerCase()) || [];

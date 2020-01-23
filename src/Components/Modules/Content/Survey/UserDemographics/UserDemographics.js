@@ -17,8 +17,7 @@ export default function UserDemographics(props) {
                             surveyEntries={props["surveyEntries"]}
                             portfolioId={props["portfolioId"]}
                             courseId={props["courseId"]}
-                            startDate={props["startDate"]}
-                            endDate={props["endDate"]}
+                            filters={props["filters"]}
                         />
                     </Col>
                 </Row>

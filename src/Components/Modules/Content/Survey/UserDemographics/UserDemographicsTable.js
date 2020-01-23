@@ -4,6 +4,8 @@ import {Card, CardHeader} from "reactstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 
+import SurveyFunctions from "../../../../../Lib/Content/Survey/SurveyFunctions";
+
 const headerStyle = {
     padding: "0.75rem 1.5rem",
     borderBottom: "1px solid #E9ECEF",
@@ -39,7 +41,7 @@ export default function UserDemographicsTable(props) {
         {text: "Referral Source", dataField: "refferalSource", sort: true, headerStyle: headerStyle, style: cellStyle}
     ];
     const data = getTableData(
-        props["surveyEntries"], props["portfolioId"], props["courseId"], props["startDate"], props["endDate"]);
+        props["surveyEntries"], props["portfolioId"], props["courseId"], props["filters"]);
 
     return (
         <Card className={"table-card"}>
@@ -70,28 +72,27 @@ export default function UserDemographicsTable(props) {
         entries      -> (object) the survey entries
         pPortfolioId -> (int) the portfolio id
         pCourseId    -> (int) the course id
-        startDate     -> (int) the timestamp in seconds to start filtering for entries (inclusive)
-        endDate       -> (int) the timestamp in seconds to stop filtering for entries (inclusive)
+        filters -> (object) all the additional filters
     Return:
         object -> a list of table data that contains user demographics
 */
-function getTableData(entries, pPortfolioId, pCourseId, startDate, endDate) {
+function getTableData(entries, pPortfolioId, pCourseId, filters) {
     let data = {};
     if ((pPortfolioId === 0) && (pCourseId === 0)) {
         for (let portfolioId in entries) {
             for (let courseId in entries[portfolioId]["courses"]) {
-                getResultsData(data, entries, portfolioId, courseId, startDate, endDate);
+                getResultsData(data, entries, portfolioId, courseId, filters);
             }
         }
     }
     else {
         if (pCourseId === 0) {
             for (let courseId in entries[pPortfolioId]["courses"]) {
-                getResultsData(data, entries, pPortfolioId, courseId, startDate, endDate);
+                getResultsData(data, entries, pPortfolioId, courseId, filters);
             }
         }
         else {
-            getResultsData(data, entries, pPortfolioId, pCourseId, startDate, endDate);
+            getResultsData(data, entries, pPortfolioId, pCourseId, filters);
         }
     }
 
@@ -101,17 +102,15 @@ function getTableData(entries, pPortfolioId, pCourseId, startDate, endDate) {
 /*
     Get all the users' demographics given the course id
     Params:
-        startDate     -> (int) the timestamp in seconds to start filtering for entries (inclusive)
-        endDate       -> (int) the timestamp in seconds to stop filtering for entries (inclusive)
+        filters -> (object) all the additional filters
     Return:
         undefined
 */
-function getResultsData(data, entries, portfolioId, courseId, startDate, endDate) {
+function getResultsData(data, entries, portfolioId, courseId, filters) {
     const courseEntry = entries[portfolioId]["courses"][courseId]["entries"];
     for (let i = 0; i < courseEntry.length; ++i) {
         const entry = courseEntry[i];
-        const submitted = entry["dateSubmitted"];
-        if ((submitted >= startDate) && (submitted <= endDate)) {
+        if (SurveyFunctions.entryPassesFilters(entry, filters)) {
             if (!(entry["userId"] in data)) {
                 data[entry["userId"]] = {
                     email: entry["email"],

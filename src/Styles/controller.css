@@ -143,12 +143,12 @@
 
     .sidebar-responsive-overlay.show {
         display: block;
-        z-index: 1;
+        z-index: 100;
     }
 
     .sidenav.responsive {
         display: block;
-        z-index: 2;
+        z-index: 101;
         width: 0;
         transition: width 0.35s ease;
     }
