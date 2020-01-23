@@ -19,6 +19,7 @@ class ExtraSurveyFilters extends React.Component {
         };
 
         this.handleToggleFilters = this.handleToggleFilters.bind(this);
+        this.handleHideFilters = this.handleHideFilters.bind(this);
     }
 
     // Event Handler Methods
@@ -36,10 +37,24 @@ class ExtraSurveyFilters extends React.Component {
         });
     }
 
+    /*
+        Hide the filters when clicking outside the box when open
+        Params:
+            none
+        Return:
+            undefined
+    */
+    handleHideFilters() {
+        this.setState({
+            showFilters: false
+        })
+    }
+
     render() {
         const show = (this.state["showFilters"]) ? "show" : "";
         return (
             <>
+                <div className={"filters-overlay " + show} onClick={this.handleHideFilters}/>
                 <Button
                     color={"primary"}
                     className={"filter-btn"}

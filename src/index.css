@@ -49,6 +49,10 @@ h1, h2, h3, h4, h5, h6 {
     color: #32325d;
 }
 
+select {
+    font-size: 0.875rem !important;
+}
+
 .card {
     border-radius: 0.375rem;
 }
