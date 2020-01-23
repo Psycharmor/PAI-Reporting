@@ -63,7 +63,7 @@ class Content extends React.Component {
             this.setState({
                 reportDone: true
             });
-            const loading = (this.state["surveyDone"] ? false : true);
+            const loading = !this.allDone("reportDone");
 
             this.setState({
                 loading: loading,
@@ -115,7 +115,7 @@ class Content extends React.Component {
             this.setState({
                 reportDone: true
             });
-            const loading = (this.state["surveyDone"] ? false : true);
+            const loading = !this.allDone("reportDone");
             const teamId = Object.keys(this.newApi["apiReportGroupInfo"])[0];
 
             this.setState({
@@ -128,7 +128,7 @@ class Content extends React.Component {
         });
 
         if ("survey" in this.props["menus"]) {
-            this.doSurveyApiCalls(1000, 0);
+            this.doSurveyApiCalls(1000, 0, 0);
         }
         else {
             this.setState({
@@ -190,12 +190,17 @@ class Content extends React.Component {
     /*
         Run all the API calls related to survey results
         Params:
-            none
+            limit -> (int) the max to get at a time
+            offset -> (int) where to start from
+            caregivers -> (int) whether to do the caregivers api
         Return:
             undefined
     */
-    doSurveyApiCalls(limit, offset) {
-        const url = this.url + "wp-json/pai/v1/survey?limit=" + limit + "&offset=" + offset;
+    doSurveyApiCalls(limit, offset, doCaregivers) {
+        let url = this.url + "wp-json/pai/v1/survey?limit=" + limit + "&offset=" + offset;
+        if (doCaregivers === 1) {
+            url += "&caregivers=1";
+        }
         const requestOptions = {
             method: "GET",
             mode: "cors"
@@ -203,14 +208,14 @@ class Content extends React.Component {
 
         ApiHandler.doApiCall(new Request(url, requestOptions))
         .then((jsonData) => {
-            this.setSurveyApiProperty(jsonData, limit, offset);
+            this.setSurveyApiProperty(jsonData, limit, offset, doCaregivers);
         })
         .catch((err) => {
             console.log("Promise Catch: Content.doSurveyApiCalls", err);
         });
     }
 
-    setSurveyApiProperty(newEntries, limit, offset) {
+    setSurveyApiProperty(newEntries, limit, offset, doCaregivers) {
         let count = 0;
         for (let portfolioId in newEntries) {
             if (!(portfolioId in this.newApi["apiSurveyEntries"])) {
@@ -235,18 +240,42 @@ class Content extends React.Component {
         }
 
         if (count >= limit) {
-            this.doSurveyApiCalls(limit, offset + count);
+            this.doSurveyApiCalls(limit, offset + count, doCaregivers);
+        }
+        else if (doCaregivers !== 1) {
+            this.doSurveyApiCalls(limit, 0, 1);
         }
         else {
             this.setState({
                 surveyDone: true
             });
-            const loading = (this.state["reportDone"] ? false : true);
+            const loading = !this.allDone("surveyDone");
             this.setState({
                 loading: loading,
                 apiSurveyEntries: this.newApi["apiSurveyEntries"]
             });
         }
+    }
+
+    /*
+        Check if all the api calls are done
+        Params:
+            ignored -> (string) the state to ignore checking for
+        Return:
+            bool -> whether all api calls are done or not
+    */
+    allDone(ignored) {
+        const apiStates = [
+            "reportDone",
+            "surveyDone"
+        ];
+        for (let i = 0; i < apiStates.length; ++i) {
+            if (apiStates[i] !== ignored && !this.state[apiStates[i]]) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     getContent(view) {
@@ -271,6 +300,8 @@ class Content extends React.Component {
                         loading={this.state["loading"]}
                     />
                 );
+            case "comment":
+                return this.props["view"];
             default:
         }
     }

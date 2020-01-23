@@ -62,13 +62,13 @@ class TeamReport extends React.Component {
         const groups = ("subGroups" in this.props["groupInfo"]) ? this.props["groupInfo"]["subGroups"] : {};
         return (
             <Row className={"team-report-row"}>
-                <Col md={3}>
+                <Col sm={6} md={3}>
                     <TeamDropdown
                         teamId={this.props["groupInfo"]["id"]}
                         teamChangeHandler={this.props["teamChangeHandler"]}
                     />
                 </Col>
-                <Col md={3}>
+                <Col sm={6} md={3}>
                     <GroupDropdown
                         groups={groups}
                         groupChangeHandler={this.handleGroupChange}
@@ -96,7 +96,7 @@ class TeamReport extends React.Component {
 
         return (
             <Row className={"team-report-row"}>
-                <Col md={6} xl={3}>
+                <Col sm={6} xl={3}>
                     <TeamReportSummary
                         title={"Total Users"}
                         content={totalUsers}
@@ -104,7 +104,7 @@ class TeamReport extends React.Component {
                         class={"team-report-user-icon"}
                     />
                 </Col>
-                <Col md={6} xl={3}>
+                <Col sm={6} xl={3}>
                     <TeamReportSummary
                         title={"Course Completions"}
                         content={courseCompletions}

@@ -21,8 +21,11 @@ react-datetime<br>
 natural<br>
 react-chartjs-2 chart.js<br>
 
-TO UPDATE WITHOUT THE NEED TO MANUALLY ADD THE MISSING DEPENDENCIES:
-### `npm install`
+To update:
+`npm install`
+<br><br>
+To start fresh:
+Have only the package.json file then run `npm install`
 
 In the project directory, you can run:
 

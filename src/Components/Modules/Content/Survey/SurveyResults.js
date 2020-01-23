@@ -15,10 +15,15 @@ export default function SurveyResults(props) {
         return (
             <TabPane tabId={"results"}>
                 {renderYesNoGraph(props["results"], props["portfolioId"], props["courseId"])}
-                {renderMultScaleGraphs(props["results"], props["portfolioId"], props["courseId"])}
-                {renderFrqCharts(props["results"], props["portfolioId"], props["courseId"])}
             </TabPane>
         );
+        // return (
+        //     <TabPane tabId={"results"}>
+        //         {renderYesNoGraph(props["results"], props["portfolioId"], props["courseId"])}
+        //         {renderMultScaleGraphs(props["results"], props["portfolioId"], props["courseId"])}
+        //         {renderFrqCharts(props["results"], props["portfolioId"], props["courseId"])}
+        //     </TabPane>
+        // );
     }
 
     return (<div></div>);

@@ -1,6 +1,6 @@
 import React from "react";
 
-import {MdAssignment, MdFileUpload, MdSpeakerNotes} from "react-icons/md";
+import {MdAssignment, MdFileUpload, MdPoll, MdComment} from "react-icons/md";
 
 import Sidebar from "./Modules/Main/Sidebar";
 import Topbar from "./Modules/Main/Topbar";
@@ -33,10 +33,15 @@ class Controller extends React.Component {
         // add additional menus only for certain roles
         if (this.getUserRole() === "administrator") {
             this.menus["survey"] = {
-                icon: <MdSpeakerNotes/>,
+                icon: <MdPoll/>,
                 text: "Survey Results",
                 class: "survey-icon"
             };
+            // this.menus["comment"] = {
+            //     icon: <MdComment/>,
+            //     text: "Comments",
+            //     class: "comment-icon"
+            // };
         }
 
         this.state = {
@@ -114,7 +119,7 @@ class Controller extends React.Component {
 
     render() {
         return (
-            <div>
+            <>
                 <Sidebar
                     menus={this.menus}
                     responsiveOpen={this.state["sidebarOpen"]}
@@ -129,7 +134,7 @@ class Controller extends React.Component {
                     />
                     <Content view={this.state["view"]} menus={this.menus}/>
                 </div>
-            </div>
+            </>
         );
     }
 }
