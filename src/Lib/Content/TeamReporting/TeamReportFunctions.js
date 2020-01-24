@@ -67,7 +67,12 @@ const TeamReportFunctions = {
                 if ((userId in pActivities) && (courseId in pActivities[userId])) {
                     const stepsCompleted = pActivities[userId][courseId]["stepsCompleted"];
                     const stepsTotal = pActivities[userId][courseId]["stepsTotal"];
-                    row[courseId] = (+(stepsCompleted / stepsTotal * 100).toFixed(2)) + "%";
+                    if (stepsTotal === 0) {
+                        row[courseId] = 0 + "%";
+                    }
+                    else {
+                        row[courseId] = (+(stepsCompleted / stepsTotal * 100).toFixed(2)) + "%";
+                    }
                 }
             }
 

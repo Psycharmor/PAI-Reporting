@@ -2,6 +2,7 @@ import React from "react";
 
 import {Card, CardHeader, CardBody} from "reactstrap";
 import {HorizontalBar} from "react-chartjs-2";
+import "chartjs-plugin-datalabels";
 
 /*
     Component computes the data for the bar graph then renders the Yes/No Bar Graph
@@ -10,6 +11,7 @@ export default function YesNoBarGraph(props) {
     const labels = props["questions"];
     const datasets = createDatasets(
         props["results"], labels, props["portfolioId"], props["courseId"]);
+    const chartMax = getChartMax(getMaxTotalData(datasets));
     const options = {
         responsive: true,
         maintainAspectRatio: false,
@@ -22,7 +24,8 @@ export default function YesNoBarGraph(props) {
             xAxes: [{
                 stacked: true,
                 ticks: {
-                    fontFamily: "open sans, sans-serif"
+                    fontFamily: "open sans, sans-serif",
+                    suggestedMax: chartMax
                 }
             }],
             yAxes: [{
@@ -34,6 +37,36 @@ export default function YesNoBarGraph(props) {
                     display: false
                 }
             }]
+        },
+        plugins: {
+            datalabels: {
+                color: "#000000",
+                display: function(content) {
+                    const datasetIndex = content["datasetIndex"];
+                    if (datasetIndex === 0) {
+                        return !content["chart"].isDatasetVisible(1);
+                    }
+
+                    return content["chart"].isDatasetVisible(1);
+
+                },
+                formatter: function(value, context) {
+                    const dataIndex = context["dataIndex"];
+                    const yesValue = datasets[0]["data"][dataIndex];
+                    const noValue = datasets[1]["data"][dataIndex];
+                    const total = yesValue + noValue;
+                    if (total === 0) {
+                        return "0% / 0%";
+                    }
+                    const yesPercent = (+(yesValue / total * 100).toFixed(2)) + "%";
+                    const noPercent = (+(noValue / total * 100).toFixed(2)) + "%";
+                    return yesPercent + " / " + noPercent;
+                },
+                font: {
+                    family: "open sans, sans-serif",
+                    weight: 600
+                }
+            }
         }
     };
 
@@ -74,15 +107,23 @@ function createDatasets(results, labels, pPortfolioId, pCourseId) {
         {
             label: "Yes",
             backgroundColor: "#5e72e4",
-            barThickness: 10,
+            barPercentage: 0.7,
             stack: "Stack 0",
+            datalabels: {
+                anchor: "end",
+                align: "end"
+            },
             data: [0, 0, 0, 0, 0, 0]
         },
         {
             label: "No",
             backgroundColor: "#dc3545",
-            barThickness: 10,
+            barPercentage: 0.7,
             stack: "Stack 0",
+            datalabels: {
+                anchor: "end",
+                align: "end"
+            },
             data: [0, 0, 0, 0, 0, 0]
         }
     ];
@@ -125,4 +166,41 @@ function getResultsData(datasets, results, labels, portfolioId, courseId) {
         datasets[0]["data"][i] += results[portfolioId][courseId][question]["yes"];
         datasets[1]["data"][i] += results[portfolioId][courseId][question]["no"];
     }
+}
+
+/*
+    Get the largest total of submissions out of all the questions
+    Params:
+        datasets -> (object) the dataset to be passed to the chart
+    Return:
+        int -> the max total number
+*/
+function getMaxTotalData(datasets) {
+    let max = 0;
+    const data = datasets[0]["data"];
+    const otherData = datasets[1]["data"];
+    for (let i = 0; i < data.length; ++i) {
+        const dataMax = data[i] + otherData[i];
+        if (dataMax > max) {
+            max = dataMax;
+        }
+    }
+
+    return max;
+}
+
+/*
+    Get the maximum x value the chart will go up to
+    Params:
+        dataMax -> (int) the biggest total value out of all the questions
+    Return:
+        int -> the chart's x value
+*/
+function getChartMax(dataMax) {
+    let placeValue = 1;
+    for (let i = 0; i < dataMax.toString().length - 1; ++i) {
+        placeValue *= 10;
+    }
+
+    return Math.ceil(dataMax / placeValue) * placeValue + placeValue;
 }

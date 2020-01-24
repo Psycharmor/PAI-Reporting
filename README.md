@@ -20,6 +20,7 @@ react-bootstrap-table2-paginator<br>
 react-datetime<br>
 natural<br>
 react-chartjs-2 chart.js<br>
+chartjs-plugin-datalabels<br>
 
 To update:
 `npm install`
