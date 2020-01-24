@@ -126,9 +126,7 @@ class Survey extends React.Component {
         );
         this.setState({
             results: results,
-            startDate: date.toDate(),
-            portfolioId: 0,
-            courseId: 0
+            startDate: date.toDate()
         });
     }
 
@@ -156,9 +154,7 @@ class Survey extends React.Component {
         );
         this.setState({
             results: results,
-            endDate: date.toDate(),
-            portfolioId: 0,
-            courseId: 0
+            endDate: date.toDate()
         });
     }
 
@@ -183,8 +179,6 @@ class Survey extends React.Component {
         );
         this.setState({
             results: results,
-            portfolioId: 0,
-            courseId: 0,
             team: team
         });
     }
@@ -210,8 +204,6 @@ class Survey extends React.Component {
         );
         this.setState({
             results: results,
-            portfolioId: 0,
-            courseId: 0,
             organization: org
         });
     }
@@ -237,8 +229,6 @@ class Survey extends React.Component {
         );
         this.setState({
             results: results,
-            portfolioId: 0,
-            courseId: 0,
             role: role
         });
     }
