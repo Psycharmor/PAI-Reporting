@@ -26,7 +26,10 @@ class Content extends React.Component {
 
         this.state = {
             loading: false,
-            reportDone: true,
+            groupInfoDone: true,
+            groupUsersDone: true,
+            groupCoursesDone: true,
+            groupActivitiesDone: true,
             surveyDone: true,
             apiReportGroupInfo: {},
             apiReportGroupUsers: {},
@@ -56,23 +59,13 @@ class Content extends React.Component {
         const teamId = event.target["value"];
         this.setState({
             loading: true,
-            reportDone: false
+            groupInfoDone: false,
+            groupUsersDone: false,
+            groupCoursesDone: false,
+            groupActivitiesDone: false
         });
 
-        Promise.all(this.doReportApiCalls(teamId)).then(() => {
-            this.setState({
-                reportDone: true
-            });
-            const loading = !this.allDone("reportDone");
-
-            this.setState({
-                loading: loading,
-                apiReportGroupInfo: this.newApi["apiReportGroupInfo"][teamId],
-                apiReportGroupUsers: this.newApi["apiReportGroupUsers"],
-                apiReportGroupCourses: this.newApi["apiReportGroupCourses"],
-                apiReportGroupActivities: this.newApi["apiReportGroupActivities"]
-            });
-        });
+        this.doReportApiCalls(teamId, 3000, 0);
     }
 
     // Utility Methods
@@ -107,28 +100,17 @@ class Content extends React.Component {
     doGetApiCalls() {
         this.setState({
             loading: true,
-            reportDone: false,
+            groupInfoDone: false,
+            groupUsersDone: false,
+            groupCoursesDone: false,
+            groupActivitiesDone: false,
             surveyDone: false
         });
         const user = JSON.parse(localStorage.getItem("USER"));
-        Promise.all(this.doReportApiCalls(user["group"][0]["id"])).then(() => {
-            this.setState({
-                reportDone: true
-            });
-            const loading = !this.allDone("reportDone");
-            const teamId = Object.keys(this.newApi["apiReportGroupInfo"])[0];
-
-            this.setState({
-                loading: loading,
-                apiReportGroupInfo: this.newApi["apiReportGroupInfo"][teamId],
-                apiReportGroupUsers: this.newApi["apiReportGroupUsers"],
-                apiReportGroupCourses: this.newApi["apiReportGroupCourses"],
-                apiReportGroupActivities: this.newApi["apiReportGroupActivities"]
-            });
-        });
+        this.doReportApiCalls(user["group"][0]["id"], 3000, 0);
 
         if ("survey" in this.props["menus"]) {
-            this.doSurveyApiCalls(1000, 0, 0);
+            this.doSurveyApiCalls(3000, 0, 0);
         }
         else {
             this.setState({
@@ -141,50 +123,100 @@ class Content extends React.Component {
         Run all the API calls related to team reporting
         Params:
             teamId -> (int) the team id to fetch
+            limit  -> (int) the max number to get for certain endpoints
+            offset -> (int) the number to start from
         Return:
             array -> all promises related to the api
     */
-    doReportApiCalls(teamId) {
+    doReportApiCalls(teamId, limit, offset) {
         const calls = [
             {
                 url: this.url + "wp-json/pai/v1/groups/?" + this.reportEndpoint + "=" + teamId,
-                state: "apiReportGroupInfo"
+                state: "apiReportGroupInfo",
+                doneState: "groupInfoDone"
             },
             {
                 url: this.url + "wp-json/pai/v1/users/?" + this.reportEndpoint + "=" + teamId,
-                state: "apiReportGroupUsers"
+                state: "apiReportGroupUsers",
+                doneState: "groupUsersDone"
             },
             {
                 url: this.url + "wp-json/pai/v1/courses/?" + this.reportEndpoint + "=" + teamId,
-                state: "apiReportGroupCourses"
+                state: "apiReportGroupCourses",
+                doneState: "groupCoursesDone"
             },
             {
                 url: this.url + "wp-json/pai/v1/course-activities/?" + this.reportEndpoint + "=" + teamId,
-                state: "apiReportGroupActivities"
+                state: "apiReportGroupActivities",
+                doneState: "groupActivitiesDone"
             },
         ];
 
+        for (let i = 0; i < calls.length; ++i) {
+            this.doTeamApiCall(calls[i], limit, offset, teamId);
+        }
+    }
+
+    /*
+        Do the team report api call
+        Params:
+            call    -> (object) info about the api call
+            limit   -> (int) the max number to get from api call
+            offset  -> (int) index to start from
+            teamId  -> (int) to be used by groupInfo to get the group object
+        Return:
+            undefined
+    */
+    doTeamApiCall(call, limit, offset, teamId) {
         const requestOptions = {
             method: "GET",
             mode: "cors"
         };
+        const limitOffset = "&limit=" + limit + "&offset=" + offset;
+        ApiHandler.doApiCall(new Request(call["url"] + limitOffset, requestOptions))
+        .then((jsonData) => {
+            this.setTeamApiResults(jsonData, call, teamId, limit, offset);
+        })
+        .catch((err) => {
+            console.log("Promise Catch: Content.doReportApiCalls", err);
+        })
+    }
 
-        let promises = [];
-
-        for (let i = 0; i < calls.length; ++i) {
-            const call = calls[i];
-            promises.push(
-                ApiHandler.doApiCall(new Request(call["url"], requestOptions))
-                .then((jsonData) => {
-                    this.newApi[call["state"]] = jsonData["result"];
-                })
-                .catch((err) => {
-                    console.log("Promise Catch: Content.doReportApiCalls", err);
-                })
-            );
+    /*
+        Once the api call is done, set it to the state only if done getting
+        data from that endpoint
+        Params:
+            jsonData -> (object) the result of the api
+            call     -> (object) info about the api call
+            teamId   -> (int) the team id to fetch api for
+            limit   -> (int) the max number to get from api call
+            offset  -> (int) index to start from
+        Return:
+            undefined
+    */
+    setTeamApiResults(jsonData, call, teamId, limit, offset) {
+        this.newApi[call["state"]] = {...this.newApi[call["state"]], ...jsonData["result"]};
+        if (jsonData["count"] >= limit) {
+            this.doTeamApiCall(call, limit, offset + jsonData["count"], teamId);
         }
-
-        return promises;
+        else {
+            this.setState({
+                [call["doneState"]]: true
+            });
+            const loading = !this.allDone(call["doneState"]);
+            if (call["state"] === "apiReportGroupInfo") {
+                this.setState({
+                    loading: loading,
+                    [call["state"]]: this.newApi[call["state"]][teamId]
+                });
+            }
+            else {
+                this.setState({
+                    loading: loading,
+                    [call["state"]]: this.newApi[call["state"]]
+                });
+            }
+        }
     }
 
     /*
@@ -266,7 +298,10 @@ class Content extends React.Component {
     */
     allDone(ignored) {
         const apiStates = [
-            "reportDone",
+            "groupInfoDone",
+            "groupUsersDone",
+            "groupCoursesDone",
+            "groupActivitiesDone",
             "surveyDone"
         ];
         for (let i = 0; i < apiStates.length; ++i) {
