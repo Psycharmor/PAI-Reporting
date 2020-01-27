@@ -65,7 +65,7 @@ class Content extends React.Component {
             groupActivitiesDone: false
         });
 
-        this.doReportApiCalls(teamId, 3000, 0);
+        this.doReportApiCalls(teamId, 1000, 0);
     }
 
     // Utility Methods
@@ -107,10 +107,10 @@ class Content extends React.Component {
             surveyDone: false
         });
         const user = JSON.parse(localStorage.getItem("USER"));
-        this.doReportApiCalls(user["group"][0]["id"], 3000, 0);
+        this.doReportApiCalls(user["group"][0]["id"], 1000, 0);
 
         if ("survey" in this.props["menus"]) {
-            this.doSurveyApiCalls(3000, 0, 0);
+            this.doSurveyApiCalls(1000, 0, 0);
         }
         else {
             this.setState({

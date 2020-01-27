@@ -64,7 +64,7 @@ class Controller extends React.Component {
             undefined
     */
     handleViewChange(event) {
-        const newView = event.target.getAttribute("value");
+        const newView = event.currentTarget.getAttribute("value");
         this.setState({
             view: newView,
             sidebarOpen: false

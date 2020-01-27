@@ -2,15 +2,13 @@ import React from "react";
 
 import {Col, Card, CardHeader} from "reactstrap";
 import Datetime from "react-datetime";
-import {IoMdCalendar} from "react-icons/io";
 
 export default function DateFilters(props) {
     return (
         <>
             <Col sm={6}>
                 <Card className={"filter-card"}>
-                    <CardHeader className={"date-card-header"}>
-                        <IoMdCalendar/>
+                    <CardHeader>
                         <h5>{"Start Date"}</h5>
                     </CardHeader>
                     <Datetime
@@ -29,8 +27,7 @@ export default function DateFilters(props) {
             </Col>
             <Col sm={6}>
                 <Card className={"filter-card"}>
-                    <CardHeader className={"date-card-header"}>
-                        <IoMdCalendar/>
+                    <CardHeader>
                         <h5>{"End Date"}</h5>
                     </CardHeader>
                     <Datetime
