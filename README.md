@@ -18,7 +18,6 @@ react-icons<br>
 react-bootstrap-table-next<br>
 react-bootstrap-table2-paginator<br>
 react-datetime<br>
-natural<br>
 react-chartjs-2 chart.js<br>
 chartjs-plugin-datalabels<br>
 

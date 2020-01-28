@@ -7,7 +7,7 @@ class LoginForm extends Component {
     constructor(props) {
         super(props);
         this.axios = require("axios").default;
-        this.siteUrl = "http://staging.psycharmor.org/";
+        this.siteUrl = "https://psycharmor.org/";
         this.api = {
             wp: "wp-json/",
             jwt: "jwt-auth/v1/",

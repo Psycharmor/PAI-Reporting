@@ -1,5 +1,3 @@
-import stopwords from "./Stopwords";
-import natural from "natural";
 /*
     All the functions related to Survey view computation/info parsing
 */
@@ -87,9 +85,9 @@ function initResultObj() {
 */
 function getCourseSurveyResults(results, portfolioId, courseId, courseEntries, filters) {
     getYesNoResults(results, courseEntries, portfolioId, courseId, filters);
-    getMultChoiceResults(results, courseEntries, portfolioId, courseId, filters);
-    getFrqResults(results, courseEntries, portfolioId, courseId, filters);
-    getScaleResults(results, courseEntries, portfolioId, courseId, filters);
+    // getMultChoiceResults(results, courseEntries, portfolioId, courseId, filters);
+    // getFrqResults(results, courseEntries, portfolioId, courseId, filters);
+    // getScaleResults(results, courseEntries, portfolioId, courseId, filters);
 }
 
 /*
@@ -199,8 +197,6 @@ function getScaleResults(results, courseEntries, portfolioId, courseId, filters)
         undefined
 */
 function getFrqResults(results, courseEntries, portfolioId, courseId, filters) {
-    const tokenizer = new natural.AggressiveTokenizer();
-
     let tokenCount = {
         "What aspects of the course did you find especially helpful": {},
         "What aspects of the course would you like to see changed": {},
@@ -211,14 +207,12 @@ function getFrqResults(results, courseEntries, portfolioId, courseId, filters) {
         if (SurveyFunctions.entryPassesFilters(courseEntries[i], filters)) {
             const entryResults = courseEntries[i]["results"];
             for (let question in tokenCount) {
-                const tokens = tokenizer.tokenize(entryResults[question].toLowerCase()) || [];
+                const tokens = entryResults[question].toLowerCase();
                 for (let j = 0; j < tokens.length; ++j) {
-                    if (!stopwords.includes(tokens[j])) {
-                        if(!(tokens[j] in tokenCount[question])) {
-                            tokenCount[question][tokens[j]] = 0;
-                        }
-                        ++tokenCount[question][tokens[j]];
+                    if(!(tokens[j] in tokenCount[question])) {
+                        tokenCount[question][tokens[j]] = 0;
                     }
+                    ++tokenCount[question][tokens[j]];
                 }
             }
         }
