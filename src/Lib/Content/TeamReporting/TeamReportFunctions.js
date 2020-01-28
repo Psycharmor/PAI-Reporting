@@ -17,11 +17,23 @@ const TeamReportFunctions = {
         }
 
         // initialize the headers array with the username field
-        let headers = [{
-            text: "Username",
-            dataField: "username",
-            sort: true
-        }];
+        let headers = [
+            {
+                text: "First Name",
+                dataField: "firstName",
+                sort: true
+            },
+            {
+                text: "Last Name",
+                dataField: "lastName",
+                sort: true
+            },
+            {
+                text: "Email",
+                dataField: "email",
+                sort: true
+            }
+        ];
         for (let i = 0; i < groupInfo["courses"].length; ++i) {
             const courseId = groupInfo["courses"][i];
             const course = courses[courseId];
@@ -58,7 +70,9 @@ const TeamReportFunctions = {
         for (let i = 0; i < userIds.length; ++i) {
             const userId = userIds[i];
             let row = {
-                username: users[userId]["username"]
+                firstName: users[userId]["firstName"],
+                lastName: users[userId]["lastName"],
+                email: users[userId]["email"]
             };
 
             for (let i = 0; i < courseIds.length; ++i) {

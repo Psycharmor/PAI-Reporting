@@ -173,7 +173,7 @@ class TeamReport extends React.Component {
                         <BootstrapTable
                             bootstrap4={true}
                             wrapperClasses={"table-responsive"}
-                            keyField={"username"}
+                            keyField={"email"}
                             columns={headers}
                             data={data}
                             bordered={false}

@@ -31,7 +31,7 @@ class LoginForm extends Component {
             loading: true,
             error: ""
         });
-        this.axios.post("http://staging.psycharmor.org/" + this.api["wp"] + this.api["jwt"] + this.endpoint, {
+        this.axios.post(this.siteUrl + this.api["wp"] + this.api["jwt"] + this.endpoint, {
             username,
             password
         })
