@@ -32,6 +32,12 @@ const TeamReportFunctions = {
                 text: "Email",
                 dataField: "email",
                 sort: true
+            },
+            {
+                text: "Courses Completed",
+                dataField: "completed",
+                sort: true,
+                sortFunc: courseCompletedComparator
             }
         ];
         for (let i = 0; i < groupInfo["courses"].length; ++i) {
@@ -69,6 +75,7 @@ const TeamReportFunctions = {
         const userIds = groupInfo["enrolledUsers"];
         for (let i = 0; i < userIds.length; ++i) {
             const userId = userIds[i];
+            let courseCompletedCount = 0;
             let row = {
                 firstName: users[userId]["firstName"],
                 lastName: users[userId]["lastName"],
@@ -85,10 +92,14 @@ const TeamReportFunctions = {
                         row[courseId] = 0 + "%";
                     }
                     else {
+                        if (stepsCompleted === stepsTotal) {
+                            ++courseCompletedCount;
+                        }
                         row[courseId] = (+(stepsCompleted / stepsTotal * 100).toFixed(2)) + "%";
                     }
                 }
             }
+            row["completed"] = courseCompletedCount + "/" + courseIds.length;
 
             data.push(row);
         }
@@ -132,6 +143,23 @@ function parseActivities(activities) {
 function courseDataComparator(a, b, order) {
     const aValue = parseFloat(a.substring(0, a.length - 1));
     const bValue = parseFloat(b.substring(0, b.length - 1));
+
+    return (order === "asc") ? bValue - aValue : aValue - bValue;
+}
+
+/*
+    Compare function for the course completed count. Normal numerical sort based on
+    the number of courses completed.
+    Params:
+        a -> (string) one of the items that will be compared (a user's course progress)
+        b -> (string) one of the items that will be compared (a user's course progress)
+        order -> (string) defines whether the sort will be 'asc' or 'desc' order
+    Return:
+        int -> an indication of where a should be relative to b
+*/
+function courseCompletedComparator(a, b, order) {
+    const aValue = parseFloat(a.substring(0, a.indexOf("/")));
+    const bValue = parseFloat(b.substring(0, b.indexOf("/")));
 
     return (order === "asc") ? bValue - aValue : aValue - bValue;
 }
