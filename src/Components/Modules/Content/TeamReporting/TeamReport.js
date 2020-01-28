@@ -8,6 +8,7 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 import TeamReportSummary from "./TeamReportSummary.js";
 import TeamDropdown from "./TeamDropdown";
 import GroupDropdown from "./GroupDropdown";
+import ExportBtn from "./ExportBtn";
 import TeamReportFunctions from "../../../../Lib/Content/TeamReporting/TeamReportFunctions";
 
 /*
@@ -110,6 +111,14 @@ class TeamReport extends React.Component {
                         content={courseCompletions}
                         icon={<MdCheck/>}
                         class={"team-report-course-icon"}
+                    />
+                </Col>
+                <Col sm={6}>
+                    <ExportBtn
+                        group={group}
+                        courses={this.props["courses"]}
+                        users={this.props["users"]}
+                        activities={this.props["activities"]}
                     />
                 </Col>
             </Row>
