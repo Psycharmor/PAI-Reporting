@@ -59,6 +59,26 @@ class Survey extends React.Component {
         });
     }
 
+    componentDidUpdate(prevProps) {
+        if (prevProps["loading"] !== this.props["loading"]) {
+            const results = SurveyFunctions.getQuestionResults(
+                this.props["surveyEntries"],
+                {
+                    startDate: this.state["startDate"].getTime() / 1000,
+                    endDate: this.state["endDate"].getTime() / 1000,
+                    team: this.state["team"],
+                    organization: this.state["organization"],
+                    role: this.state["role"],
+                }
+            );
+            this.setState({
+                results: results,
+                portfolioId: 0,
+                courseId: 0
+            });
+        }
+    }
+
     // Event Handler Methods
 
     /*

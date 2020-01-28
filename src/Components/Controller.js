@@ -17,35 +17,42 @@ class Controller extends React.Component {
         super(props);
 
         // initialize menus meant for everyone
-        this.menus = {
-            teamReport: {
-                icon: <MdAssignment/>,     // icon to display
-                text: "Team Report",       // label to display
-                class: "team-report-icon"  // style for the icon
-            },
+        // this.menus = {
+            // teamReport: {
+            //     icon: <MdAssignment/>,     // icon to display
+            //     text: "Team Report",       // label to display
+            //     class: "team-report-icon"  // style for the icon
+            // },
             // upload: {
             //     icon: <MdFileUpload/>,
             //     text: "Group Batch",
             //     class: "upload-icon"
             // }
-        };
-
-        // add additional menus only for certain roles
-        if (this.getUserRole() === "administrator") {
-            this.menus["survey"] = {
+        // };
+        this.menus = {
+            survey: {
                 icon: <MdPoll/>,
                 text: "Survey Results",
                 class: "survey-icon"
-            };
-            // this.menus["comment"] = {
-            //     icon: <MdComment/>,
-            //     text: "Comments",
-            //     class: "comment-icon"
-            // };
-        }
+            }
+        };
+
+        // add additional menus only for certain roles
+        // if (this.getUserRole() === "administrator") {
+        //     this.menus["survey"] = {
+        //         icon: <MdPoll/>,
+        //         text: "Survey Results",
+        //         class: "survey-icon"
+        //     };
+        //     this.menus["comment"] = {
+        //         icon: <MdComment/>,
+        //         text: "Comments",
+        //         class: "comment-icon"
+        //     };
+        // }
 
         this.state = {
-            view: "teamReport",
+            view: "survey",
             sidebarOpen: false
         };
 

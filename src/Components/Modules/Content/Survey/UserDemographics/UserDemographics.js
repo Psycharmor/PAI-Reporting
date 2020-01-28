@@ -24,4 +24,6 @@ export default function UserDemographics(props) {
             </TabPane>
         );
     }
+
+    return (<div></div>);
 };

@@ -12,7 +12,7 @@ class Content extends React.Component {
     constructor(props) {
         super(props);
 
-        this.url = "http://staging.psycharmor.org/";
+        this.url = "https://psycharmor.org/";
 
         this.newApi = {
             apiReportGroupInfo: {},
@@ -100,23 +100,14 @@ class Content extends React.Component {
     doGetApiCalls() {
         this.setState({
             loading: true,
-            groupInfoDone: false,
-            groupUsersDone: false,
-            groupCoursesDone: false,
-            groupActivitiesDone: false,
+            groupInfoDone: true,
+            groupUsersDone: true,
+            groupCoursesDone: true,
+            groupActivitiesDone: true,
             surveyDone: false
         });
-        const user = JSON.parse(localStorage.getItem("USER"));
-        this.doReportApiCalls(user["group"][0]["id"], 1000, 0);
 
-        if ("survey" in this.props["menus"]) {
-            this.doSurveyApiCalls(1000, 0, 0);
-        }
-        else {
-            this.setState({
-                surveyDone: true
-            });
-        }
+        this.doSurveyApiCalls(5000, 0, 0);
     }
 
     /*
@@ -168,9 +159,12 @@ class Content extends React.Component {
             undefined
     */
     doTeamApiCall(call, limit, offset, teamId) {
+        let headers = new Headers();
+        headers.append("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9zdGFnaW5nLnBzeWNoYXJtb3Iub3JnIiwiaWF0IjoxNTgwMTUwNjk4LCJuYmYiOjE1ODAxNTA2OTgsImV4cCI6MTU4MDc1NTQ5OCwiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMjU2MTcifX19.0o2r-UhLAvWboUe-BwJMBEarnaIBlp2bw6pXRMEqlRA");
         const requestOptions = {
             method: "GET",
-            mode: "cors"
+            mode: "cors",
+            headers: headers
         };
         const limitOffset = "&limit=" + limit + "&offset=" + offset;
         ApiHandler.doApiCall(new Request(call["url"] + limitOffset, requestOptions))
@@ -229,13 +223,18 @@ class Content extends React.Component {
             undefined
     */
     doSurveyApiCalls(limit, offset, doCaregivers) {
+        let headers = new Headers({
+            Authorization: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvcHN5Y2hhcm1vci5vcmciLCJpYXQiOjE1ODAyMjMyMDksIm5iZiI6MTU4MDIyMzIwOSwiZXhwIjoxNTgwODI4MDA5LCJkYXRhIjp7InVzZXIiOnsiaWQiOiIyNTYxNyJ9fX0.8Uj7iIf-L9OG4GNqdnY7TUeirVCb2N-fjzBtajuF_dc"
+        });
+
         let url = this.url + "wp-json/pai/v1/survey?limit=" + limit + "&offset=" + offset;
         if (doCaregivers === 1) {
             url += "&caregivers=1";
         }
         const requestOptions = {
             method: "GET",
-            mode: "cors"
+            mode: "cors",
+            headers: headers
         };
 
         ApiHandler.doApiCall(new Request(url, requestOptions))
