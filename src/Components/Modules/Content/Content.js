@@ -12,7 +12,8 @@ class Content extends React.Component {
     constructor(props) {
         super(props);
 
-        this.url = "http://staging.psycharmor.org/";
+        this.url = "https://psycharmor.org/";
+        this.token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvcHN5Y2hhcm1vci5vcmciLCJpYXQiOjE1ODAyMzAyOTIsIm5iZiI6MTU4MDIzMDI5MiwiZXhwIjoxNTgwODM1MDkyLCJkYXRhIjp7InVzZXIiOnsiaWQiOiIyNTYxNyJ9fX0.Q24IEyUoHZhXs9-VqJaGnuGHCVVctyUIeS2h30dXX5g";
 
         this.newApi = {
             apiReportGroupInfo: {},
@@ -65,7 +66,7 @@ class Content extends React.Component {
             groupActivitiesDone: false
         });
 
-        this.doReportApiCalls(teamId, 1000, 0);
+        this.doReportApiCalls(teamId, 5000, 0);
     }
 
     // Utility Methods
@@ -107,10 +108,10 @@ class Content extends React.Component {
             surveyDone: false
         });
         const user = JSON.parse(localStorage.getItem("USER"));
-        this.doReportApiCalls(user["group"][0]["id"], 1000, 0);
+        this.doReportApiCalls(user["group"][0]["id"], 5000, 0);
 
         if ("survey" in this.props["menus"]) {
-            this.doSurveyApiCalls(1000, 0, 0);
+            this.doSurveyApiCalls(5000, 0, 0);
         }
         else {
             this.setState({
@@ -168,9 +169,13 @@ class Content extends React.Component {
             undefined
     */
     doTeamApiCall(call, limit, offset, teamId) {
+        const headers = new Headers({
+            Authorization: "Bearer " + this.token
+        });
         const requestOptions = {
             method: "GET",
-            mode: "cors"
+            mode: "cors",
+            headers: headers
         };
         const limitOffset = "&limit=" + limit + "&offset=" + offset;
         ApiHandler.doApiCall(new Request(call["url"] + limitOffset, requestOptions))
@@ -233,9 +238,13 @@ class Content extends React.Component {
         if (doCaregivers === 1) {
             url += "&caregivers=1";
         }
+        const headers = new Headers({
+            Authorization: "Bearer " + this.token
+        });
         const requestOptions = {
             method: "GET",
-            mode: "cors"
+            mode: "cors",
+            headers: headers
         };
 
         ApiHandler.doApiCall(new Request(url, requestOptions))
