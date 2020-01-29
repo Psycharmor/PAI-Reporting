@@ -202,5 +202,5 @@ function getChartMax(dataMax) {
         placeValue *= 10;
     }
 
-    return Math.ceil(dataMax / placeValue) * placeValue + placeValue;
+    return Math.ceil(dataMax / placeValue) * placeValue + placeValue / 2;
 }

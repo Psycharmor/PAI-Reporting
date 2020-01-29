@@ -20,7 +20,8 @@ class Content extends React.Component {
             apiReportGroupUsers: {},
             apiReportGroupCourses: {},
             apiReportGroupActivities: {},
-            apiSurveyEntries: {}
+            apiSurveyEntries: {},
+            apiComments: {}
         };
 
         this.reportEndpoint = this.getReportEndpoint();
@@ -32,11 +33,13 @@ class Content extends React.Component {
             groupCoursesDone: true,
             groupActivitiesDone: true,
             surveyDone: true,
+            commentsDone: true,
             apiReportGroupInfo: {},
             apiReportGroupUsers: {},
             apiReportGroupCourses: {},
             apiReportGroupActivities: {},
-            apiSurveyEntries: {}
+            apiSurveyEntries: {},
+            apiComments: {}
         };
 
         this.handleTeamChange = this.handleTeamChange.bind(this);
@@ -105,7 +108,8 @@ class Content extends React.Component {
             groupUsersDone: false,
             groupCoursesDone: false,
             groupActivitiesDone: false,
-            surveyDone: false
+            surveyDone: false,
+            commentsDone: false
         });
         const user = JSON.parse(localStorage.getItem("USER"));
         this.doReportApiCalls(user["group"][0]["id"], 5000, 0);
@@ -116,6 +120,15 @@ class Content extends React.Component {
         else {
             this.setState({
                 surveyDone: true
+            });
+        }
+
+        if ("comments" in this.props["menus"]) {
+            this.doCommentsApiCalls();
+        }
+        else {
+            this.setState({
+                commentsDone: true
             });
         }
     }
@@ -298,6 +311,34 @@ class Content extends React.Component {
         }
     }
 
+    doCommentsApiCalls() {
+        let url = this.url + "wp-json/pai/v1/comments";
+        const headers = new Headers({
+            Authorization: "Bearer " + this.token
+        });
+        const requestOptions = {
+            method: "GET",
+            mode: "cors",
+            headers: headers
+        };
+
+        ApiHandler.doApiCall(new Request(url, requestOptions))
+        .then((jsonData) => {
+            this.newApi["apiComments"] = jsonData;
+            this.setState({
+                commentsDone: true
+            });
+            const loading = !this.allDone("commentsDone");
+            this.setState({
+                loading: loading,
+                apiComments: this.newApi["apiComments"]
+            });
+        })
+        .catch((err) => {
+            console.log("Promise Catch: Content.doSurveyApiCalls", err);
+        });
+    }
+
     /*
         Check if all the api calls are done
         Params:
@@ -311,7 +352,8 @@ class Content extends React.Component {
             "groupUsersDone",
             "groupCoursesDone",
             "groupActivitiesDone",
-            "surveyDone"
+            "surveyDone",
+            "commentsDone"
         ];
         for (let i = 0; i < apiStates.length; ++i) {
             if (apiStates[i] !== ignored && !this.state[apiStates[i]]) {
