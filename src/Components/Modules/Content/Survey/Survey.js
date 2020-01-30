@@ -1,6 +1,6 @@
 import React from "react";
 
-import {Spinner, Container, Nav, NavItem, TabContent, Row, Col} from "reactstrap";
+import {Spinner, Container, Nav, NavItem, TabContent, TabPane, Row, Col} from "reactstrap";
 
 import PortfolioDropdown from "./Filters/PortfolioDropdown";
 import CourseDropdown from "./Filters/CourseDropdown";
@@ -8,6 +8,7 @@ import ExtraSurveyFilters from "./Filters/ExtraSurveyFilters";
 import ExportBtn from "./ExportBtn";
 import SurveyResults from "./SurveyResults";
 import UserDemographics from "./UserDemographics/UserDemographics";
+import FreeResponse from "./FreeResponse/FreeResponse";
 import SurveyFunctions from "../../../../Lib/Content/Survey/SurveyFunctions";
 
 /*
@@ -313,6 +314,13 @@ class Survey extends React.Component {
                 >
                     Demographics
                 </NavItem>
+                <NavItem
+                    className={(this.state["tab"] === "freeResponse") ? "active" : ""}
+                    onClick={this.handleActiveTabChange}
+                    value={"freeResponse"}
+                >
+                    Free Response
+                </NavItem>
             </Nav>
         );
     }
@@ -328,23 +336,34 @@ class Survey extends React.Component {
     renderMainContent() {
         return (
             <TabContent activeTab={this.state["tab"]}>
-                <SurveyResults
-                    results={this.state["results"]}
-                    portfolioId={this.state["portfolioId"]}
-                    courseId={this.state["courseId"]}
-                />
-                <UserDemographics
-                    surveyEntries={this.props["surveyEntries"]}
-                    portfolioId={this.state["portfolioId"]}
-                    courseId={this.state["courseId"]}
-                    filters={{
-                        startDate: this.state["startDate"].getTime() / 1000,
-                        endDate: this.state["endDate"].getTime() / 1000,
-                        team: this.state["team"],
-                        organization: this.state["organization"],
-                        role: this.state["role"]
-                    }}
-                />
+                <TabPane tabId={"results"}>
+                    <SurveyResults
+                        results={this.state["results"]}
+                        portfolioId={this.state["portfolioId"]}
+                        courseId={this.state["courseId"]}
+                    />
+                </TabPane>
+                <TabPane tabId={"demographics"}>
+                    <UserDemographics
+                        surveyEntries={this.props["surveyEntries"]}
+                        portfolioId={this.state["portfolioId"]}
+                        courseId={this.state["courseId"]}
+                        filters={{
+                            startDate: this.state["startDate"].getTime() / 1000,
+                            endDate: this.state["endDate"].getTime() / 1000,
+                            team: this.state["team"],
+                            organization: this.state["organization"],
+                            role: this.state["role"]
+                        }}
+                    />
+                </TabPane>
+                <TabPane tabId={"freeResponse"}>
+                    <FreeResponse
+                        results={this.state["results"]}
+                        portfolioId={this.state["portfolioId"]}
+                        courseId={this.state["courseId"]}
+                    />
+                </TabPane>
             </TabContent>
         );
     }

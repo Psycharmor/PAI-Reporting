@@ -163,3 +163,48 @@
 .survey-chart-body {
     height: 400px;
 }
+
+/* Free response */
+.table-card.frq {
+    /* height: 500px; */
+}
+
+.table-card.frq .card-header {
+    margin-bottom: 0px;
+}
+
+.table-card.frq p {
+    margin-bottom: 20px;
+}
+
+.frq-btn {
+    float: none;
+    z-index: 0;
+    background-color: #0069d9;
+    color: #ffffff;
+}
+
+.frq-btn.right {
+    float: right;
+}
+
+.frq-row {
+    margin-bottom: 20px;
+}
+
+.pa-checkbox {
+    position: relative;
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 0.25rem;
+    background-color: #5e72e4;
+}
+
+.pa-checkmark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #ffffff;
+    font-size: 0.9rem;
+}

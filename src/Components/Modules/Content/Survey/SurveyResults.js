@@ -1,6 +1,6 @@
 import React from "react";
 
-import {TabPane, Row, Col} from "reactstrap";
+import {Row, Col} from "reactstrap";
 
 import YesNoBarGraph from "./Charts/YesNoBarGraph";
 import MultChoicePieChart from "./Charts/MultChoicePieChart";
@@ -12,11 +12,7 @@ import FrqPieChart from "./Charts/FrqPieChart";
 */
 export default function SurveyResults(props) {
     if (Object.keys(props["results"]).length > 0) {
-        return (
-            <TabPane tabId={"results"}>
-                {renderYesNoGraph(props["results"], props["portfolioId"], props["courseId"])}
-            </TabPane>
-        );
+        return renderYesNoGraph(props["results"], props["portfolioId"], props["courseId"]);
         // return (
         //     <TabPane tabId={"results"}>
         //         {renderYesNoGraph(props["results"], props["portfolioId"], props["courseId"])}

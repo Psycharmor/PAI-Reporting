@@ -62,13 +62,13 @@ function initResultObj() {
             "To earn Continuing Education Credit or Equiv": 0,
             "Other": 0
         },
-        "What aspects of the course did you find especially helpful": {},
-        "What aspects of the course would you like to see changed": {},
+        "What aspects of the course did you find especially helpful": [],
+        "What aspects of the course would you like to see changed": [],
         "Knowledge in this area": {before: [0, 0, 0, 0, 0], now: [0, 0, 0, 0, 0]},
         "Skills related to topic": {before: [0, 0, 0, 0, 0], now: [0, 0, 0, 0, 0]},
         "Confidence with topic": {before: [0, 0, 0, 0, 0], now: [0, 0, 0, 0, 0]},
-        "Application: We are interested in understanding how you applied the content": {},
-        "Would you be interested in having your name entered into a drawing for FREE follow-up coaching sessions?": {}
+        "Application: We are interested in understanding how you applied the content": [],
+        "Would you be interested in having your name entered into a drawing for FREE follow-up coaching sessions?": []
     };
 }
 
@@ -86,7 +86,7 @@ function initResultObj() {
 function getCourseSurveyResults(results, portfolioId, courseId, courseEntries, filters) {
     getYesNoResults(results, courseEntries, portfolioId, courseId, filters);
     // getMultChoiceResults(results, courseEntries, portfolioId, courseId, filters);
-    // getFrqResults(results, courseEntries, portfolioId, courseId, filters);
+    getFrqResults(results, courseEntries, portfolioId, courseId, filters);
     // getScaleResults(results, courseEntries, portfolioId, courseId, filters);
 }
 
@@ -197,27 +197,25 @@ function getScaleResults(results, courseEntries, portfolioId, courseId, filters)
         undefined
 */
 function getFrqResults(results, courseEntries, portfolioId, courseId, filters) {
-    let tokenCount = {
-        "What aspects of the course did you find especially helpful": {},
-        "What aspects of the course would you like to see changed": {},
-        "Application: We are interested in understanding how you applied the content": {},
-        "Would you be interested in having your name entered into a drawing for FREE follow-up coaching sessions?": {}
-    };
+    let questions = [
+        "What aspects of the course did you find especially helpful",
+        "What aspects of the course would you like to see changed",
+        "Application: We are interested in understanding how you applied the content",
+        "Would you be interested in having your name entered into a drawing for FREE follow-up coaching sessions?"
+    ];
     for (let i = 0; i < courseEntries.length; ++i) {
         if (SurveyFunctions.entryPassesFilters(courseEntries[i], filters)) {
             const entryResults = courseEntries[i]["results"];
-            for (let question in tokenCount) {
-                const tokens = entryResults[question].toLowerCase();
-                for (let j = 0; j < tokens.length; ++j) {
-                    if(!(tokens[j] in tokenCount[question])) {
-                        tokenCount[question][tokens[j]] = 0;
-                    }
-                    ++tokenCount[question][tokens[j]];
+            for (let j = 0; j < questions.length; ++j) {
+                const question = questions[j];
+                if (entryResults[question] && entryResults[question].trim()) {
+                    results[portfolioId][courseId][question].push({
+                        userId: courseEntries[i]["userId"],
+                        response: entryResults[question],
+                        dateSubmitted: courseEntries[i]["dateSubmitted"]
+                    });
                 }
             }
         }
-    }
-    for (let question in tokenCount) {
-        results[portfolioId][courseId][question] = tokenCount[question];
     }
 }
