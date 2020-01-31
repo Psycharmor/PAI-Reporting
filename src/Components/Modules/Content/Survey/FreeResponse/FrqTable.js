@@ -169,7 +169,8 @@ const cellStyle = {
     fontSize: "0.8125rem",
     borderTop: "1px solid #E9ECEF",
     backgroundColor: "#FFFFFF",
-    color: "#525F7F"
+    color: "#525F7F",
+    cursor: "pointer"
 };
 
 // Row Selection Style
@@ -183,7 +184,8 @@ const selectHeaderColumnStyle = {
     fontWeight: 700,
     textTransform: "uppercase",
     letterSpacing: "1px",
-    width: 5
+    width: 5,
+    cursor: "pointer"
 };
 
 
@@ -197,7 +199,7 @@ const selectHeaderColumnStyle = {
 function renderCheckbox(selectProperties) {
     if (selectProperties["checked"]) {
         return (
-            <div className={"pa-checkbox"}>
+            <div className={"pa-checkbox checked"}>
                 <FaCheck className={"pa-checkmark"}/>
             </div>
         );

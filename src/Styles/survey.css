@@ -196,7 +196,13 @@
     position: relative;
     width: 1.1rem;
     height: 1.1rem;
+    border: 1px solid #dee2e6;
     border-radius: 0.25rem;
+    background-color: #ffffff;
+}
+
+.pa-checkbox.checked {
+    border: none;
     background-color: #5e72e4;
 }
 

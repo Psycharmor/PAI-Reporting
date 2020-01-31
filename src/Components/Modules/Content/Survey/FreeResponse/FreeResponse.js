@@ -181,44 +181,45 @@ class FreeResponse extends React.Component {
             undefined
     */
     handleAddCategory() {
-        console.log("Add", this.state["category"], this.state["selectedComments"]);
-        let body = {
-            add: "response",
-            responses: []
-        };
-        for (let i = 0; i < this.state["selectedComments"].length; ++i) {
-            const comment = this.state["selectedComments"][i];
-            body["responses"].push({
-                response: comment["response"],
-                userId: comment["userId"],
-                category: this.state["category"],
-                dateSubmitted: comment["dateSubmitted"]
-            });
-        }
-        const options = {
-            headers: {
-                Authorization: "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9zdGFnaW5nLnBzeWNoYXJtb3Iub3JnIiwiaWF0IjoxNTgwNDg3NDE3LCJuYmYiOjE1ODA0ODc0MTcsImV4cCI6MTU4MTA5MjIxNywiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMjU2MTcifX19.dQ0Ts9uBttdND5B0Uo8dIN3pCVusy2cRlXKDooDNi10"
-            }
-        };
-        axios.post("http://staging.psycharmor.org/wp-json/pai/v1/frq", body, options)
-        .then((jsonData) => {
-            if (jsonData["status"] === 200) {
-                axios.get("http://staging.psycharmor.org/wp-json/pai/v1/frq?fetch=responses", options)
-                .then((jsonData) => {
-                    this.setState({
-                        responses: jsonData["data"],
-                        selectedRows: [],
-                        selectedComments: []
-                    });
-                })
-                .catch((err) => {
-                    console.log("Promise Catch: FreeResponse.handleAddCategory", err);
+        if (this.state["category"] && this.state["category"].trim()) {
+            let body = {
+                add: "response",
+                responses: []
+            };
+            for (let i = 0; i < this.state["selectedComments"].length; ++i) {
+                const comment = this.state["selectedComments"][i];
+                body["responses"].push({
+                    response: comment["response"],
+                    userId: comment["userId"],
+                    category: this.state["category"],
+                    dateSubmitted: comment["dateSubmitted"]
                 });
             }
-        })
-        .catch((err) => {
-            console.log("Promise Catch: FreeResponse.handleAddCategory", err);
-        });
+            const options = {
+                headers: {
+                    Authorization: "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9zdGFnaW5nLnBzeWNoYXJtb3Iub3JnIiwiaWF0IjoxNTgwNDg3NDE3LCJuYmYiOjE1ODA0ODc0MTcsImV4cCI6MTU4MTA5MjIxNywiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMjU2MTcifX19.dQ0Ts9uBttdND5B0Uo8dIN3pCVusy2cRlXKDooDNi10"
+                }
+            };
+            axios.post("http://staging.psycharmor.org/wp-json/pai/v1/frq", body, options)
+            .then((jsonData) => {
+                if (jsonData["status"] === 200) {
+                    axios.get("http://staging.psycharmor.org/wp-json/pai/v1/frq?fetch=responses", options)
+                    .then((jsonData) => {
+                        this.setState({
+                            responses: jsonData["data"],
+                            selectedRows: [],
+                            selectedComments: []
+                        });
+                    })
+                    .catch((err) => {
+                        console.log("Promise Catch: FreeResponse.handleAddCategory", err);
+                    });
+                }
+            })
+            .catch((err) => {
+                console.log("Promise Catch: FreeResponse.handleAddCategory", err);
+            });
+        }
     }
 
     /*
@@ -341,6 +342,7 @@ class FreeResponse extends React.Component {
                         .then((jsonData) => {
                             this.setState({
                                 responses: jsonData["data"],
+                                category: "",
                                 selectedRows: [],
                                 selectedComments: []
                             });
