@@ -3,7 +3,6 @@ import React from "react";
 import {Row, Col, Button, InputGroup, InputGroupAddon, Input} from "reactstrap";
 
 import Dropdown from "./Dropdown";
-import ApiHandler from "../../../../../Lib/ApiHandler";
 
 class FrqFunctionality extends React.Component {
 
@@ -63,12 +62,7 @@ class FrqFunctionality extends React.Component {
                     <Dropdown
                         value={this.props["question"]}
                         changeHandler={this.props["changeCategoryHandler"]}
-                        options={[
-                            "CAT 1",
-                            "CAT 2",
-                            "CAT 3",
-                            "CAT 4"
-                        ]}
+                        options={this.props["categories"]}
                     />
                 </Col>
                 <Col sm={6}>

@@ -362,6 +362,8 @@ class Survey extends React.Component {
                         results={this.state["results"]}
                         portfolioId={this.state["portfolioId"]}
                         courseId={this.state["courseId"]}
+                        frqCategories={this.props["frqCategories"]}
+                        frqResponses={this.props["frqResponses"]}
                     />
                 </TabPane>
             </TabContent>

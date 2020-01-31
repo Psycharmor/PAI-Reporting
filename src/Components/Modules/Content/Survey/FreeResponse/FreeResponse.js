@@ -1,9 +1,11 @@
 import React from "react";
 
 import {Card, CardHeader} from "reactstrap";
+import lodash from "lodash";
 
 import FrqTable from "./FrqTable";
 import FrqFunctionality from "./FrqFunctionality";
+import axios from "axios";
 
 /*
     Component for the free response questions table and categorization
@@ -14,7 +16,8 @@ class FreeResponse extends React.Component {
 
         this.state = {
             question: "What aspects of the course did you find especially helpful", // frq responses to display
-            category: "CAT 1", // what category to (un)assign the selected comments to
+            categories: [],
+            category: "", // what category to (un)assign the selected comments to
             selectedRows: [], // the table row keys that are selected for categorization
             selectedComments: [] // the objects that will be sent to the server table via API
         };
@@ -30,6 +33,25 @@ class FreeResponse extends React.Component {
         this.handleTablePageAndSizeChange = this.handleTablePageAndSizeChange.bind(this);
     }
 
+    // Lifecycle Methods
+
+    componentDidMount() {
+        this.setState({
+            categories: this.props["frqCategories"],
+            category: this.props["frqCategories"][0] || "",
+            responses: this.props["frqResponses"]
+        });
+    }
+
+    componentDidUpdate(prevProps) {
+        if (!lodash.isEqual(prevProps, this.props)) {
+            this.setState({
+                selectedRows: [],
+                selectedComments: []
+            });
+        }
+    }
+
     // Event Handlers
 
     /*
@@ -41,7 +63,9 @@ class FreeResponse extends React.Component {
     */
     handleActiveQuestionChange(event) {
         this.setState({
-            question: event.target["value"]
+            question: event.target["value"],
+            selectedRows: [],
+            selectedComments: []
         });
     }
 
@@ -54,7 +78,9 @@ class FreeResponse extends React.Component {
     */
     handleActiveCategoryChange(event) {
         this.setState({
-            category: event.target["value"]
+            category: event.target["value"],
+            selectedRows: [],
+            selectedComments: []
         });
     }
 
@@ -124,7 +150,6 @@ class FreeResponse extends React.Component {
             }
         }
         this.setState({
-            loading: false,
             selectedRows: selectedRows,
             selectedComments: selectedComments
         });
@@ -157,6 +182,43 @@ class FreeResponse extends React.Component {
     */
     handleAddCategory() {
         console.log("Add", this.state["category"], this.state["selectedComments"]);
+        let body = {
+            add: "response",
+            responses: []
+        };
+        for (let i = 0; i < this.state["selectedComments"].length; ++i) {
+            const comment = this.state["selectedComments"][i];
+            body["responses"].push({
+                response: comment["response"],
+                userId: comment["userId"],
+                category: this.state["category"],
+                dateSubmitted: comment["dateSubmitted"]
+            });
+        }
+        const options = {
+            headers: {
+                Authorization: "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9zdGFnaW5nLnBzeWNoYXJtb3Iub3JnIiwiaWF0IjoxNTgwNDg3NDE3LCJuYmYiOjE1ODA0ODc0MTcsImV4cCI6MTU4MTA5MjIxNywiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMjU2MTcifX19.dQ0Ts9uBttdND5B0Uo8dIN3pCVusy2cRlXKDooDNi10"
+            }
+        };
+        axios.post("http://staging.psycharmor.org/wp-json/pai/v1/frq", body, options)
+        .then((jsonData) => {
+            if (jsonData["status"] === 200) {
+                axios.get("http://staging.psycharmor.org/wp-json/pai/v1/frq?fetch=responses", options)
+                .then((jsonData) => {
+                    this.setState({
+                        responses: jsonData["data"],
+                        selectedRows: [],
+                        selectedComments: []
+                    });
+                })
+                .catch((err) => {
+                    console.log("Promise Catch: FreeResponse.handleAddCategory", err);
+                });
+            }
+        })
+        .catch((err) => {
+            console.log("Promise Catch: FreeResponse.handleAddCategory", err);
+        });
     }
 
     /*
@@ -168,7 +230,43 @@ class FreeResponse extends React.Component {
             undefined
     */
     handleRemoveCategory() {
-        console.log("Remove", this.state["category"], this.state["selectedComments"]);
+        let body = {
+            remove: "response",
+            responses: []
+        };
+        for (let i = 0; i < this.state["selectedComments"].length; ++i) {
+            const comment = this.state["selectedComments"][i];
+            body["responses"].push({
+                response: comment["response"],
+                userId: comment["userId"],
+                category: this.state["category"],
+                dateSubmitted: comment["dateSubmitted"]
+            });
+        }
+        const options = {
+            headers: {
+                Authorization: "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9zdGFnaW5nLnBzeWNoYXJtb3Iub3JnIiwiaWF0IjoxNTgwNDg3NDE3LCJuYmYiOjE1ODA0ODc0MTcsImV4cCI6MTU4MTA5MjIxNywiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMjU2MTcifX19.dQ0Ts9uBttdND5B0Uo8dIN3pCVusy2cRlXKDooDNi10"
+            }
+        };
+        axios.post("http://staging.psycharmor.org/wp-json/pai/v1/frq", body, options)
+        .then((jsonData) => {
+            if (jsonData["status"] === 200) {
+                axios.get("http://staging.psycharmor.org/wp-json/pai/v1/frq?fetch=responses", options)
+                .then((jsonData) => {
+                    this.setState({
+                        responses: jsonData["data"],
+                        selectedRows: [],
+                        selectedComments: []
+                    });
+                })
+                .catch((err) => {
+                    console.log("Promise Catch: FreeResponse.handleRemoveCategory", err);
+                });
+            }
+        })
+        .catch((err) => {
+            console.log("Promise Catch: FreeResponse.handleRemoveCategory", err);
+        });
     }
 
     /*
@@ -181,10 +279,34 @@ class FreeResponse extends React.Component {
     handleAddNewCategory(event) {
         const newCategory = event.target["value"];
         if (newCategory && newCategory.trim()) {
-            console.log("Add new", newCategory);
-            // api call to add new category to server
-            //      add to category table
-            // api call to refetch categories
+            let body = {
+                add: "category",
+                category: newCategory
+            };
+            const options = {
+                headers: {
+                    Authorization: "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9zdGFnaW5nLnBzeWNoYXJtb3Iub3JnIiwiaWF0IjoxNTgwNDg3NDE3LCJuYmYiOjE1ODA0ODc0MTcsImV4cCI6MTU4MTA5MjIxNywiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMjU2MTcifX19.dQ0Ts9uBttdND5B0Uo8dIN3pCVusy2cRlXKDooDNi10"
+                }
+            };
+            axios.post("http://staging.psycharmor.org/wp-json/pai/v1/frq", body, options)
+            .then((jsonData) => {
+                if (jsonData["status"] === 200) {
+                    axios.get("http://staging.psycharmor.org/wp-json/pai/v1/frq?fetch=categories", options)
+                    .then((jsonData) => {
+                        this.setState({
+                            categories: jsonData["data"],
+                            selectedRows: [],
+                            selectedComments: []
+                        });
+                    })
+                    .catch((err) => {
+                        console.log("Promise Catch: FreeResponse.handleAddNewCategory", err);
+                    });
+                }
+            })
+            .catch((err) => {
+                console.log("Promise Catch: FreeResponse.handleAddNewCategory", err);
+            });
         }
     }
 
@@ -198,16 +320,48 @@ class FreeResponse extends React.Component {
     handleRemoveCategoryFromList(event) {
         const category = event.target["value"];
         if (category && category.trim()) {
-            console.log("Add new", category);
-            // api call to remove new category from server
-            //      remove from category table
-            //      remove all rows that contain category from entries table
-            // api call to refetch entries and categories
+            let body = {
+                remove: "category",
+                category: category
+            };
+            const options = {
+                headers: {
+                    Authorization: "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9zdGFnaW5nLnBzeWNoYXJtb3Iub3JnIiwiaWF0IjoxNTgwNDg3NDE3LCJuYmYiOjE1ODA0ODc0MTcsImV4cCI6MTU4MTA5MjIxNywiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMjU2MTcifX19.dQ0Ts9uBttdND5B0Uo8dIN3pCVusy2cRlXKDooDNi10"
+                }
+            };
+            axios.post("http://staging.psycharmor.org/wp-json/pai/v1/frq", body, options)
+            .then((jsonData) => {
+                if (jsonData["status"] === 200) {
+                    axios.get("http://staging.psycharmor.org/wp-json/pai/v1/frq?fetch=categories", options)
+                    .then((jsonData) => {
+                        this.setState({
+                            categories: jsonData["data"]
+                        });
+                        axios.get("http://staging.psycharmor.org/wp-json/pai/v1/frq?fetch=responses", options)
+                        .then((jsonData) => {
+                            this.setState({
+                                responses: jsonData["data"],
+                                selectedRows: [],
+                                selectedComments: []
+                            });
+                        })
+                        .catch((err) => {
+                            console.log("Promise Catch: FreeResponse.handleRemoveCategoryFromList", err);
+                        });
+                    })
+                    .catch((err) => {
+                        console.log("Promise Catch: FreeResponse.handleRemoveCategoryFromList", err);
+                    });
+                }
+            })
+            .catch((err) => {
+                console.log("Promise Catch: FreeResponse.handleRemoveCategoryFromList", err);
+            });
         }
     }
 
     render() {
-        console.log(this.state["selectedRows"], this.state["selectedComments"]);
+        console.log(this.state["selectedRows"], this.state["selectedComments"], this.state["categories"], this.state["responses"]);
         return (
             <Card className={"table-card frq"}>
                 <CardHeader>
@@ -216,6 +370,7 @@ class FreeResponse extends React.Component {
                     <FrqFunctionality
                         question={this.state["question"]}
                         category={this.state["category"]}
+                        categories={this.state["categories"]}
                         changeQuestionHandler={this.handleActiveQuestionChange}
                         changeCategoryHandler={this.handleActiveCategoryChange}
                         addCategoryHandler={this.handleAddCategory}
@@ -230,6 +385,7 @@ class FreeResponse extends React.Component {
                     courseId={this.props["courseId"]}
                     question={this.state["question"]}
                     selectedRows={this.state["selectedRows"]}
+                    responses={this.state["responses"]}
                     singleRowSelectHandler={this.handleSingleRowSelect}
                     selectAllHandler={this.handleSelectAll}
                     pageAndSizeChangeHandler={this.handleTablePageAndSizeChange}

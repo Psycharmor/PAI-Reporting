@@ -30,7 +30,7 @@ export default function FrqTable(props) {
         }
     ];
     const data = getTableData(
-        props["results"], props["portfolioId"], props["courseId"], props["question"]);
+        props["results"], props["portfolioId"], props["courseId"], props["question"], props["responses"]);
     const selectRow = {
         mode: "checkbox",
         headerColumnStyle: selectHeaderColumnStyle,
@@ -76,23 +76,23 @@ export default function FrqTable(props) {
     Return:
         array -> the data that will be sent to the table
 */
-function getTableData(results, pPortfolioId, pCourseId, question) {
+function getTableData(results, pPortfolioId, pCourseId, question, responses) {
     let data = [];
     if ((pPortfolioId === 0) && (pCourseId === 0)) {
         for (let portfolioId in results) {
             for (let courseId in results[portfolioId]) {
-                addToData(data, results, portfolioId, courseId, question);
+                addToData(data, results, portfolioId, courseId, question, responses);
             }
         }
     }
     else {
         if (pCourseId === 0) {
             for (let courseId in results[pPortfolioId]) {
-                addToData(data, results, pPortfolioId, courseId, question);
+                addToData(data, results, pPortfolioId, courseId, question, responses);
             }
         }
         else {
-            addToData(data, results, pPortfolioId, pCourseId, question);
+            addToData(data, results, pPortfolioId, pCourseId, question, responses);
         }
     }
 
@@ -110,14 +110,22 @@ function getTableData(results, pPortfolioId, pCourseId, question) {
     Return:
         undefined
 */
-function addToData(data, results, portfolioId, courseId, question) {
+function addToData(data, results, portfolioId, courseId, question, apiResponses) {
     const responses = results[portfolioId][courseId][question];
     for (let i = 0; i < responses.length; ++i) {
+        let categories = [];
+        for (let j = 0; j < apiResponses.length; ++j) {
+            if (apiResponses[j]["response"] === responses[i]["response"] &&
+                parseInt(apiResponses[j]["user_id"]) === responses[i]["userId"] &&
+                parseInt(apiResponses[j]["date_submitted"]) === responses[i]["dateSubmitted"]) {
+                    categories.push(apiResponses[j]["category"]);
+                }
+        }
         data.push({
             index: data.length,
             userId: responses[i]["userId"],
             response: responses[i]["response"],
-            categories: "CATEGORIES",
+            categories: categories.join(', '),
             dateSubmitted: responses[i]["dateSubmitted"]
         });
     }

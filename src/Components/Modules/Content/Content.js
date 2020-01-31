@@ -21,6 +21,8 @@ class Content extends React.Component {
             apiReportGroupCourses: {},
             apiReportGroupActivities: {},
             apiSurveyEntries: {},
+            apiFrqCategories: [],
+            apiFrqResponses: [],
             apiComments: {}
         };
 
@@ -34,11 +36,15 @@ class Content extends React.Component {
             groupActivitiesDone: true,
             surveyDone: true,
             commentsDone: true,
+            frqCategoriesDone: true,
+            frqResponsesDone: true,
             apiReportGroupInfo: {},
             apiReportGroupUsers: {},
             apiReportGroupCourses: {},
             apiReportGroupActivities: {},
             apiSurveyEntries: {},
+            apiFrqCategories: [],
+            apiFrqResponses: [],
             apiComments: {}
         };
 
@@ -109,6 +115,8 @@ class Content extends React.Component {
             groupCoursesDone: false,
             groupActivitiesDone: false,
             surveyDone: false,
+            frqCategoriesDone: false,
+            frqResponsesDone: false,
             commentsDone: false
         });
         const user = JSON.parse(localStorage.getItem("USER"));
@@ -116,10 +124,13 @@ class Content extends React.Component {
 
         if ("survey" in this.props["menus"]) {
             this.doSurveyApiCalls(5000, 0, 0);
+            this.doFrqApiCalls();
         }
         else {
             this.setState({
-                surveyDone: true
+                surveyDone: true,
+                frqCategoriesDone: true,
+                frqResponsesDone: true
             });
         }
 
@@ -311,6 +322,53 @@ class Content extends React.Component {
         }
     }
 
+    doFrqApiCalls() {
+        const headers = new Headers({
+            Authorization: "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9zdGFnaW5nLnBzeWNoYXJtb3Iub3JnIiwiaWF0IjoxNTgwNDg3NDE3LCJuYmYiOjE1ODA0ODc0MTcsImV4cCI6MTU4MTA5MjIxNywiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMjU2MTcifX19.dQ0Ts9uBttdND5B0Uo8dIN3pCVusy2cRlXKDooDNi10"
+        });
+        const requestOptions = {
+            method: "GET",
+            mode: "cors",
+            headers: headers
+        };
+
+        // categories
+        ApiHandler.doApiCall(new Request("http://staging.psycharmor.org/wp-json/pai/v1/frq?fetch=categories", requestOptions))
+        .then((jsonData) => {
+            this.newApi["apiFrqCategories"] = jsonData;
+            this.setState({
+                frqCategoriesDone: true,
+            });
+
+            const loading = !this.allDone("frqCategoriesDone");
+            this.setState({
+                loading: loading,
+                apiFrqCategories: jsonData
+            });
+        })
+        .catch((err) => {
+            console.log("Promise Catch: Content.doFrqApiCalls", err);
+        });
+
+        // responses
+        ApiHandler.doApiCall(new Request("http://staging.psycharmor.org/wp-json/pai/v1/frq?fetch=responses", requestOptions))
+        .then((jsonData) => {
+            this.newApi["apiFrqResponses"] = jsonData;
+            this.setState({
+                frqResponsesDone: true,
+            });
+
+            const loading = !this.allDone("frqResponsesDone");
+            this.setState({
+                loading: loading,
+                apiFrqResponses: jsonData
+            });
+        })
+        .catch((err) => {
+            console.log("Promise Catch: Content.doFrqApiCalls", err);
+        });
+    }
+
     doCommentsApiCalls() {
         let url = this.url + "wp-json/pai/v1/comments";
         const headers = new Headers({
@@ -353,7 +411,9 @@ class Content extends React.Component {
             "groupCoursesDone",
             "groupActivitiesDone",
             "surveyDone",
-            "commentsDone"
+            "commentsDone",
+            "frqCategoriesDone",
+            "frqResponsesDone"
         ];
         for (let i = 0; i < apiStates.length; ++i) {
             if (apiStates[i] !== ignored && !this.state[apiStates[i]]) {
@@ -384,6 +444,8 @@ class Content extends React.Component {
                     <Survey
                         surveyEntries={this.state["apiSurveyEntries"]}
                         loading={this.state["loading"]}
+                        frqCategories={this.state["apiFrqCategories"]}
+                        frqResponses={this.state["apiFrqResponses"]}
                     />
                 );
             case "comment":
