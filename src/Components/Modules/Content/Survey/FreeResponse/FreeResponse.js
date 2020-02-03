@@ -294,11 +294,21 @@ class FreeResponse extends React.Component {
                 if (jsonData["status"] === 200) {
                     axios.get("http://staging.psycharmor.org/wp-json/pai/v1/frq?fetch=categories", options)
                     .then((jsonData) => {
-                        this.setState({
-                            categories: jsonData["data"],
-                            selectedRows: [],
-                            selectedComments: []
-                        });
+                        if (this.state["category"] === "") {
+                            this.setState({
+                                categories: jsonData["data"],
+                                category: jsonData["data"][0],
+                                selectedRows: [],
+                                selectedComments: []
+                            });
+                        }
+                        else {
+                            this.setState({
+                                categories: jsonData["data"],
+                                selectedRows: [],
+                                selectedComments: []
+                            });
+                        }
                     })
                     .catch((err) => {
                         console.log("Promise Catch: FreeResponse.handleAddNewCategory", err);

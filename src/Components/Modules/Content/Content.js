@@ -3,6 +3,7 @@ import React from "react";
 import ApiHandler from "../../../Lib/ApiHandler";
 import TeamReport from "./TeamReporting/TeamReport";
 import Survey from "./Survey/Survey";
+import Comments from "./Comments/Comments";
 
 /*
     The Component will handle rendering the different views as well as handling
@@ -23,7 +24,7 @@ class Content extends React.Component {
             apiSurveyEntries: {},
             apiFrqCategories: [],
             apiFrqResponses: [],
-            apiComments: {}
+            apiComments: []
         };
 
         this.reportEndpoint = this.getReportEndpoint();
@@ -45,7 +46,7 @@ class Content extends React.Component {
             apiSurveyEntries: {},
             apiFrqCategories: [],
             apiFrqResponses: [],
-            apiComments: {}
+            apiComments: []
         };
 
         this.handleTeamChange = this.handleTeamChange.bind(this);
@@ -135,7 +136,7 @@ class Content extends React.Component {
         }
 
         if ("comments" in this.props["menus"]) {
-            this.doCommentsApiCalls();
+            this.doCommentsApiCalls(1000, 0);
         }
         else {
             this.setState({
@@ -369,10 +370,10 @@ class Content extends React.Component {
         });
     }
 
-    doCommentsApiCalls() {
-        let url = this.url + "wp-json/pai/v1/comments";
+    doCommentsApiCalls(limit, offset) {
+        let url = "http://staging.psycharmor.org/" + "wp-json/pai/v1/comments?limit=" + limit + "&offset=" + offset;
         const headers = new Headers({
-            Authorization: "Bearer " + this.token
+            Authorization: "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9zdGFnaW5nLnBzeWNoYXJtb3Iub3JnIiwiaWF0IjoxNTgwNDg3NDE3LCJuYmYiOjE1ODA0ODc0MTcsImV4cCI6MTU4MTA5MjIxNywiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMjU2MTcifX19.dQ0Ts9uBttdND5B0Uo8dIN3pCVusy2cRlXKDooDNi10"
         });
         const requestOptions = {
             method: "GET",
@@ -382,15 +383,20 @@ class Content extends React.Component {
 
         ApiHandler.doApiCall(new Request(url, requestOptions))
         .then((jsonData) => {
-            this.newApi["apiComments"] = jsonData;
-            this.setState({
-                commentsDone: true
-            });
-            const loading = !this.allDone("commentsDone");
-            this.setState({
-                loading: loading,
-                apiComments: this.newApi["apiComments"]
-            });
+            this.newApi["apiComments"] = this.newApi["apiComments"].concat(jsonData);
+            if (jsonData.length >= 1000) {
+                this.doCommentsApiCalls(limit, offset + jsonData.length);
+            }
+            else {
+                this.setState({
+                    commentsDone: true
+                });
+                const loading = !this.allDone("commentsDone");
+                this.setState({
+                    loading: loading,
+                    apiComments: this.newApi["apiComments"]
+                });
+            }
         })
         .catch((err) => {
             console.log("Promise Catch: Content.doSurveyApiCalls", err);
@@ -448,8 +454,12 @@ class Content extends React.Component {
                         frqResponses={this.state["apiFrqResponses"]}
                     />
                 );
-            case "comment":
-                return this.props["view"];
+            case "comments":
+                return (
+                    <Comments
+                        comments={this.state["apiComments"]}
+                    />
+                );
             default:
         }
     }
