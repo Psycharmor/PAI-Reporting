@@ -32,16 +32,16 @@ class Controller extends React.Component {
 
         // add additional menus only for certain roles
         if (this.getUserRole() === "administrator") {
-            this.menus["survey"] = {
-                icon: <MdPoll/>,
-                text: "Survey Results",
-                class: "survey-icon"
-            };
-            // this.menus["comments"] = {
-            //     icon: <MdComment/>,
-            //     text: "Comments",
-            //     class: "comment-icon"
+            // this.menus["survey"] = {
+            //     icon: <MdPoll/>,
+            //     text: "Survey Results",
+            //     class: "survey-icon"
             // };
+            this.menus["comments"] = {
+                icon: <MdComment/>,
+                text: "Comments",
+                class: "comment-icon"
+            };
         }
 
         this.state = {

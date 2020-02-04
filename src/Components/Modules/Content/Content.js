@@ -1,5 +1,7 @@
 import React from "react";
 
+import axios from "axios";
+
 import ApiHandler from "../../../Lib/ApiHandler";
 import TeamReport from "./TeamReporting/TeamReport";
 import Survey from "./Survey/Survey";
@@ -14,7 +16,7 @@ class Content extends React.Component {
         super(props);
 
         this.url = "https://psycharmor.org/";
-        this.token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvcHN5Y2hhcm1vci5vcmciLCJpYXQiOjE1ODAyMzAyOTIsIm5iZiI6MTU4MDIzMDI5MiwiZXhwIjoxNTgwODM1MDkyLCJkYXRhIjp7InVzZXIiOnsiaWQiOiIyNTYxNyJ9fX0.Q24IEyUoHZhXs9-VqJaGnuGHCVVctyUIeS2h30dXX5g";
+        this.token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvcHN5Y2hhcm1vci5vcmciLCJpYXQiOjE1ODA4MzUyMzEsIm5iZiI6MTU4MDgzNTIzMSwiZXhwIjoxNTgxNDQwMDMxLCJkYXRhIjp7InVzZXIiOnsiaWQiOiIyNTYxNyJ9fX0.AQLjzKEZgKOBkqSFTA_PUyPYsHk5vJwkdgt2l8fh5og";
 
         this.newApi = {
             apiReportGroupInfo: {},
@@ -50,6 +52,7 @@ class Content extends React.Component {
         };
 
         this.handleTeamChange = this.handleTeamChange.bind(this);
+        this.handleCommentAction = this.handleCommentAction.bind(this);
     }
 
     // Lifecycle Methods
@@ -77,6 +80,28 @@ class Content extends React.Component {
         });
 
         this.doReportApiCalls(teamId, 5000, 0);
+    }
+
+    handleCommentAction(body) {
+        const options = {
+            headers: {
+                Authorization: "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9zdGFnaW5nLnBzeWNoYXJtb3Iub3JnIiwiaWF0IjoxNTgwNDg3NDE3LCJuYmYiOjE1ODA0ODc0MTcsImV4cCI6MTU4MTA5MjIxNywiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMjU2MTcifX19.dQ0Ts9uBttdND5B0Uo8dIN3pCVusy2cRlXKDooDNi10"
+            }
+        };
+        axios.post("http://staging.psycharmor.org/wp-json/pai/v1/comments", body, options)
+        .then((jsonData) => {
+            if (jsonData["status"] === 200) {
+                this.setState({
+                    loading: true,
+                    commentsDone: false
+                });
+                this.newApi["apiComments"] = [];
+                this.doCommentsApiCalls(1000, 0);
+            }
+        })
+        .catch((err) => {
+            console.log("Promise Catch: Content.handleCommentAction", err);
+        });
     }
 
     // Utility Methods
@@ -458,6 +483,7 @@ class Content extends React.Component {
                 return (
                     <Comments
                         comments={this.state["apiComments"]}
+                        actionHandler={this.handleCommentAction}
                     />
                 );
             default:

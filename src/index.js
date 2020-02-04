@@ -9,6 +9,7 @@ import "./Styles/controller.css";
 import "./Styles/content.css";
 import "./Styles/teamreport.css";
 import "./Styles/survey.css";
+import "./Styles/comments.css";
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
