@@ -1,0 +1,46 @@
+/*
+    CSS for the icons and their containers
+*/
+
+.sidenav .menu-icon {
+    min-width: 2rem;
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+    margin-right: 1rem;
+    vertical-align: middle;
+}
+
+.team-report-icon {
+    color: #5e72e4;
+}
+
+.upload-icon {
+    color: #fb6340;
+}
+
+.survey-icon {
+    color: #11cdef;
+}
+
+.comment-icon {
+    color: #2dce89;
+}
+
+.briefing-card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    color: #ffffff;
+    font-size: 1.5rem;
+}
+
+.team-report-total-users-icon {
+    background: linear-gradient(87deg, #f5365c, #f56036);
+}
+
+.team-report-total-course-completed-icon {
+    background: linear-gradient(87deg, #fb6340, #fbb140);
+}

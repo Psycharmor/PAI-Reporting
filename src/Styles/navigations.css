@@ -1,0 +1,22 @@
+/*
+    CSS related to anything to do with navigation (e.g. tabs)
+*/
+
+/* sidebar */
+
+.sidenav .menu-item {
+    padding: 0.675rem 1.5rem;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    cursor: pointer;
+}
+
+.sidenav .menu-item:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+.sidenav .menu-item.active {
+    background-color: rgba(0, 0, 0, 0.08);
+}

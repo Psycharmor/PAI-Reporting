@@ -1,0 +1,145 @@
+/*
+    CSS related to container like element (e.g. div, Container, etc)
+*/
+
+.login {
+  padding: 20px 0;
+  width: 320px;
+      padding: 8% 0 0;
+      margin: auto;
+}
+
+.sidenav {
+    display: block;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 250px;
+    padding-top: 64px;
+    padding-left: 0;
+    padding-right: 0;
+    background-color: #ffffff;
+    transition: all 0.15s ease;
+}
+
+.sidenav.responsive {
+    display: none;
+}
+
+.sidebar-responsive-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.navbar-vertical {
+    box-shadow: 0 0 2rem 0 rgba(136, 152, 170, 0.15);
+}
+
+.topbar {
+    height: 64px;
+    background-color: #11cdef;
+}
+
+.header-bg {
+    height: 300px;
+    width: 100%;
+    background-color: #11cdef;
+}
+
+.main-content {
+    position: relative;
+    margin-left: 250px;
+}
+
+.loading-overlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.loading-spinner {
+    width: 4rem;
+    height: 4rem;
+}
+
+.view-content {
+    position: absolute;
+    top: 80px;
+    width: 100%;
+}
+
+.card {
+    border-radius: 0.375rem;
+    border: 0;
+    box-shadow: 0 0 2rem 0 rgba(136, 152, 170, 0.15);
+}
+
+.card-header {
+    border-radius: 0.375rem !important;
+}
+
+.briefing-card {
+    height: 100%;
+}
+
+.briefing-card-body {
+    padding: 1rem 1.5rem;
+}
+
+.margin-bot-30 {
+    margin-bottom: 30px;
+}
+
+.margin-bottom-50 {
+    margin-bottom: 50px;
+}
+
+@media screen and (max-width: 991px) {
+    .sidenav {
+        display: none;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .sidebar-toggle-btn {
+        display: block;
+    }
+
+    .sidebar-responsive-overlay.show {
+        display: block;
+        z-index: 100;
+    }
+
+    .sidenav.responsive {
+        display: block;
+        z-index: 101;
+        width: 0;
+        transition: width 0.35s ease;
+    }
+
+    .sidenav.responsive .navbar-nav {
+        display: none;
+    }
+
+    .sidenav.responsive.show {
+        width: 250px;
+    }
+
+    .sidenav.responsive.show .navbar-nav {
+        display: block;
+    }
+}
