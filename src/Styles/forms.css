@@ -39,6 +39,21 @@
     font-size: 0.875rem !important;
 }
 
+.pai-btn {
+    padding: 10px;
+    background-color: #ffffff;
+    color: #5e72e4;
+}
+
+.pai-btn:hover {
+    background-color: #0069d9;
+    color: #ffffff;
+}
+
+.report-export-btn {
+    float: right;
+}
+
 @media screen and (max-width: 991px) {
     .sidebar-toggle-btn {
         display: block;

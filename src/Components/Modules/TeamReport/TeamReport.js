@@ -5,6 +5,7 @@ import {MdPerson} from "react-icons/md";
 
 import ReportFilters from "./Filters/ReportFilters";
 import Brief from "./Briefing/Brief";
+import ReportExportBtn from "./ReportExportBtn";
 import TeamReportTable from "./TeamReportTable";
 
 export default class TeamReport extends React.Component {
@@ -74,6 +75,22 @@ export default class TeamReport extends React.Component {
         return groups[0]["groupId"];
     }
 
+    getCourseCompletionCount(groups, groupId, activities) {
+        const courseIds = groups[groupId]["courseIds"];
+        const userIds = groups[groupId]["userIds"];
+
+        let courseCompletionCount = 0;
+        for (let activityId in activities) {
+            const activity = activities[activityId];
+            if (userIds.includes(activity["userId"]) && courseIds.includes(activity["courseId"])
+                    && activity["status"]) {
+                ++courseCompletionCount;
+            }
+        }
+
+        return courseCompletionCount;
+    }
+
     render() {
         console.log(this.props);
         console.log(this.state);
@@ -104,9 +121,17 @@ export default class TeamReport extends React.Component {
                     <Col sm={6} xl={3}>
                         <Brief
                             title={"Course Completions"}
-                            content={0}
+                            content={this.getCourseCompletionCount(groups, groupId, this.props["activities"])}
                             icon={<MdPerson/>}
                             class={"team-report-total-course-completed-icon"}
+                        />
+                    </Col>
+                    <Col sm={6}>
+                        <ReportExportBtn
+                            group={groups[groupId]}
+                            users={this.props["users"]}
+                            courses={this.props["courses"]}
+                            activities={this.props["activities"]}
                         />
                     </Col>
                 </Row>

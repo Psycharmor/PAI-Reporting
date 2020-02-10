@@ -27,18 +27,6 @@ export default class Controller extends React.Component {
                 class: "team-report-icon"
             }
         };
-        if (this.getUserRole() === "administrator") {
-            this.menus["survey"] = {
-                icon: <MdPoll/>,
-                text: "Survey Results",
-                class: "survey-icon"
-            };
-            this.menus["comments"] = {
-                icon: <MdComment/>,
-                text: "Comments",
-                class: "comment-icon"
-            };
-        }
 
         this.databaseName = "reportDatabase";
 
@@ -64,12 +52,36 @@ export default class Controller extends React.Component {
         if (localStorage.getItem("USER")) {
             const user = JSON.parse(localStorage.getItem("USER"));
             this.api["token"] = user["token"];
+            if (this.getUserRole() === "administrator") {
+                this.menus["survey"] = {
+                    icon: <MdPoll/>,
+                    text: "Survey Results",
+                    class: "survey-icon"
+                };
+                this.menus["comments"] = {
+                    icon: <MdComment/>,
+                    text: "Comments",
+                    class: "comment-icon"
+                };
+            }
             this.initializeDatabase();
         }
     }
 
     handleUserLogin(token) {
         this.api["token"] = token;
+        if (this.getUserRole() === "administrator") {
+            this.menus["survey"] = {
+                icon: <MdPoll/>,
+                text: "Survey Results",
+                class: "survey-icon"
+            };
+            this.menus["comments"] = {
+                icon: <MdComment/>,
+                text: "Comments",
+                class: "comment-icon"
+            };
+        }
         this.initializeDatabase();
     }
 

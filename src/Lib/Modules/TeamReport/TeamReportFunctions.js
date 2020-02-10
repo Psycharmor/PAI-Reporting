@@ -45,8 +45,9 @@ const TeamReportFunctions = {
 
         return headers;
     },
+
     getTableData: function(group, users, activities) {
-        const pActivities = parseActivities(activities, group["userIds"]);
+        const pActivities = TeamReportFunctions.parseActivities(activities, group["userIds"]);
         let data = [];
         const courseIds = group["courseIds"];
         const userIds = group["userIds"];
@@ -80,25 +81,25 @@ const TeamReportFunctions = {
         }
 
         return data;
+    },
+
+    parseActivities: function(activities, groupUsers) {
+        const pActivities = {};
+        for (let activityId in activities) {
+            const activity = activities[activityId];
+            const userId = activity["userId"];
+            if (groupUsers.includes(userId)) {
+                if (!(userId in pActivities)) {
+                    pActivities[userId] = {};
+                }
+                pActivities[userId][activity["courseId"]] = activity;
+            }
+        }
+
+        return pActivities;
     }
 };
 export default TeamReportFunctions;
-
-function parseActivities(activities, groupUsers) {
-    const pActivities = {};
-    for (let activityId in activities) {
-        const activity = activities[activityId];
-        const userId = activity["userId"];
-        if (groupUsers.includes(userId)) {
-            if (!(userId in pActivities)) {
-                pActivities[userId] = {};
-            }
-            pActivities[userId][activity["courseId"]] = activity;
-        }
-    }
-
-    return pActivities;
-}
 
 function courseProgressComparator(a, b, order) {
     const aValue = parseFloat(a);
