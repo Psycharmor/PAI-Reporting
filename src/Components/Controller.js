@@ -39,7 +39,8 @@ export default class Controller extends React.Component {
             users: {},
             courses: {},
             portfolios: {},
-            activities: {}
+            activities: {},
+            surveys: {}
         };
 
         this.handleUserLogin = this.handleUserLogin.bind(this);
@@ -53,7 +54,7 @@ export default class Controller extends React.Component {
             const user = JSON.parse(localStorage.getItem("USER"));
             this.api["token"] = user["token"];
             if (this.getUserRole() === "administrator") {
-                this.menus["survey"] = {
+                this.menus["surveyResults"] = {
                     icon: <MdPoll/>,
                     text: "Survey Results",
                     class: "survey-icon"
@@ -71,7 +72,7 @@ export default class Controller extends React.Component {
     handleUserLogin(token) {
         this.api["token"] = token;
         if (this.getUserRole() === "administrator") {
-            this.menus["survey"] = {
+            this.menus["surveyResults"] = {
                 icon: <MdPoll/>,
                 text: "Survey Results",
                 class: "survey-icon"
@@ -109,7 +110,8 @@ export default class Controller extends React.Component {
             users: {},
             courses: {},
             portfolios: {},
-            activities: {}
+            activities: {},
+            surveys: {}
         });
     }
 
@@ -130,7 +132,14 @@ export default class Controller extends React.Component {
 
     async initializeDatabase() {
         this.setState({
-            loading: true
+            loading: true,
+            dataLoaded: false,
+            groups: {},
+            users: {},
+            courses: {},
+            portfolios: {},
+            activities: {},
+            surveys: {}
         });
         let exp = JSON.parse(localStorage.getItem("DBEXPIRATION"));
         exp = (exp) ? exp["exp"] : "";
@@ -156,13 +165,14 @@ export default class Controller extends React.Component {
     }
 
     async initializeData(db, dbLib) {
-        let [groups, users, courses, portfolios, activities] = await Promise.all(
+        let [groups, users, courses, portfolios, activities, surveys] = await Promise.all(
             [
                 dbLib.fetchDbStore(db, "groups"),
                 dbLib.fetchDbStore(db, "users"),
                 dbLib.fetchDbStore(db, "courses"),
                 dbLib.fetchDbStore(db, "portfolios"),
-                dbLib.fetchDbStore(db, "activities")
+                dbLib.fetchDbStore(db, "activities"),
+                dbLib.fetchDbStore(db, "surveys")
             ]
         );
         db.close();
@@ -174,7 +184,8 @@ export default class Controller extends React.Component {
             users: users,
             courses: courses,
             portfolios: portfolios,
-            activities: activities
+            activities: activities,
+            surveys: surveys
         });
     }
 
@@ -204,6 +215,7 @@ export default class Controller extends React.Component {
                         courses={this.state["courses"]}
                         portfolios={this.state["portfolios"]}
                         activities={this.state["activities"]}
+                        surveys={this.state["surveys"]}
                     />}
                 </div>
                 </>

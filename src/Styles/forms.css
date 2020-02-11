@@ -37,6 +37,7 @@
 
 .btn {
     font-size: 0.875rem !important;
+    border: none;
 }
 
 .pai-btn {
@@ -51,6 +52,12 @@
 }
 
 .report-export-btn {
+    position: relative;
+    z-index: 11;
+    float: right;
+}
+
+.survey-filter-btn {
     float: right;
 }
 

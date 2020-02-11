@@ -16,20 +16,22 @@ export default class DbLib {
         db.createObjectStore("courses");
         db.createObjectStore("portfolios");
         db.createObjectStore("activities");
+        db.createObjectStore("surveys");
     }
 
     async loadDb(db) {
         await Promise.all([
-            this.getApiData(db, "groups", "groups", 1000),
-            this.getApiData(db, "users", "users", 3000),
-            this.getApiData(db, "courses", "courses", 1000),
-            this.getApiData(db, "portfolios", "portfolios", 1000),
-            this.getApiData(db, "course-activities", "activities", 50000)
+            this.getApiData(db, this.url + "wp-json/pai/v2/groups/?", "groups", 1000),
+            this.getApiData(db, this.url + "wp-json/pai/v2/users/?", "users", 3000),
+            this.getApiData(db, this.url + "wp-json/pai/v2/courses/?", "courses", 1000),
+            this.getApiData(db, this.url + "wp-json/pai/v2/portfolios/?", "portfolios", 1000),
+            this.getApiData(db, this.url + "wp-json/pai/v2/course-activities/?", "activities", 50000),
+            this.getApiData(db, this.url + "wp-json/pai/v2/surveys/?", "surveys", 3000),
+            this.getApiData(db, this.url + "wp-json/pai/v2/surveys/?caregivers=1&", "surveys", 3000)
         ]);
     }
 
-    async getApiData(db, endpoint, storeName, limit) {
-        const url = this.url + "wp-json/pai/v2/" + endpoint + "/?";
+    async getApiData(db, url, storeName, limit) {
         let offset = 0;
         let count = 0;
         let results = {};

@@ -20,3 +20,31 @@
 .sidenav .menu-item.active {
     background-color: rgba(0, 0, 0, 0.08);
 }
+
+.tabs {
+    border-bottom: none;
+    margin-bottom: 10px;
+}
+
+.tabs .nav-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+    height: 50px;
+    border-radius: 5px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    transition: background-color 250ms;
+}
+
+.tabs .nav-item:hover {
+    background-color: rgba(0, 0, 0, 0.08);
+}
+
+.tabs .nav-item.active {
+    background-color: #ffffff;
+    color: #525f7f;
+}

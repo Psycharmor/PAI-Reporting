@@ -4,21 +4,17 @@ import {Card, CardHeader} from "reactstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 
-import TeamReportFunctions from "../../../Lib/Modules/TeamReport/TeamReportFunctions";
+import SurveyResultsFunctions from "../../../Lib/Modules/SurveyResults/SurveyResultsFunctions";
 
-export default function TeamReportTable(props) {
-    const group = props["groups"][props["groupId"]];
-    const headers = TeamReportFunctions.getTableHeaders(group, props["courses"]);
-    for (let i = 0; i < headers.length; ++i) {
-        headers[i]["headerStyle"] = headerStyle;
-        headers[i]["style"] = cellStyle;
-    }
-    const data = TeamReportFunctions.getTableData(group, props["users"], props["activities"]);;
+export default function Demographics(props) {
+    const headers = getHeaders();
+    const data = SurveyResultsFunctions.getDemographicsData(props);
+
     return (
         <Card>
             <CardHeader>
-                <h3>{"User Course Completions"}</h3>
-                <p>{"All users and their course progress"}</p>
+                <h3>{"User Demographics"}</h3>
+                <p>{"All users who have submitted a survey response"}</p>
             </CardHeader>
             <BootstrapTable
                 bootstrap4={true}
@@ -37,7 +33,6 @@ export default function TeamReportTable(props) {
     );
 };
 
-// table styles
 const headerStyle = {
     padding: "0.75rem 1.5rem",
     borderBottom: "1px solid #E9ECEF",
@@ -50,7 +45,6 @@ const headerStyle = {
     letterSpacing: "1px",
     width: 210
 };
-
 const cellStyle = {
     padding: "1rem",
     paddingLeft: "1.5rem",
@@ -61,3 +55,23 @@ const cellStyle = {
     backgroundColor: "#FFFFFF",
     color: "#525F7F"
 };
+
+function getHeaders() {
+    let headers = [
+        {text: "First Name", dataField: "firstName"},
+        {text: "Last Name", dataField: "lastName"},
+        {text: "Email", dataField: "email"},
+        {text: "Team", dataField: "team"},
+        {text: "Organization", dataField: "organization"},
+        {text: "Role With Veterans", dataField: "roleWithVeterans"},
+        {text: "Courses Completed", dataField: "courseCompletionCount"},
+        {text: "Referral Source", dataField: "referralSource"}
+    ];
+    for (let i = 0; i < headers.length; ++i) {
+        headers[i]["sort"] = true;
+        headers[i]["headerStyle"] = headerStyle;
+        headers[i]["style"] = cellStyle;
+    }
+
+    return headers;
+}

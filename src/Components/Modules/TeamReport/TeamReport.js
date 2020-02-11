@@ -135,7 +135,7 @@ export default class TeamReport extends React.Component {
                         />
                     </Col>
                 </Row>
-                <Row>
+                <Row className={"margin-bot-30"}>
                     <Col>
                         <TeamReportTable
                             groupId={groupId}

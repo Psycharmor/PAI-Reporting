@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
+import "../node_modules/react-datetime/css/react-datetime.css";
 import './index.css';
 import "./Styles/containers.css";
 import "./Styles/navigations.css";

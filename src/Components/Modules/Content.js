@@ -1,6 +1,7 @@
 import React from "react";
 
 import TeamReport from "./TeamReport/TeamReport";
+import SurveyResults from "./SurveyResults/SurveyResults";
 
 export default function Content(props) {
     const content = getContent(props);
@@ -22,6 +23,17 @@ function getContent(props) {
                     courses={props["courses"]}
                     portfolios={props["portfolios"]}
                     activities={props["activities"]}
+                />
+            );
+        case "surveyResults":
+            return (
+                <SurveyResults
+                    groups={props["groups"]}
+                    users={props["users"]}
+                    courses={props["courses"]}
+                    portfolios={props["portfolios"]}
+                    activities={props["activities"]}
+                    surveys={props["surveys"]}
                 />
             );
         default:
