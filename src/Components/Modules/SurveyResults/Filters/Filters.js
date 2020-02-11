@@ -101,6 +101,22 @@ export default function Filters(props) {
                     </Card>
                 </Col>
             </Row>
+            <Row>
+                <Col md={6}>
+                    <Card className={"filter-card"}>
+                        <CardHeader>
+                            <h5>{"Role With Veterans"}</h5>
+                        </CardHeader>
+                        <Dropdown
+                            value={props["role"]}
+                            optionPairs={getRoleOptions()}
+                            onChangeHandler={props["roleChangeHandler"]}
+                        />
+                    </Card>
+                </Col>
+                <Col md={6}>
+                </Col>
+            </Row>
         </Card>
     );
 };
@@ -192,7 +208,7 @@ function getOrgOptions(users) {
             key: "-1"
         },
         {
-            label: "No Organizations",
+            label: "No Organization",
             value: "-2",
             key: "-2"
         }
@@ -208,6 +224,44 @@ function getOrgOptions(users) {
                 key: user["organization"]
             });
         }
+    }
+
+    return optionPairs;
+}
+
+function getRoleOptions() {
+    let optionPairs = [
+        {
+            label: "All Learners",
+            value: "0",
+            key: "0"
+        },
+        {
+            label: "All Roles",
+            value: "-1",
+            key: "-1"
+        },
+        {
+            label: "No Role",
+            value: "-2",
+            key: "-2"
+        }
+    ];
+    const roles = [
+        "Caregiver/Family",
+        "Employer",
+        "Healthcare/Mental Healthcare Provider",
+        "Member of a civic, non-profit or other organization that supports Veterans",
+        "Volunteer",
+        "Transitioning service member or Veteran",
+        "Other"
+    ];
+    for (let i = 0; i < roles.length; ++i) {
+        optionPairs.push({
+            label: roles[i],
+            value: roles[i],
+            key: roles[i]
+        });
     }
 
     return optionPairs;

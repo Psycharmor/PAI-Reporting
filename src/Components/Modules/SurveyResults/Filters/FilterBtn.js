@@ -1,6 +1,6 @@
 import React from "react";
 
-import {Button, Card} from "reactstrap";
+import {Button} from "reactstrap";
 import {MdFilterList} from "react-icons/md";
 
 import Filters from "./Filters";
@@ -30,7 +30,6 @@ export default class FilterBtn extends React.Component {
     }
 
     render() {
-        console.log(this.state["showFilters"]);
         return (
             <>
             {this.state["showFilters"] &&
@@ -54,12 +53,14 @@ export default class FilterBtn extends React.Component {
                 endDate={this.props["endDate"]}
                 groupId={this.props["groupId"]}
                 org={this.props["org"]}
+                role={this.props["role"]}
                 portfolioChangeHandler={this.props["portfolioChangeHandler"]}
                 courseChangeHandler={this.props["courseChangeHandler"]}
                 startDateChangeHandler={this.props["startDateChangeHandler"]}
                 endDateChangeHandler={this.props["endDateChangeHandler"]}
                 groupChangeHandler={this.props["groupChangeHandler"]}
                 orgChangeHandler={this.props["orgChangeHandler"]}
+                roleChangeHandler={this.props["roleChangeHandler"]}
             />
             </>
         );

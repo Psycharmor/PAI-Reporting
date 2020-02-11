@@ -48,19 +48,21 @@ const SurveyResultsFunctions = {
         let data = {};
         const pActivities = parseActivities(props["activities"]);
         for (let surveyId in props["surveys"]) {
-            const survey = props["surveys"][surveyId];
-            if (!(survey["userId"] in data) && (survey["userId"] in props["users"])) {
-                const userId = survey["userId"];
-                data[userId] = {
-                    firstName: props["users"][userId]["firstName"],
-                    lastName: props["users"][userId]["lastName"],
-                    email: props["users"][userId]["email"],
-                    team: getTeam(props["groups"], userId, survey["courseId"]),
-                    organization: props["users"][userId]["organization"],
-                    roleWithVeterans: props["users"][userId]["roleWithVeterans"],
-                    referralSource: props["users"][userId]["referralSource"],
-                    courseCompletionCount: getUserCourseCompletionCount(userId, pActivities)
-                };
+            if (isFilteredSurvey(props, surveyId)) {
+                const survey = props["surveys"][surveyId];
+                if (!(survey["userId"] in data) && (survey["userId"] in props["users"])) {
+                    const userId = survey["userId"];
+                    data[userId] = {
+                        firstName: props["users"][userId]["firstName"],
+                        lastName: props["users"][userId]["lastName"],
+                        email: props["users"][userId]["email"],
+                        team: getTeam(props["groups"], userId, survey["courseId"]),
+                        organization: props["users"][userId]["organization"],
+                        roleWithVeterans: props["users"][userId]["roleWithVeterans"],
+                        referralSource: props["users"][userId]["referralSource"],
+                        courseCompletionCount: getUserCourseCompletionCount(userId, pActivities)
+                    };
+                }
             }
         }
 
@@ -108,13 +110,61 @@ function isFilteredSurvey(props, surveyId) {
             }
         }
 
-        if (props["groupId"] === -2) {
+        else if (props["groupId"] === -2) {
             for (let groupId in props["groups"]) {
                 const userIds = props["groups"][groupId]["userIds"];
                 const userId = props["surveys"][surveyId]["userId"];
                 if (userIds.includes(userId)) {
                     return false;
                 }
+            }
+        }
+
+        else {
+            const userIds = props["groups"][props["groupId"]]["userIds"];
+            const userId = props["surveys"][surveyId]["userId"];
+            if (!userIds.includes(userId)) {
+                return false;
+            }
+        }
+    }
+
+    if (props["org"] !== "0") {
+        const userId = props["surveys"][surveyId]["userId"];
+        if (userId in props["users"]) {
+            const user = props["users"][userId];
+            if (props["org"] === "-1") {
+                if (!user["organization"] || !user["organization"].trim()) {
+                    return false;
+                }
+            }
+            else if (props["org"] === "-2") {
+                if (user["organization"] && user["organization"].trim()) {
+                    return false;
+                }
+            }
+            else if (props["org"] !== user["organization"]) {
+                return false;
+            }
+        }
+    }
+
+    if (props["role"] !== "0") {
+        const userId = props["surveys"][surveyId]["userId"];
+        if (userId in props["users"]) {
+            const user = props["users"][userId];
+            if (props["role"] === "-1") {
+                if (!user["roleWithVeterans"] || !user["roleWithVeterans"].trim()) {
+                    return false;
+                }
+            }
+            else if (props["role"] === "-2") {
+                if (user["roleWithVeterans"] && user["roleWithVeterans"].trim()) {
+                    return false;
+                }
+            }
+            else if (props["role"] !== user["roleWithVeterans"]) {
+                return false;
             }
         }
     }

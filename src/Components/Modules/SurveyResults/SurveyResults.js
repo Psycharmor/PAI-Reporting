@@ -19,7 +19,8 @@ export default class SurveyResults extends React.Component {
             startDate: moment("2019-09-01", "YYYY-MM-DD"),
             endDate: moment().endOf("day"),
             groupId: 0,
-            org: "0"
+            org: "0",
+            role: "0"
         };
 
         this.handleActiveTabChange = this.handleActiveTabChange.bind(this);
@@ -29,6 +30,7 @@ export default class SurveyResults extends React.Component {
         this.handleEndDateChange = this.handleEndDateChange.bind(this);
         this.handleGroupChange = this.handleGroupChange.bind(this);
         this.handleOrgChange = this.handleOrgChange.bind(this);
+        this.handleRoleChange = this.handleRoleChange.bind(this);
     }
 
     handleActiveTabChange(event) {
@@ -80,6 +82,12 @@ export default class SurveyResults extends React.Component {
         });
     }
 
+    handleRoleChange(event) {
+        this.setState({
+            role: event.target["value"]
+        });
+    }
+
     render() {
         console.log(this.props);
         return (
@@ -97,12 +105,14 @@ export default class SurveyResults extends React.Component {
                             endDate={this.state["endDate"]}
                             groupId={this.state["groupId"]}
                             org={this.state["org"]}
+                            role={this.state["role"]}
                             portfolioChangeHandler={this.handlePortfolioChange}
                             courseChangeHandler={this.handleCourseChange}
                             startDateChangeHandler={this.handleStartDateChange}
                             endDateChangeHandler={this.handleEndDateChange}
                             groupChangeHandler={this.handleGroupChange}
                             orgChangeHandler={this.handleOrgChange}
+                            roleChangeHandler={this.handleRoleChange}
                         />
                     </Col>
                 </Row>
@@ -130,15 +140,23 @@ export default class SurveyResults extends React.Component {
                                     endDate={this.state["endDate"]}
                                     groupId={this.state["groupId"]}
                                     org={this.state["org"]}
+                                    role={this.state["role"]}
                                 />
                             </TabPane>
                             <TabPane tabId={"demographics"}>
                                 <Demographics
                                     surveys={this.props["surveys"]}
-                                    groups={this.props["groups"]}
                                     portfolios={this.props["portfolios"]}
-                                    activities={this.props["activities"]}
+                                    courses={this.props["courses"]}
+                                    groups={this.props["groups"]}
                                     users={this.props["users"]}
+                                    portfolioId={this.state["portfolioId"]}
+                                    courseId={this.state["courseId"]}
+                                    startDate={this.state["startDate"]}
+                                    endDate={this.state["endDate"]}
+                                    groupId={this.state["groupId"]}
+                                    org={this.state["org"]}
+                                    role={this.state["role"]}
                                 />
                             </TabPane>
                         </TabContent>
