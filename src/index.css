@@ -65,3 +65,7 @@ select {
     color: #292a2b;
     margin-bottom: 0;
 }
+
+.filter-card .card-header h5 {
+    margin-bottom: 0;
+}
