@@ -151,6 +151,10 @@
     margin-bottom: 50px;
 }
 
+.frq-options {
+    display: flex;
+}
+
 @media screen and (max-width: 991px) {
     .sidenav {
         display: none;

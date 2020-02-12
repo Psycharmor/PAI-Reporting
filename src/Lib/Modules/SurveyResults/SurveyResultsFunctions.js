@@ -67,6 +67,33 @@ const SurveyResultsFunctions = {
         }
 
         return Object.values(data);
+    },
+
+    getFrqTableData: function(props) {
+        let data = [];
+        for (let surveyId in props["surveys"]) {
+            if (isFilteredSurvey(props, surveyId)) {
+                const survey = props["surveys"][surveyId];
+                for (let i = 0; i < props["questions"].length; ++i) {
+                    const question = props["questions"][i];
+                    if (props["question"] === "0" || props["question"] === question) {
+                        const results = survey["results"];
+                        if (question in results && results[question]) {
+                            data.push({
+                                index: data.length,
+                                surveyId: surveyId,
+                                question: question,
+                                response: results[question],
+                                categories: getCategories(surveyId, question, props["responses"], props["categories"]),
+                                submitted: survey["submitted"]
+                            });
+                        }
+                    }
+                }
+            }
+        }
+
+        return data;
     }
 };
 export default SurveyResultsFunctions;
@@ -170,6 +197,19 @@ function isFilteredSurvey(props, surveyId) {
     }
 
     return true;
+}
+
+function getCategories(surveyId, question, responses, categories) {
+    let displayCategories = [];
+    if (surveyId in responses) {
+        for (let row in responses[surveyId]) {
+            if (responses[surveyId][row]["question"] === question) {
+                displayCategories.push(categories[responses[surveyId][row]["categoryKey"]]);
+            }
+        }
+    }
+
+    return displayCategories.join(",\n");
 }
 
 function getTeam(groups, userId, courseId) {

@@ -34,6 +34,7 @@ function getContent(props) {
                     portfolios={props["portfolios"]}
                     activities={props["activities"]}
                     surveys={props["surveys"]}
+                    url={props["url"]}
                 />
             );
         default:

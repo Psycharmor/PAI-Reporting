@@ -216,6 +216,7 @@ export default class Controller extends React.Component {
                         portfolios={this.state["portfolios"]}
                         activities={this.state["activities"]}
                         surveys={this.state["surveys"]}
+                        url={this.api["url"]}
                     />}
                 </div>
                 </>

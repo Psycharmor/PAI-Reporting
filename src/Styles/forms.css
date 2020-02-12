@@ -127,6 +127,29 @@
     color: #ffffff !important;
 }
 
+.pai-checkbox {
+    position: relative;
+    width: 1.1rem;
+    height: 1.1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    background-color: #ffffff;
+}
+
+.pai-checkbox.checked {
+    border: none;
+    background-color: #5e72e4;
+}
+
+.pai-checkmark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #ffffff;
+    font-size: 0.9rem;
+}
+
 @media screen and (max-width: 991px) {
     .sidebar-toggle-btn {
         display: block;
