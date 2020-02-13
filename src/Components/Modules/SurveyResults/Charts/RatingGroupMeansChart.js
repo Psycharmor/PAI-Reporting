@@ -8,33 +8,7 @@ import SurveyResultsFunctions from "../../../../Lib/Modules/SurveyResults/Survey
 export default function RatingGroupMeansChart(props) {
     const labels = getLabels();
     const data = SurveyResultsFunctions.getRatingGroupMeansData(props, labels);
-    const options = {
-        responsive: true,
-        maintainAspectRatio: false,
-        legend: false,
-        scales: {
-            xAxes: [{
-                ticks: {
-                    fontFamily: "open sans, sans-serif"
-                },
-                gridLines: {
-                    display: false
-                }
-            }],
-            yAxes: [{
-                ticks: {
-                    fontFamily: "open sans, sans-serif",
-                    min: 0
-                }
-            }]
-        },
-        plugins: {
-            datalabels: {
-                display: false
-            }
-        }
-    };
-    console.log(labels, data);
+
     return (
         <Card>
             <CardHeader>
@@ -70,3 +44,39 @@ function getLabels() {
         "Confidence with topic"
     ];
 }
+
+const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    legend: false,
+    scales: {
+        xAxes: [{
+            ticks: {
+                fontFamily: "open sans, sans-serif"
+            },
+            gridLines: {
+                display: false
+            }
+        }],
+        yAxes: [{
+            ticks: {
+                fontFamily: "open sans, sans-serif",
+                min: 0
+            }
+        }]
+    },
+    plugins: {
+        datalabels: {
+            color: "#000000",
+            font: {
+                family: "open sans, sans-serif",
+                weight: 600
+            },
+            anchor: "end",
+            align: "end",
+            formatter: function(value, context) {
+                return (+(value * 100).toFixed(2)) + "%";
+            }
+        }
+    }
+};

@@ -39,11 +39,13 @@ export default class FrqChart extends React.Component {
                 <CardHeader>
                     <h3>{"Free Response Results"}</h3>
                     <p>{"Results of the Fill-in-the-blank questions grouped by categories"}</p>
-                    <Dropdown
-                        value={this.props["question"]}
-                        optionPairs={createQuestionOptions(this.questions)}
-                        onChangeHandler={this.handleQuestionChange}
-                    />
+                    <div className={"margin-top-15"}>
+                        <Dropdown
+                            value={this.props["question"]}
+                            optionPairs={createQuestionOptions(this.questions)}
+                            onChangeHandler={this.handleQuestionChange}
+                        />
+                    </div>
                 </CardHeader>
                 <CardBody className={"chart-card-body"}>
                     <Pie
