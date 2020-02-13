@@ -94,6 +94,44 @@ const SurveyResultsFunctions = {
         }
 
         return data;
+    },
+
+    getFrqChartLabels: function(categories) {
+        let labels = [];
+        for (let categoryKey in categories) {
+            labels.push(categories[categoryKey]);
+        }
+
+        return labels;
+    },
+
+    getFrqChartData: function(props, pQuestion, questions, labels) {
+        let data = [];
+        for (let i = 0; i < labels.length; ++i) {
+            data.push(0);
+        }
+        for (let surveyId in props["surveys"]) {
+            if (isFilteredSurvey(props, surveyId) && (surveyId in props["responses"])) {
+                const survey = props["surveys"][surveyId];
+                for (let i = 0; i < questions.length; ++i) {
+                    const question = questions[i];
+                    if (pQuestion === "0" || pQuestion === question) {
+                        const results = survey["results"];
+                        if (question in results && results[question]) {
+                            for (let i = 0; i < props["responses"][surveyId].length; ++i) {
+                                const response = props["responses"][surveyId][i];
+                                if (pQuestion === "0" || response["question"] === pQuestion) {
+                                    const index = labels.indexOf(props["categories"][response["categoryKey"]]);
+                                    ++data[index];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return data;
     }
 };
 export default SurveyResultsFunctions;

@@ -6,6 +6,7 @@ import moment from "moment";
 import FilterBtn from "./Filters/FilterBtn";
 import SurveyTabs from "./SurveyTabs";
 import YesNoChart from "./Charts/YesNoChart";
+import FrqChart from "./Charts/FrqChart";
 import Demographics from "./Demographics";
 import FreeResponseCategories from "./FreeResponse/FreeResponseCategories";
 import ApiHandler from "../../../Lib/ApiHandler";
@@ -299,20 +300,44 @@ export default class SurveyResults extends React.Component {
                     <Col>
                         <TabContent activeTab={this.state["activeTab"]}>
                             <TabPane tabId={"results"}>
-                                <YesNoChart
-                                    surveys={this.props["surveys"]}
-                                    portfolios={this.props["portfolios"]}
-                                    courses={this.props["courses"]}
-                                    groups={this.props["groups"]}
-                                    users={this.props["users"]}
-                                    portfolioId={this.state["portfolioId"]}
-                                    courseId={this.state["courseId"]}
-                                    startDate={this.state["startDate"]}
-                                    endDate={this.state["endDate"]}
-                                    groupId={this.state["groupId"]}
-                                    org={this.state["org"]}
-                                    role={this.state["role"]}
-                                />
+                                <Row className={"margin-bot-30"}>
+                                    <Col>
+                                        <YesNoChart
+                                            surveys={this.props["surveys"]}
+                                            portfolios={this.props["portfolios"]}
+                                            courses={this.props["courses"]}
+                                            groups={this.props["groups"]}
+                                            users={this.props["users"]}
+                                            portfolioId={this.state["portfolioId"]}
+                                            courseId={this.state["courseId"]}
+                                            startDate={this.state["startDate"]}
+                                            endDate={this.state["endDate"]}
+                                            groupId={this.state["groupId"]}
+                                            org={this.state["org"]}
+                                            role={this.state["role"]}
+                                        />
+                                    </Col>
+                                </Row>
+                                <Row className={"margin-bot-30"}>
+                                    <Col sm={6}>
+                                        <FrqChart
+                                            surveys={this.props["surveys"]}
+                                            portfolios={this.props["portfolios"]}
+                                            courses={this.props["courses"]}
+                                            groups={this.props["groups"]}
+                                            users={this.props["users"]}
+                                            portfolioId={this.state["portfolioId"]}
+                                            courseId={this.state["courseId"]}
+                                            startDate={this.state["startDate"]}
+                                            endDate={this.state["endDate"]}
+                                            groupId={this.state["groupId"]}
+                                            org={this.state["org"]}
+                                            role={this.state["role"]}
+                                            categories={this.state["frqCategories"]}
+                                            responses={this.state["frqResponses"]}
+                                        />
+                                    </Col>
+                                </Row>
                             </TabPane>
                             <TabPane tabId={"demographics"}>
                                 <Demographics
