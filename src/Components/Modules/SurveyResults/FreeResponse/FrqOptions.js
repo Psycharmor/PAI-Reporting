@@ -79,7 +79,7 @@ export default class FrqOptions extends React.Component {
     render() {
         return (
             <>
-            <Row>
+            <Row className={"margin-top-15 margin-bot-10"}>
                 <Col sm={4}>
                     <Dropdown
                         value={this.props["question"]}
@@ -87,20 +87,22 @@ export default class FrqOptions extends React.Component {
                         onChangeHandler={this.props["questionChangeHandler"]}
                     />
                 </Col>
-                <Col sm={4}>
+                <Col sm={2}>
                 </Col>
-                <Col sm={4} className={"frq-options"}>
-                    <InputGroup>
-                        <Input onChange={this.handleTextInput}/>
-                        <InputGroupAddon addonType={"append"}>
-                            <Button value={this.state["input"]} onClick={this.handleAddCategory}>
-                            </Button>
-                        </InputGroupAddon>
-                    </InputGroup>
+                <Col sm={6} className={"frq-options"}>
+                    <Input onChange={this.handleTextInput} placeholder={"Create new category"}/>
+                    <Button
+                        color={"primary"}
+                        className={"btn pai-btn"}
+                        value={this.state["input"]}
+                        onClick={this.handleAddCategory}
+                    >
+                        {"Create"}
+                    </Button>
                 </Col>
             </Row>
             <Row>
-                <Col sm={4} className={"frq-options"}>
+                <Col sm={5} className={"frq-options"}>
                     <Dropdown
                         value={this.props["category"]}
                         optionPairs={createCategoryOpions(this.props["categories"])}
@@ -119,9 +121,9 @@ export default class FrqOptions extends React.Component {
                         {"Submit"}
                     </Button>
                 </Col>
-                <Col sm={4}>
+                <Col sm={1}>
                 </Col>
-                <Col sm={4} className={"frq-options"}>
+                <Col sm={6} className={"frq-options frq-options-right"}>
                     <Dropdown
                         value={this.state["manageCategoryKey"]}
                         optionPairs={createCategoryOpions(this.props["categories"])}
@@ -132,7 +134,7 @@ export default class FrqOptions extends React.Component {
                         className={"btn pai-btn"}
                         onClick={this.handleRemoveCategory}
                     >
-                        {"Submit"}
+                        {"Delete"}
                     </Button>
                 </Col>
             </Row>

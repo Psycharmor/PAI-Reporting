@@ -52,6 +52,11 @@ select {
     font-size: 0.875rem !important;
 }
 
+::placeholder {
+    font-family: Open Sans, sans-serif;
+    font-size: 0.875rem;
+}
+
 .card-header h3 {
     margin-bottom: 0;
 }

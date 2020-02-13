@@ -139,6 +139,10 @@
     padding-left: 0;
 }
 
+.margin-top-15 {
+    margin-top: 15px;
+}
+
 .margin-bot-10 {
     margin-bottom: 10px;
 }
@@ -153,6 +157,15 @@
 
 .frq-options {
     display: flex;
+    margin: 0 -5px;
+}
+
+.frq-options > * {
+    margin: 0 5px;
+}
+
+.frq-options-right {
+    margin: 0 5px;
 }
 
 @media screen and (max-width: 991px) {
