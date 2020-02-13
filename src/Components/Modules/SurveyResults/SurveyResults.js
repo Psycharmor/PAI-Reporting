@@ -7,6 +7,8 @@ import FilterBtn from "./Filters/FilterBtn";
 import SurveyTabs from "./SurveyTabs";
 import YesNoChart from "./Charts/YesNoChart";
 import FrqChart from "./Charts/FrqChart";
+import RatingGroupMeansChart from "./Charts/RatingGroupMeansChart";
+import RatingScoreMeansChart from "./Charts/RatingScoreMeansChart";
 import Demographics from "./Demographics";
 import FreeResponseCategories from "./FreeResponse/FreeResponseCategories";
 import ApiHandler from "../../../Lib/ApiHandler";
@@ -335,6 +337,40 @@ export default class SurveyResults extends React.Component {
                                             role={this.state["role"]}
                                             categories={this.state["frqCategories"]}
                                             responses={this.state["frqResponses"]}
+                                        />
+                                    </Col>
+                                </Row>
+                                <Row className={"margin-bot-30"}>
+                                    <Col sm={6}>
+                                        <RatingGroupMeansChart
+                                            surveys={this.props["surveys"]}
+                                            portfolios={this.props["portfolios"]}
+                                            courses={this.props["courses"]}
+                                            groups={this.props["groups"]}
+                                            users={this.props["users"]}
+                                            portfolioId={this.state["portfolioId"]}
+                                            courseId={this.state["courseId"]}
+                                            startDate={this.state["startDate"]}
+                                            endDate={this.state["endDate"]}
+                                            groupId={this.state["groupId"]}
+                                            org={this.state["org"]}
+                                            role={this.state["role"]}
+                                        />
+                                    </Col>
+                                    <Col sm={6}>
+                                        <RatingScoreMeansChart
+                                            surveys={this.props["surveys"]}
+                                            portfolios={this.props["portfolios"]}
+                                            courses={this.props["courses"]}
+                                            groups={this.props["groups"]}
+                                            users={this.props["users"]}
+                                            portfolioId={this.state["portfolioId"]}
+                                            courseId={this.state["courseId"]}
+                                            startDate={this.state["startDate"]}
+                                            endDate={this.state["endDate"]}
+                                            groupId={this.state["groupId"]}
+                                            org={this.state["org"]}
+                                            role={this.state["role"]}
                                         />
                                     </Col>
                                 </Row>

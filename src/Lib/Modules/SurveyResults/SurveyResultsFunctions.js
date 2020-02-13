@@ -132,6 +132,79 @@ const SurveyResultsFunctions = {
         }
 
         return data;
+    },
+
+    getRatingGroupMeansData(props, labels) {
+        let data = [];
+        for (let i = 0; i < labels.length; ++i) {
+            data.push({
+                result: {
+                    pre: 0,
+                    post: 0
+                },
+                userCount: {
+                    pre: 0,
+                    post: 0
+                }
+            });
+        }
+        for (let surveyId in props["surveys"]) {
+            if (isFilteredSurvey(props, surveyId)) {
+                const survey = props["surveys"][surveyId];
+                for (let i = 0; i < labels.length; ++i) {
+                    const label = labels[i];
+                    if (label in survey["results"]) {
+                        const result = survey["results"][label];
+                        if (result["before"] && result["before"].trim()) {
+                            ++data[i]["userCount"]["pre"];
+                            data[i]["result"]["pre"] += parseInt(result["before"]);
+                        }
+                        if (result["now"] && result["now"].trim()) {
+                            ++data[i]["userCount"]["post"];
+                            data[i]["result"]["post"] += parseInt(result["now"]);
+                        }
+                    }
+                }
+            }
+        }
+        for (let i = 0; i < data.length; ++i) {
+            const pre = (data[i]["userCount"]["pre"]) ? data[i]["result"]["pre"] / data[i]["userCount"]["pre"] : 0;
+            const post = (data[i]["userCount"]["post"]) ? data[i]["result"]["post"] / data[i]["userCount"]["post"] : 0;
+            data[i] = post - pre;
+        }
+
+        return data;
+    },
+
+    getRatingScoreMeansData(props, labels) {
+        let data = [];
+        for (let i = 0; i < labels.length; ++i) {
+            data.push({
+                result: 0,
+                userCount: 0
+            });
+        }
+        for (let surveyId in props["surveys"]) {
+            if (isFilteredSurvey(props, surveyId)) {
+                const survey = props["surveys"][surveyId];
+                for (let i = 0; i < labels.length; ++i) {
+                    const label = labels[i];
+                    if (label in survey["results"]) {
+                        const result = survey["results"][label];
+                        if ((result["before"] && result["before"].trim()) || (result["now"] && result["now"].trim())) {
+                            ++data[i]["userCount"];
+                            const pre = (result["before"] && result["before"].trim()) ? parseInt(result["before"]) : 0;
+                            const post = (result["now"] && result["now"].trim()) ? parseInt(result["now"]) : 0;
+                            data[i]["result"] += post - pre;
+                        }
+                    }
+                }
+            }
+        }
+        for (let i = 0; i < data.length; ++i) {
+            data[i] = (data[i]["userCount"]) ? data[i]["result"] / data[i]["userCount"] : 0;
+        }
+        return data;
     }
 };
 export default SurveyResultsFunctions;

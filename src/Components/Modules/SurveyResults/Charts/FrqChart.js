@@ -1,6 +1,6 @@
 import React from "react";
 
-import {Card, CardHeader, CardBody, Row, Col} from "reactstrap";
+import {Card, CardHeader, CardBody} from "reactstrap";
 import {Pie} from "react-chartjs-2";
 
 import Dropdown from "../../../Forms/Dropdown";
