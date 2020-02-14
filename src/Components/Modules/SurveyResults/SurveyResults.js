@@ -301,6 +301,22 @@ export default class SurveyResults extends React.Component {
                             activeTabChangeHandler={this.handleActiveTabChange}
                         />
                     </Col>
+                    <Col>
+                        <SurveyExportBtn
+                            surveys={this.props["surveys"]}
+                            portfolios={this.props["portfolios"]}
+                            courses={this.props["courses"]}
+                            groups={this.props["groups"]}
+                            users={this.props["users"]}
+                            portfolioId={this.state["portfolioId"]}
+                            courseId={this.state["courseId"]}
+                            startDate={this.state["startDate"]}
+                            endDate={this.state["endDate"]}
+                            groupId={this.state["groupId"]}
+                            org={this.state["org"]}
+                            role={this.state["role"]}
+                        />
+                    </Col>
                 </Row>
                 <Row className={"margin-bot-30"}>
                     <Col>

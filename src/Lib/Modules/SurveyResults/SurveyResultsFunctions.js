@@ -31,11 +31,12 @@ const SurveyResultsFunctions = {
                 for (let i = 0; i < questions.length; ++i) {
                     const question = questions[i];
                     if (question in results) {
-                        let datasetIndex = 1;
                         if (results[question] === "Yes") {
-                            datasetIndex = 0;
+                            ++datasets[0]["data"][i];
                         }
-                        ++datasets[datasetIndex]["data"][i];
+                        else if (results[question] === "No") {
+                            ++datasets[1]["data"][i];
+                        }
                     }
                 }
             }
@@ -203,7 +204,15 @@ const SurveyResultsFunctions = {
     },
 
     createExportData(props) {
-        let data = [createExportHeaders()]
+        let data = [createExportHeaders()];
+        for (let surveyId in props["surveys"]) {
+            if (isFilteredSurvey(props, surveyId)) {
+                const survey = props["surveys"][surveyId];
+                data.push(createExportRows(survey, props));
+            }
+        }
+
+        return data;
     }
 };
 export default SurveyResultsFunctions;
@@ -359,6 +368,56 @@ function parseActivities(activities) {
 
 function createExportHeaders() {
     return [
-
+        "First Name",
+        "Last Name",
+        "Email",
+        "Team",
+        "Organization",
+        "Role With Veterans",
+        "Courses Completed",
+        "Referral Source",
+        "I learned something new as a result of this training.",
+        "The information presented was relevant to my goals.",
+        "After taking this course, I will use what I learned.",
+        "I would recommend PsychArmor training to someone else.",
+        "I am more aware of available resources as a result of this course.",
+        "Would you participate in more detailed evaluation?",
+        "Why did you take this course?",
+        "What aspects of the course did you find especially helpful",
+        "What aspects of the course would you like to see changed",
+        "Knowledge in this area - Before",
+        "Knowledge in this area - Now",
+        "Skills related to topic - Before",
+        "Skills related to topic - Now",
+        "Confidence with topic - Before",
+        "Confidence with topic - Now",
+        "Application: We are interested in understanding how you applied the content",
+        "Would you be interested in having your name entered into a drawing for FREE follow-up coaching sessions?"
     ];
+}
+
+function createExportRows(survey, props) {
+    const userId = survey["userId"];
+    let row = [
+        (userId in props["users"]) ? props["users"][userId]["firstName"] : "",
+        (userId in props["users"]) ? props["users"][userId]["lastName"] : "",
+        (userId in props["users"]) ? props["users"][userId]["email"] : "",
+        getUserTeam(props["groups"], survey["userId"], survey["courseId"]),
+        (userId in props["users"]) ? props["users"][userId]["organization"] : "",
+        (userId in props["users"]) ? props["users"][userId]["roleWithVeterans"] : "",
+        (userId in props["users"]) ? props["users"][userId]["referralSource"] : "",
+    ];
+
+    return row;
+}
+
+function getUserTeam(groups, userId, courseId) {
+    for (let groupId in groups) {
+        const group = groups[groupId];
+        if (group["courseIds"].includes(courseId) && group["userIds"].includes(userId)) {
+            return group["title"];
+        }
+    }
+
+    return "";
 }
