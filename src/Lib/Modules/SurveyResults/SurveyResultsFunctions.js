@@ -1,5 +1,5 @@
 const SurveyResultsFunctions = {
-    getYesNoData: function(props, questions) {
+    getYesNoData(props, questions) {
         let datasets = [
             {
                 label: "Yes",
@@ -44,7 +44,7 @@ const SurveyResultsFunctions = {
         return datasets;
     },
 
-    getDemographicsData: function(props) {
+    getDemographicsData(props) {
         let data = {};
         const pActivities = parseActivities(props["activities"]);
         for (let surveyId in props["surveys"]) {
@@ -69,7 +69,7 @@ const SurveyResultsFunctions = {
         return Object.values(data);
     },
 
-    getFrqTableData: function(props) {
+    getFrqTableData(props) {
         let data = [];
         for (let surveyId in props["surveys"]) {
             if (isFilteredSurvey(props, surveyId)) {
@@ -96,7 +96,7 @@ const SurveyResultsFunctions = {
         return data;
     },
 
-    getFrqChartLabels: function(categories) {
+    getFrqChartLabels(categories) {
         let labels = [];
         for (let categoryKey in categories) {
             labels.push(categories[categoryKey]);
@@ -105,26 +105,20 @@ const SurveyResultsFunctions = {
         return labels;
     },
 
-    getFrqChartData: function(props, pQuestion, questions, labels) {
+    getFrqChartData(props, question, labels) {
         let data = [];
         for (let i = 0; i < labels.length; ++i) {
             data.push(0);
         }
         for (let surveyId in props["surveys"]) {
             if (isFilteredSurvey(props, surveyId) && (surveyId in props["responses"])) {
-                const survey = props["surveys"][surveyId];
-                for (let i = 0; i < questions.length; ++i) {
-                    const question = questions[i];
-                    if (pQuestion === "0" || pQuestion === question) {
-                        const results = survey["results"];
-                        if (question in results && results[question]) {
-                            for (let i = 0; i < props["responses"][surveyId].length; ++i) {
-                                const response = props["responses"][surveyId][i];
-                                if (pQuestion === "0" || response["question"] === pQuestion) {
-                                    const index = labels.indexOf(props["categories"][response["categoryKey"]]);
-                                    ++data[index];
-                                }
-                            }
+                const results = props["surveys"][surveyId]["results"];
+                if (question in results && results[question]) {
+                    for (let i = 0; i < props["responses"][surveyId].length; ++i) {
+                        const response = props["responses"][surveyId][i];
+                        if (response["question"] === question) {
+                            const index = labels.indexOf(props["categories"][response["categoryKey"]]);
+                            ++data[index];
                         }
                     }
                 }
@@ -170,7 +164,7 @@ const SurveyResultsFunctions = {
         for (let i = 0; i < data.length; ++i) {
             const pre = (data[i]["userCount"]["pre"]) ? data[i]["result"]["pre"] / data[i]["userCount"]["pre"] : 0;
             const post = (data[i]["userCount"]["post"]) ? data[i]["result"]["post"] / data[i]["userCount"]["post"] : 0;
-            data[i] = post - pre;
+            data[i] = +((post - pre).toFixed(2));
         }
 
         return data;
@@ -203,8 +197,13 @@ const SurveyResultsFunctions = {
         }
         for (let i = 0; i < data.length; ++i) {
             data[i] = (data[i]["userCount"]) ? data[i]["result"] / data[i]["userCount"] : 0;
+            data[i] = +(data[i].toFixed(2));
         }
         return data;
+    },
+
+    createExportData(props) {
+        let data = [createExportHeaders()]
     }
 };
 export default SurveyResultsFunctions;
@@ -356,4 +355,10 @@ function parseActivities(activities) {
     }
 
     return pActivities;
+}
+
+function createExportHeaders() {
+    return [
+
+    ];
 }

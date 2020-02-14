@@ -77,11 +77,6 @@ export default class Controller extends React.Component {
                 text: "Survey Results",
                 class: "survey-icon"
             };
-            this.menus["comments"] = {
-                icon: <MdComment/>,
-                text: "Comments",
-                class: "comment-icon"
-            };
         }
         this.initializeDatabase();
     }

@@ -5,6 +5,7 @@ import moment from "moment";
 
 import FilterBtn from "./Filters/FilterBtn";
 import SurveyTabs from "./SurveyTabs";
+import SurveyExportBtn from "./SurveyExportBtn";
 import YesNoChart from "./Charts/YesNoChart";
 import FrqChart from "./Charts/FrqChart";
 import RatingGroupMeansChart from "./Charts/RatingGroupMeansChart";
@@ -28,8 +29,10 @@ export default class SurveyResults extends React.Component {
             org: "0",
             role: "0",
             frqCategories: {},
-            frqResponses: {}
+            frqResponses: {},
+            frqCategoriesColors: []
         };
+        this.state["frqCategoriesColors"] = getBgColors(this.state["frqCategories"]);
 
         this.handleActiveTabChange = this.handleActiveTabChange.bind(this);
         this.handlePortfolioChange = this.handlePortfolioChange.bind(this);
@@ -124,7 +127,8 @@ export default class SurveyResults extends React.Component {
             this.setState({
                 loading: false,
                 frqCategories: categories["data"],
-                frqResponses: responses["data"]
+                frqResponses: responses["data"],
+                frqCategoriesColors: getBgColors(categories["data"])
             });
         }
     }
@@ -337,6 +341,70 @@ export default class SurveyResults extends React.Component {
                                             role={this.state["role"]}
                                             categories={this.state["frqCategories"]}
                                             responses={this.state["frqResponses"]}
+                                            question={"What aspects of the course did you find especially helpful"}
+                                            colors={this.state["frqCategoriesColors"]}
+                                        />
+                                    </Col>
+                                    <Col sm={6}>
+                                        <FrqChart
+                                            surveys={this.props["surveys"]}
+                                            portfolios={this.props["portfolios"]}
+                                            courses={this.props["courses"]}
+                                            groups={this.props["groups"]}
+                                            users={this.props["users"]}
+                                            portfolioId={this.state["portfolioId"]}
+                                            courseId={this.state["courseId"]}
+                                            startDate={this.state["startDate"]}
+                                            endDate={this.state["endDate"]}
+                                            groupId={this.state["groupId"]}
+                                            org={this.state["org"]}
+                                            role={this.state["role"]}
+                                            categories={this.state["frqCategories"]}
+                                            responses={this.state["frqResponses"]}
+                                            question={"What aspects of the course would you like to see changed"}
+                                            colors={this.state["frqCategoriesColors"]}
+                                        />
+                                    </Col>
+                                </Row>
+                                <Row className={"margin-bot-30"}>
+                                    <Col sm={6}>
+                                        <FrqChart
+                                            surveys={this.props["surveys"]}
+                                            portfolios={this.props["portfolios"]}
+                                            courses={this.props["courses"]}
+                                            groups={this.props["groups"]}
+                                            users={this.props["users"]}
+                                            portfolioId={this.state["portfolioId"]}
+                                            courseId={this.state["courseId"]}
+                                            startDate={this.state["startDate"]}
+                                            endDate={this.state["endDate"]}
+                                            groupId={this.state["groupId"]}
+                                            org={this.state["org"]}
+                                            role={this.state["role"]}
+                                            categories={this.state["frqCategories"]}
+                                            responses={this.state["frqResponses"]}
+                                            question={"Application: We are interested in understanding how you applied the content"}
+                                            colors={this.state["frqCategoriesColors"]}
+                                        />
+                                    </Col>
+                                    <Col sm={6}>
+                                        <FrqChart
+                                            surveys={this.props["surveys"]}
+                                            portfolios={this.props["portfolios"]}
+                                            courses={this.props["courses"]}
+                                            groups={this.props["groups"]}
+                                            users={this.props["users"]}
+                                            portfolioId={this.state["portfolioId"]}
+                                            courseId={this.state["courseId"]}
+                                            startDate={this.state["startDate"]}
+                                            endDate={this.state["endDate"]}
+                                            groupId={this.state["groupId"]}
+                                            org={this.state["org"]}
+                                            role={this.state["role"]}
+                                            categories={this.state["frqCategories"]}
+                                            responses={this.state["frqResponses"]}
+                                            question={"Would you be interested in having your name entered into a drawing for FREE follow-up coaching sessions?"}
+                                            colors={this.state["frqCategoriesColors"]}
                                         />
                                     </Col>
                                 </Row>
@@ -421,3 +489,12 @@ export default class SurveyResults extends React.Component {
         );
     }
 };
+
+function getBgColors(categories) {
+    let bgColors = [];
+    for (let categoryKey in categories) {
+        bgColors.push("rgb(" + Math.floor(Math.random() * 256) + "," + Math.floor(Math.random() * 256) + "," + Math.floor(Math.random() * 256) + ")");
+    }
+
+    return bgColors;
+}
