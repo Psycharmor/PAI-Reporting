@@ -163,9 +163,18 @@
 .frq-options > * {
     margin: 0 5px;
 }
+.frq-options .dropdown {
+    margin: 0 5px;
+    width: 150px;
+}
 
 .frq-options-right {
     margin: 0 5px;
+}
+
+button.btn.pai-btn.white-bg.btn.btn-primary {
+    background: #007bff;
+    color: #fff !important;
 }
 
 @media screen and (max-width: 991px) {
