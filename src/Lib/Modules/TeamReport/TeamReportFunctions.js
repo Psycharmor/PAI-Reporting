@@ -46,7 +46,7 @@ const TeamReportFunctions = {
         return headers;
     },
 
-    getTableData: function(group, users, activities) {
+    getTableData: function(group, users, activities, props) {
         const pActivities = TeamReportFunctions.parseActivities(activities, group["userIds"]);
         let data = [];
         const courseIds = group["courseIds"];
@@ -65,13 +65,15 @@ const TeamReportFunctions = {
                 const courseId = courseIds[i];
                 row[courseId] = 0;
                 if ((userId in pActivities) && (courseId in pActivities[userId])) {
-                    const stepsCompleted = pActivities[userId][courseId]["stepsCompleted"];
-                    const stepsTotal = pActivities[userId][courseId]["stepsTotal"];
-                    if (stepsTotal !== 0) {
-                        if (stepsCompleted === stepsTotal) {
-                            ++courseCompletedCount;
+                    if (TeamReportFunctions.isFilteredActivity(props, pActivities[userId][courseId])) {
+                        const stepsCompleted = pActivities[userId][courseId]["stepsCompleted"];
+                        const stepsTotal = pActivities[userId][courseId]["stepsTotal"];
+                        if (stepsTotal !== 0) {
+                            if (stepsCompleted === stepsTotal) {
+                                ++courseCompletedCount;
+                            }
+                            row[courseId] = stepsCompleted / stepsTotal * 100;
                         }
-                        row[courseId] = stepsCompleted / stepsTotal * 100;
                     }
                 }
             }
@@ -97,6 +99,18 @@ const TeamReportFunctions = {
         }
 
         return pActivities;
+    },
+
+    isFilteredActivity: function(props, activity) {
+        if (props["startDate"].unix() > activity["completed"]) {
+            return false;
+        }
+
+        if (props["endDate"].unix() < activity["completed"]) {
+            return false;
+        }
+
+        return true;
     }
 };
 export default TeamReportFunctions;

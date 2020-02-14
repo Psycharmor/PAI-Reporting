@@ -2,11 +2,13 @@ import React from "react";
 
 import {Container, Row, Col} from "reactstrap";
 import {MdPerson} from "react-icons/md";
+import moment from "moment";
 
 import ReportFilters from "./Filters/ReportFilters";
 import Brief from "./Briefing/Brief";
 import ReportExportBtn from "./ReportExportBtn";
 import TeamReportTable from "./TeamReportTable";
+import TeamReportFunctions from "../../../Lib/Modules/TeamReport/TeamReportFunctions";
 
 export default class TeamReport extends React.Component {
     constructor(props) {
@@ -16,11 +18,15 @@ export default class TeamReport extends React.Component {
 
         this.state = {
             groupId: this.getInitGroup(),
-            subgroupId: 0
+            subgroupId: 0,
+            startDate: moment("2017-01-01", "YYYY-MM-DD"),
+            endDate: moment().endOf("day")
         };
 
         this.handleGroupChange = this.handleGroupChange.bind(this);
         this.handleSubgroupChange = this.handleSubgroupChange.bind(this);
+        this.handleStartDateChange = this.handleStartDateChange.bind(this);
+        this.handleEndDateChange = this.handleEndDateChange.bind(this);
     }
 
     handleGroupChange(event) {
@@ -33,6 +39,24 @@ export default class TeamReport extends React.Component {
     handleSubgroupChange(event) {
         this.setState({
             subgroupId: parseInt(event.target["value"])
+        });
+    }
+
+    handleStartDateChange(date) {
+        if (typeof(date) === "string") {
+            return;
+        }
+        this.setState({
+            startDate: date
+        });
+    }
+
+    handleEndDateChange(date) {
+        if (typeof(date) === "string") {
+            return;
+        }
+        this.setState({
+            endDate: date
         });
     }
 
@@ -84,7 +108,9 @@ export default class TeamReport extends React.Component {
             const activity = activities[activityId];
             if (userIds.includes(activity["userId"]) && courseIds.includes(activity["courseId"])
                     && activity["status"]) {
-                ++courseCompletionCount;
+                if (TeamReportFunctions.isFilteredActivity(this.state, activity)) {
+                    ++courseCompletionCount;
+                }
             }
         }
 
@@ -105,9 +131,13 @@ export default class TeamReport extends React.Component {
                     groupId={this.state["groupId"]}
                     groups={this.props["groups"]}
                     groupIds={this.groupIds}
+                    startDate={this.state["startDate"]}
+                    endDate={this.state["endDate"]}
                     groupChangeHandler={this.handleGroupChange}
                     subgroupId={this.state["subgroupId"]}
                     subgroupChangeHandler={this.handleSubgroupChange}
+                    startDateChangeHandler={this.handleStartDateChange}
+                    endDateChangeHandler={this.handleEndDateChange}
                 />
                 <Row className={"margin-bot-30"}>
                     <Col sm={6} xl={3}>
@@ -140,6 +170,8 @@ export default class TeamReport extends React.Component {
                         <TeamReportTable
                             groupId={groupId}
                             groups={groups}
+                            startDate={this.state["startDate"]}
+                            endDate={this.state["endDate"]}
                             users={this.props["users"]}
                             courses={this.props["courses"]}
                             portfolios={this.props["portfolios"]}

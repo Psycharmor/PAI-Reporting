@@ -1,6 +1,7 @@
 import React from "react";
 
 import {Row, Col} from "reactstrap";
+import Datetime from "react-datetime";
 
 import Dropdown from "../../../Forms/Dropdown";
 import UtilityFunctions from "../../../../Lib/UtilityFunctions";
@@ -21,6 +22,34 @@ export default function ReportFilters(props) {
                 />
             </Col>
             {subgroupDropdown}
+            <Col sm={6} md={3}>
+                <Datetime
+                    inputProps={{
+                        placeholder: "mm/dd/yyyy"
+                    }}
+                    className={"pai-date"}
+                    value={props["startDate"]}
+                    timeFormat={false}
+                    isValidDate={(currentDate) => {
+                        return currentDate.isBefore(props["endDate"]);
+                    }}
+                    onChange={props["startDateChangeHandler"]}
+                />
+            </Col>
+            <Col sm={6} md={3}>
+                <Datetime
+                    inputProps={{
+                        placeholder: "mm/dd/yyyy"
+                    }}
+                    className={"pai-date"}
+                    value={props["endDate"]}
+                    timeFormat={false}
+                    isValidDate={(currentDate) => {
+                        return currentDate.isAfter(props["startDate"]);
+                    }}
+                    onChange={props["endDateChangeHandler"]}
+                />
+            </Col>
         </Row>
     );
 };

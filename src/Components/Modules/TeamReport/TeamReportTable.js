@@ -13,7 +13,7 @@ export default function TeamReportTable(props) {
         headers[i]["headerStyle"] = headerStyle;
         headers[i]["style"] = cellStyle;
     }
-    const data = TeamReportFunctions.getTableData(group, props["users"], props["activities"]);;
+    const data = TeamReportFunctions.getTableData(group, props["users"], props["activities"], props);;
     return (
         <Card className={"table-card"}>
             <CardHeader>
