@@ -3,7 +3,6 @@ import React from "react";
 import {Card, CardHeader, CardBody} from "reactstrap";
 import {Pie} from "react-chartjs-2";
 
-import Dropdown from "../../../Forms/Dropdown";
 import SurveyResultsFunctions from "../../../../Lib/Modules/SurveyResults/SurveyResultsFunctions";
 
 export default function FrqChart(props) {

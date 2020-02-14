@@ -16,7 +16,7 @@ export default class Controller extends React.Component {
         super(props);
 
         this.api = {
-            url: "http://staging.psycharmor.org/",
+            url: "https://psycharmor.org/",
             token: ""
         };
 
@@ -59,11 +59,11 @@ export default class Controller extends React.Component {
                     text: "Survey Results",
                     class: "survey-icon"
                 };
-                this.menus["comments"] = {
-                    icon: <MdComment/>,
-                    text: "Comments",
-                    class: "comment-icon"
-                };
+                // this.menus["comments"] = {
+                //     icon: <MdComment/>,
+                //     text: "Comments",
+                //     class: "comment-icon"
+                // };
             }
             this.initializeDatabase();
         }

@@ -133,6 +133,10 @@ export default class FreeResponseCategories extends React.Component {
                 default:
             }
         }
+        this.setState({
+            selected: [],
+            toApi: []
+        });
     }
 
     manageCategories(action, category) {
@@ -147,6 +151,11 @@ export default class FreeResponseCategories extends React.Component {
                 break;
             default:
         }
+
+        this.setState({
+            selected: [],
+            toApi: []
+        });
     }
 
     getFirstCategory() {
