@@ -2,6 +2,7 @@ import React from "react";
 
 import TeamReport from "./TeamReport/TeamReport";
 import SurveyResults from "./SurveyResults/SurveyResults";
+import GroupUpload from "./GroupUpload/GroupUpload";
 
 export default function Content(props) {
     const content = getContent(props);
@@ -35,6 +36,11 @@ function getContent(props) {
                     activities={props["activities"]}
                     surveys={props["surveys"]}
                     url={props["url"]}
+                />
+            );
+        case "groupUpload":
+            return (
+                <GroupUpload
                 />
             );
         default:

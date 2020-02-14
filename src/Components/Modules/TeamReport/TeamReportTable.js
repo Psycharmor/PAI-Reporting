@@ -15,7 +15,7 @@ export default function TeamReportTable(props) {
     }
     const data = TeamReportFunctions.getTableData(group, props["users"], props["activities"]);;
     return (
-        <Card>
+        <Card className={"table-card"}>
             <CardHeader>
                 <h3>{"User Course Completions"}</h3>
                 <p>{"All users and their course progress"}</p>

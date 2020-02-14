@@ -11,7 +11,7 @@ export default function Demographics(props) {
     const data = SurveyResultsFunctions.getDemographicsData(props);
 
     return (
-        <Card>
+        <Card className={"table-card"}>
             <CardHeader>
                 <h3>{"User Demographics"}</h3>
                 <p>{"All users who have submitted a survey response"}</p>

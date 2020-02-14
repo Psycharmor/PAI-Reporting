@@ -26,6 +26,10 @@
     color: #2dce89;
 }
 
+.upload-icon {
+    color: #f5365c;
+}
+
 .briefing-card-icon {
     display: flex;
     align-items: center;

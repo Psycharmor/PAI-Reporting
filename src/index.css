@@ -74,3 +74,7 @@ select {
 .filter-card .card-header h5 {
     margin-bottom: 0;
 }
+
+.pai-dropzone p {
+    margin: 0;
+}

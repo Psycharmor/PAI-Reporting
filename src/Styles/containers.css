@@ -101,6 +101,14 @@
     border-radius: 0.375rem !important;
 }
 
+.pai-card-header {
+    margin: 0;
+}
+
+.pai-card-body {
+    padding-top: 0;
+}
+
 .briefing-card {
     height: 100%;
 }

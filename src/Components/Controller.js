@@ -1,6 +1,7 @@
 import React from "react";
 
 import {MdAssignment, MdPoll, MdComment} from "react-icons/md";
+import {FaFileUpload} from "react-icons/fa";
 import moment from "moment";
 import {openDB, deleteDB} from "idb";
 
@@ -16,7 +17,7 @@ export default class Controller extends React.Component {
         super(props);
 
         this.api = {
-            url: "https://psycharmor.org/",
+            url: "http://staging.psycharmor.org/",
             token: ""
         };
 
@@ -64,6 +65,11 @@ export default class Controller extends React.Component {
                 //     text: "Comments",
                 //     class: "comment-icon"
                 // };
+                this.menus["groupUpload"] = {
+                    icon: <FaFileUpload/>,
+                    text: "Upload",
+                    class: "upload-icon"
+                };
             }
             this.initializeDatabase();
         }
