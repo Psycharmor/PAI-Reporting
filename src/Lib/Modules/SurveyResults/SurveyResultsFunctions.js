@@ -31,11 +31,12 @@ const SurveyResultsFunctions = {
                 for (let i = 0; i < questions.length; ++i) {
                     const question = questions[i];
                     if (question in results) {
-                        let datasetIndex = 1;
                         if (results[question] === "Yes") {
-                            datasetIndex = 0;
+                            ++datasets[0]["data"][i];
                         }
-                        ++datasets[datasetIndex]["data"][i];
+                        else if (results[question] === "No") {
+                            ++datasets[1]["data"][i];
+                        }
                     }
                 }
             }
