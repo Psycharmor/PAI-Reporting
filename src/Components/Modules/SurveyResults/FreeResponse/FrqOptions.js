@@ -93,7 +93,7 @@ export default class FrqOptions extends React.Component {
                 <Col>
                     <Button
                         color={"primary"}
-                        className={"btn pai-btn"}
+                        className={"btn pai-btn white-bg"}
                         value={this.state["input"]}
                         onClick={this.handleShowManageAdd}
                     >
@@ -103,7 +103,7 @@ export default class FrqOptions extends React.Component {
                 <Col>
                     <Button
                         color={"primary"}
-                        className={"btn pai-btn"}
+                        className={"btn pai-btn white-bg"}
                         value={this.state["input"]}
                         onClick={this.handleShowManageRemove}
                     >
@@ -147,7 +147,7 @@ export default class FrqOptions extends React.Component {
                     />}
                     {this.state["linkAction"] !== "0" && <Button
                         color={"primary"}
-                        className={"btn pai-btn"}
+                        className={"btn pai-btn white-bg"}
                         onClick={this.handleLinkAction}
                     >
                         {"Apply"}
