@@ -69,7 +69,7 @@ export default class TeamReport extends React.Component {
         let groupIds = [];
         for (let i = 0; i < user["group"].length; ++i) {
             const groupId = user["group"][i]["id"];
-            groupIds.push(groupId);
+            groupIds.push(groupId.toString());
         }
 
         return groupIds;

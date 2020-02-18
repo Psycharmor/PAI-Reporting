@@ -205,10 +205,11 @@ const SurveyResultsFunctions = {
 
     createExportData(props) {
         let data = [createExportHeaders()];
+        const pActivities = parseActivities(props["activities"]);
         for (let surveyId in props["surveys"]) {
             if (isFilteredSurvey(props, surveyId)) {
                 const survey = props["surveys"][surveyId];
-                data.push(createExportRows(survey, props));
+                data.push(createExportRows(survey, props, pActivities));
             }
         }
 
@@ -396,7 +397,7 @@ function createExportHeaders() {
     ];
 }
 
-function createExportRows(survey, props) {
+function createExportRows(survey, props, pActivities) {
     const userId = survey["userId"];
     let row = [
         (userId in props["users"]) ? props["users"][userId]["firstName"] : "",
@@ -405,7 +406,9 @@ function createExportRows(survey, props) {
         getUserTeam(props["groups"], survey["userId"], survey["courseId"]),
         (userId in props["users"]) ? props["users"][userId]["organization"] : "",
         (userId in props["users"]) ? props["users"][userId]["roleWithVeterans"] : "",
+        getUserCourseCompletionCount(userId, pActivities),
         (userId in props["users"]) ? props["users"][userId]["referralSource"] : "",
+        survey["results"]["I learned something new as a result of this training."] || "",
     ];
 
     return row;

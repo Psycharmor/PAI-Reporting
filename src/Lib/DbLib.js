@@ -20,15 +20,29 @@ export default class DbLib {
     }
 
     async loadDb(db) {
-        await Promise.all([
-            this.getApiData(db, this.url + "wp-json/pai/v2/groups/?", "groups", 1000),
-            this.getApiData(db, this.url + "wp-json/pai/v2/users/?", "users", 3000),
-            this.getApiData(db, this.url + "wp-json/pai/v2/courses/?", "courses", 1000),
-            this.getApiData(db, this.url + "wp-json/pai/v2/portfolios/?", "portfolios", 1000),
-            this.getApiData(db, this.url + "wp-json/pai/v2/course-activities/?", "activities", 50000),
-            this.getApiData(db, this.url + "wp-json/pai/v2/surveys/?", "surveys", 3000),
-            this.getApiData(db, this.url + "wp-json/pai/v2/surveys/?caregivers=1&", "surveys", 3000)
-        ]);
+        const user = JSON.parse(localStorage.getItem("USER"));
+        if (user["user_role"].includes("administrator")) {
+            await Promise.all([
+                this.getApiData(db, this.url + "wp-json/pai/v2/groups/?", "groups", 1000),
+                this.getApiData(db, this.url + "wp-json/pai/v2/users/?", "users", 3000),
+                this.getApiData(db, this.url + "wp-json/pai/v2/courses/?", "courses", 1000),
+                this.getApiData(db, this.url + "wp-json/pai/v2/portfolios/?", "portfolios", 1000),
+                this.getApiData(db, this.url + "wp-json/pai/v2/course-activities/?", "activities", 50000),
+                this.getApiData(db, this.url + "wp-json/pai/v2/surveys/?", "surveys", 3000),
+                this.getApiData(db, this.url + "wp-json/pai/v2/surveys/?caregivers=1&", "surveys", 3000)
+            ]);
+        }
+        else if (user["user_role"].includes("group_leader")) {
+            for (let i = 0; i < user["group"].length; ++i) {
+                const groupId = user["group"][i]["id"];
+                await Promise.all([
+                    this.getApiData(db, this.url + "wp-json/pai/v2/groups/?groupid=" + groupId + "&", "groups", 1000),
+                    this.getApiData(db, this.url + "wp-json/pai/v2/users/?groupid=" + groupId + "&", "users", 3000),
+                    this.getApiData(db, this.url + "wp-json/pai/v2/courses/?groupid=" + groupId + "&", "courses", 1000),
+                    this.getApiData(db, this.url + "wp-json/pai/v2/course-activities/?groupid=" + groupId + "&", "activities", 50000)
+                ]);
+            }
+        }
     }
 
     async getApiData(db, url, storeName, limit) {
@@ -46,13 +60,13 @@ export default class DbLib {
         }
         while (count >= limit);
 
-        await this.storeApiResult(db, storeName, results)
+        await this.storeApiResult(db, storeName, results);
     }
 
     async storeApiResult(db, storeName, result) {
         const objectStore = db.transaction(storeName, "readwrite").objectStore(storeName);
         for (let key in result) {
-            objectStore.add(result[key], key);
+            objectStore.put(result[key], key);
         }
     }
 

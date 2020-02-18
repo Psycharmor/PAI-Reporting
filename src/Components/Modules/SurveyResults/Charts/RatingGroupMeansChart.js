@@ -75,7 +75,7 @@ const options = {
             anchor: "end",
             align: "end",
             formatter: function(value, context) {
-                return (+(value * 100).toFixed(2)) + "%";
+                return +(value.toFixed(2));
             }
         }
     }

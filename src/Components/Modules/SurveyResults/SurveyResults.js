@@ -308,6 +308,7 @@ export default class SurveyResults extends React.Component {
                             courses={this.props["courses"]}
                             groups={this.props["groups"]}
                             users={this.props["users"]}
+                            activities={this.props["activities"]}
                             portfolioId={this.state["portfolioId"]}
                             courseId={this.state["courseId"]}
                             startDate={this.state["startDate"]}
