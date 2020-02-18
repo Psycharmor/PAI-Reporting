@@ -16,18 +16,21 @@ export default class Login extends React.Component {
             loading: false,
             username: "",
             password: "",
-            error: ""
+            error: "",
+            invalid: false
         };
 
         this.handleLogin = this.handleLogin.bind(this);
         this.handleUsername = this.handleUsername.bind(this);
         this.handlePassword = this.handlePassword.bind(this);
+        this.handleValidation = this.handleValidation.bind(this);
     }
 
     handleLogin(event) {
         const { username, password } = this.state;
         this.setState({
             loading: true,
+            invalid: false,
             error: ""
         });
         axios.post(this.props["url"] + this.api["wp"] + this.api["jwt"] + this.endpoint, {
@@ -43,9 +46,9 @@ export default class Login extends React.Component {
                 throw new Error("Sorry, You don't have permission to access PsychArmor Reporting");
             }
         })
-        .catch((error) =>
-            this.handleLoginFail(error)
-        )
+        .catch((error) =>{
+            this.handleLoginFail(error);
+        })
     }
 
     handleLoginSuccess(user) {
@@ -56,7 +59,8 @@ export default class Login extends React.Component {
     handleLoginFail(error) {
         this.setState({
             loading: false,
-            error: 'Invalid username / password'
+            error: 'Invalid username / password',
+            invalid: true
         });
     }
 
@@ -74,6 +78,10 @@ export default class Login extends React.Component {
         });
     }
 
+    handleValidation() {
+        return (!this.state["invalid"]) ? true : this.state["error"];
+    }
+
     renderError() {
         if (this.state["error"]) {
             return (
@@ -88,6 +96,7 @@ export default class Login extends React.Component {
     }
 
     render() {
+        console.log("render " + this.state["invalid"]);
         return (
             <div className={"login"}>
                 <h1>
@@ -103,10 +112,10 @@ export default class Login extends React.Component {
                         <AvField
                             name={"loginUsername"}
                             type={"text"}
-                            errorMessage={"Username cannot be empty!"}
+                            errorMessage={this.state["error"]}
                             onChange={this.handleUsername}
                             validate={{
-                                required: {value: true}
+                                custom: this.handleValidation
                             }}
                         />
                     </AvGroup>
@@ -115,10 +124,10 @@ export default class Login extends React.Component {
                         <AvField
                             name={"loginPassword"}
                             type={"password"}
-                            errorMessage={"Password cannot be empty!"}
+                            errorMessage={this.state["error"]}
                             onChange={this.handlePassword}
                             validate={{
-                                required: {value: true}
+                                custom: this.handleValidation
                             }}
                         />
                     </AvGroup>
