@@ -96,7 +96,6 @@ export default class Login extends React.Component {
     }
 
     render() {
-        console.log("render " + this.state["invalid"]);
         return (
             <div className={"login"}>
                 <h1>
