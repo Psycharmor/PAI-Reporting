@@ -5,14 +5,14 @@ import {Bar} from "react-chartjs-2";
 
 import SurveyResultsFunctions from "../../../../Lib/Modules/SurveyResults/SurveyResultsFunctions";
 
-export default function RatingGroupMeansChart(props) {
+export default function RatingChart(props) {
     const labels = getLabels();
-    const data = SurveyResultsFunctions.getRatingGroupMeansData(props, labels);
+    const data = SurveyResultsFunctions.getRatingData(props);
 
     return (
         <Card>
             <CardHeader>
-                <h3>{"Pre and Post Ratings"}</h3>
+                <h3>{props["question"]}</h3>
                 <p>{"Difference between group means"}</p>
             </CardHeader>
             <CardBody className={"chart-card-body"}>
@@ -24,9 +24,8 @@ export default function RatingGroupMeansChart(props) {
                         datasets: [{
                             data: data,
                             backgroundColor: [
-                                "#5e72e4",
-                                "#5e72e4",
-                                "#5e72e4"
+                                "#11cdef",
+                                "#11cdef"
                             ]
                         }]
                     }}
@@ -39,9 +38,8 @@ export default function RatingGroupMeansChart(props) {
 
 function getLabels() {
     return [
-        "Knowledge in this area",
-        "Skills related to topic",
-        "Confidence with topic"
+        "Pre",
+        "Post"
     ];
 }
 

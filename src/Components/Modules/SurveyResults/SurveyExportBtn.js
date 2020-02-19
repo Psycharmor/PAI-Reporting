@@ -8,7 +8,7 @@ export default function ReportExportBtn(props) {
     const data = SurveyResultsFunctions.createExportData(props);
     return (
         <CSVLink
-            className={"btn pai-btn report-export-btn"}
+            className={"btn pai-btn survey-export-btn"}
             data={data}
             filename={"psycharmor-survey-report-" + Math.floor(Date.now() / 1000) + ".csv"}
             target={"_blank"}

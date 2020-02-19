@@ -24,8 +24,8 @@ export default function RatingScoreMeansChart(props) {
                         datasets: [{
                             data: data,
                             backgroundColor: [
-                                "#5e72e4",
-                                "#11cdef",
+                                "#2dce89",
+                                "#2dce89",
                                 "#2dce89"
                             ]
                         }]

@@ -127,15 +127,17 @@ function getPortfolioOptions(portfolios) {
         value: 0,
         key: 0
     }];
+    let options = [];
     for (let portfolioId in portfolios) {
-        optionPairs.push({
+        options.push({
             label: portfolios[portfolioId]["name"],
             value: portfolioId,
             key: portfolioId
         });
     }
+    options.sort(sortAlphanumeric);
 
-    return optionPairs;
+    return optionPairs.concat(options);
 }
 
 function getCourseOptions(courses, portfolios, portfolioId) {
@@ -144,10 +146,11 @@ function getCourseOptions(courses, portfolios, portfolioId) {
         value: 0,
         key: 0
     }];
+    let options = [];
     for (let courseId in courses) {
         if (portfolioId !== 0) {
             if (portfolios[portfolioId]["courseIds"].includes(parseInt(courseId))) {
-                optionPairs.push({
+                options.push({
                     label: courses[courseId]["title"],
                     value: courseId,
                     key: courseId
@@ -155,15 +158,16 @@ function getCourseOptions(courses, portfolios, portfolioId) {
             }
         }
         else {
-            optionPairs.push({
+            options.push({
                 label: courses[courseId]["title"],
                 value: courseId,
                 key: courseId
             });
         }
     }
+    options.sort(sortAlphanumeric);
 
-    return optionPairs;
+    return optionPairs.concat(options);
 }
 
 function getGroupOptions(groups) {
@@ -184,15 +188,17 @@ function getGroupOptions(groups) {
             key: -2
         }
     ];
+    let options = [];
     for (let groupId in groups) {
-        optionPairs.push({
+        options.push({
             label: groups[groupId]["title"],
             value: groupId,
             key: groupId
         });
     }
+    options.sort(sortAlphanumeric);
 
-    return optionPairs;
+    return optionPairs.concat(options);
 }
 
 function getOrgOptions(users) {
@@ -214,19 +220,21 @@ function getOrgOptions(users) {
         }
     ];
     let foundOrgs = [];
+    let options = [];
     for (let userId in users) {
         const user = users[userId];
         if (user["organization"] && user["organization"].trim() && !foundOrgs.includes(user["organization"])) {
             foundOrgs.push(user["organization"]);
-            optionPairs.push({
+            options.push({
                 label: user["organization"],
                 value: user["organization"],
                 key: user["organization"]
             });
         }
     }
+    options.sort(sortAlphanumeric);
 
-    return optionPairs;
+    return optionPairs.concat(options);
 }
 
 function getRoleOptions() {
@@ -256,13 +264,29 @@ function getRoleOptions() {
         "Transitioning service member or Veteran",
         "Other"
     ];
+    let options = [];
     for (let i = 0; i < roles.length; ++i) {
-        optionPairs.push({
+        options.push({
             label: roles[i],
             value: roles[i],
             key: roles[i]
         });
     }
+    options.sort(sortAlphanumeric);
 
-    return optionPairs;
+    return optionPairs.concat(options);
+}
+
+function sortAlphanumeric(a, b) {
+    const aValue = a["label"].toLowerCase();
+    const bValue = b["label"].toLowerCase();
+
+    if (aValue < bValue) {
+        return -1;
+    }
+    if (aValue > bValue) {
+        return 1;
+    }
+
+    return 0;
 }

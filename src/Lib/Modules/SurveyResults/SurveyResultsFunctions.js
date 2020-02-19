@@ -203,6 +203,40 @@ const SurveyResultsFunctions = {
         return data;
     },
 
+    getRatingData(props) {
+        const dataLength = 2;
+        let data = [];
+        for (let i = 0; i < dataLength; ++i) {
+            data.push({
+                result: 0,
+                userCount: 0
+            });
+        }
+
+        for (let surveyId in props["surveys"]) {
+            if (isFilteredSurvey(props, surveyId)) {
+                const survey = props["surveys"][surveyId];
+                if (props["question"] in survey["results"]) {
+                    const result = survey["results"][props["question"]];
+                    if (result["before"] && result["before"].trim()) {
+                        ++data[0]["userCount"];
+                        data[0]["result"] += parseInt(result["before"]);
+                    }
+                    if (result["now"] && result["now"].trim()) {
+                        ++data[1]["userCount"];
+                        data[1]["result"] += parseInt(result["now"]);
+                    }
+                }
+            }
+        }
+        for (let i = 0; i < data.length; ++i) {
+            data[i] = (data[i]["result"] > 0) ? data[i]["result"] / data[i]["userCount"] : 0;
+            data[i] = +(data[i].toFixed(2));
+        }
+
+        return data;
+    },
+
     createExportData(props) {
         let data = [createExportHeaders()];
         const pActivities = parseActivities(props["activities"]);
@@ -409,7 +443,52 @@ function createExportRows(survey, props, pActivities) {
         getUserCourseCompletionCount(userId, pActivities),
         (userId in props["users"]) ? props["users"][userId]["referralSource"] : "",
         survey["results"]["I learned something new as a result of this training."] || "",
+        survey["results"]["The information presented was relevant to my goals."] || "",
+        survey["results"]["After taking this course, I will use what I learned."] || "",
+        survey["results"]["I would recommend PsychArmor training to someone else."] || "",
+        survey["results"]["I am more aware of available resources as a result of this course."] || "",
+        survey["results"]["Would you participate in more detailed evaluation?"] || "",
     ];
+
+    if (survey["results"]["Why did you take this course?"]) {
+        row.push(survey["results"]["Why did you take this course?"].join(", "));
+    }
+    else {
+        row.push("");
+    }
+
+    row.push(survey["results"]["What aspects of the course did you find especially helpful"] || "");
+    row.push(survey["results"]["What aspects of the course would you like to see changed"] || "");
+
+    if (survey["results"]["Knowledge in this area"]) {
+        row.push(survey["results"]["Knowledge in this area"]["before"] || "");
+        row.push(survey["results"]["Knowledge in this area"]["now"] || "");
+    }
+    else {
+        row.push("");
+        row.push("");
+    }
+
+    if (survey["results"]["Skills related to topic"]) {
+        row.push(survey["results"]["Skills related to topic"]["before"] || "");
+        row.push(survey["results"]["Skills related to topic"]["now"] || "");
+    }
+    else {
+        row.push("");
+        row.push("");
+    }
+
+    if (survey["results"]["Confidence with topic"]) {
+        row.push(survey["results"]["Confidence with topic"]["before"] || "");
+        row.push(survey["results"]["Confidence with topic"]["now"] || "");
+    }
+    else {
+        row.push("");
+        row.push("");
+    }
+
+    row.push(survey["results"]["Application: We are interested in understanding how you applied the content"] || "");
+    row.push(survey["results"]["Would you be interested in having your name entered into a drawing for FREE follow-up coaching sessions?"] || "");
 
     return row;
 }
