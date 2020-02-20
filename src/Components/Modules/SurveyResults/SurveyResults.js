@@ -1,16 +1,13 @@
 import React from "react";
 
-import {Container, Row, Col, TabContent, TabPane} from "reactstrap";
+import {Container, Row, Col, TabContent, TabPane, Button} from "reactstrap";
+import ReactToPrint from "react-to-print";
 import moment from "moment";
 
 import FilterBtn from "./Filters/FilterBtn";
 import SurveyTabs from "./SurveyTabs";
 import SurveyExportBtn from "./SurveyExportBtn";
-import YesNoChart from "./Charts/YesNoChart";
-import FrqChart from "./Charts/FrqChart";
-import RatingGroupMeansChart from "./Charts/RatingGroupMeansChart";
-import RatingScoreMeansChart from "./Charts/RatingScoreMeansChart";
-import RatingChart from "./Charts/RatingChart";
+import Results from "./Results";
 import Demographics from "./Demographics";
 import FreeResponseCategories from "./FreeResponse/FreeResponseCategories";
 import ApiHandler from "../../../Lib/ApiHandler";
@@ -273,6 +270,12 @@ export default class SurveyResults extends React.Component {
             <Container fluid={true}>
                 <Row className={"margin-bot-30"}>
                     <Col>
+                        <ReactToPrint
+                            trigger={() => <Button className={"btn pai-btn"}>{"Print Survey Results"}</Button>}
+                            content={() => this.componentRef}
+                        />
+                    </Col>
+                    <Col>
                         <FilterBtn
                             portfolios={this.props["portfolios"]}
                             courses={this.props["courses"]}
@@ -324,195 +327,24 @@ export default class SurveyResults extends React.Component {
                     <Col>
                         <TabContent activeTab={this.state["activeTab"]}>
                             <TabPane tabId={"results"}>
-                                <Row className={"margin-bot-30"}>
-                                    <Col>
-                                        <YesNoChart
-                                            surveys={this.props["surveys"]}
-                                            portfolios={this.props["portfolios"]}
-                                            courses={this.props["courses"]}
-                                            groups={this.props["groups"]}
-                                            users={this.props["users"]}
-                                            portfolioId={this.state["portfolioId"]}
-                                            courseId={this.state["courseId"]}
-                                            startDate={this.state["startDate"]}
-                                            endDate={this.state["endDate"]}
-                                            groupId={this.state["groupId"]}
-                                            org={this.state["org"]}
-                                            role={this.state["role"]}
-                                        />
-                                    </Col>
-                                </Row>
-                                <Row className={"margin-bot-30"}>
-                                    <Col sm={6}>
-                                        <FrqChart
-                                            surveys={this.props["surveys"]}
-                                            portfolios={this.props["portfolios"]}
-                                            courses={this.props["courses"]}
-                                            groups={this.props["groups"]}
-                                            users={this.props["users"]}
-                                            portfolioId={this.state["portfolioId"]}
-                                            courseId={this.state["courseId"]}
-                                            startDate={this.state["startDate"]}
-                                            endDate={this.state["endDate"]}
-                                            groupId={this.state["groupId"]}
-                                            org={this.state["org"]}
-                                            role={this.state["role"]}
-                                            categories={this.state["frqCategories"]}
-                                            responses={this.state["frqResponses"]}
-                                            question={"What aspects of the course did you find especially helpful"}
-                                            colors={this.state["frqCategoriesColors"]}
-                                        />
-                                    </Col>
-                                    <Col sm={6}>
-                                        <FrqChart
-                                            surveys={this.props["surveys"]}
-                                            portfolios={this.props["portfolios"]}
-                                            courses={this.props["courses"]}
-                                            groups={this.props["groups"]}
-                                            users={this.props["users"]}
-                                            portfolioId={this.state["portfolioId"]}
-                                            courseId={this.state["courseId"]}
-                                            startDate={this.state["startDate"]}
-                                            endDate={this.state["endDate"]}
-                                            groupId={this.state["groupId"]}
-                                            org={this.state["org"]}
-                                            role={this.state["role"]}
-                                            categories={this.state["frqCategories"]}
-                                            responses={this.state["frqResponses"]}
-                                            question={"What aspects of the course would you like to see changed"}
-                                            colors={this.state["frqCategoriesColors"]}
-                                        />
-                                    </Col>
-                                </Row>
-                                <Row className={"margin-bot-30"}>
-                                    <Col sm={6}>
-                                        <FrqChart
-                                            surveys={this.props["surveys"]}
-                                            portfolios={this.props["portfolios"]}
-                                            courses={this.props["courses"]}
-                                            groups={this.props["groups"]}
-                                            users={this.props["users"]}
-                                            portfolioId={this.state["portfolioId"]}
-                                            courseId={this.state["courseId"]}
-                                            startDate={this.state["startDate"]}
-                                            endDate={this.state["endDate"]}
-                                            groupId={this.state["groupId"]}
-                                            org={this.state["org"]}
-                                            role={this.state["role"]}
-                                            categories={this.state["frqCategories"]}
-                                            responses={this.state["frqResponses"]}
-                                            question={"Application: We are interested in understanding how you applied the content"}
-                                            colors={this.state["frqCategoriesColors"]}
-                                        />
-                                    </Col>
-                                    <Col sm={6}>
-                                        <FrqChart
-                                            surveys={this.props["surveys"]}
-                                            portfolios={this.props["portfolios"]}
-                                            courses={this.props["courses"]}
-                                            groups={this.props["groups"]}
-                                            users={this.props["users"]}
-                                            portfolioId={this.state["portfolioId"]}
-                                            courseId={this.state["courseId"]}
-                                            startDate={this.state["startDate"]}
-                                            endDate={this.state["endDate"]}
-                                            groupId={this.state["groupId"]}
-                                            org={this.state["org"]}
-                                            role={this.state["role"]}
-                                            categories={this.state["frqCategories"]}
-                                            responses={this.state["frqResponses"]}
-                                            question={"Would you be interested in having your name entered into a drawing for FREE follow-up coaching sessions?"}
-                                            colors={this.state["frqCategoriesColors"]}
-                                        />
-                                    </Col>
-                                </Row>
-                                <Row className={"margin-bot-30"}>
-                                    <Col sm={6}>
-                                        <RatingGroupMeansChart
-                                            surveys={this.props["surveys"]}
-                                            portfolios={this.props["portfolios"]}
-                                            courses={this.props["courses"]}
-                                            groups={this.props["groups"]}
-                                            users={this.props["users"]}
-                                            portfolioId={this.state["portfolioId"]}
-                                            courseId={this.state["courseId"]}
-                                            startDate={this.state["startDate"]}
-                                            endDate={this.state["endDate"]}
-                                            groupId={this.state["groupId"]}
-                                            org={this.state["org"]}
-                                            role={this.state["role"]}
-                                        />
-                                    </Col>
-                                    <Col sm={6}>
-                                        <RatingScoreMeansChart
-                                            surveys={this.props["surveys"]}
-                                            portfolios={this.props["portfolios"]}
-                                            courses={this.props["courses"]}
-                                            groups={this.props["groups"]}
-                                            users={this.props["users"]}
-                                            portfolioId={this.state["portfolioId"]}
-                                            courseId={this.state["courseId"]}
-                                            startDate={this.state["startDate"]}
-                                            endDate={this.state["endDate"]}
-                                            groupId={this.state["groupId"]}
-                                            org={this.state["org"]}
-                                            role={this.state["role"]}
-                                        />
-                                    </Col>
-                                </Row>
-                                <Row className={"margin-bot-30"}>
-                                    <Col sm={4}>
-                                        <RatingChart
-                                            question={"Knowledge in this area"}
-                                            surveys={this.props["surveys"]}
-                                            portfolios={this.props["portfolios"]}
-                                            courses={this.props["courses"]}
-                                            groups={this.props["groups"]}
-                                            users={this.props["users"]}
-                                            portfolioId={this.state["portfolioId"]}
-                                            courseId={this.state["courseId"]}
-                                            startDate={this.state["startDate"]}
-                                            endDate={this.state["endDate"]}
-                                            groupId={this.state["groupId"]}
-                                            org={this.state["org"]}
-                                            role={this.state["role"]}
-                                        />
-                                    </Col>
-                                    <Col sm={4}>
-                                        <RatingChart
-                                            question={"Skills related to topic"}
-                                            surveys={this.props["surveys"]}
-                                            portfolios={this.props["portfolios"]}
-                                            courses={this.props["courses"]}
-                                            groups={this.props["groups"]}
-                                            users={this.props["users"]}
-                                            portfolioId={this.state["portfolioId"]}
-                                            courseId={this.state["courseId"]}
-                                            startDate={this.state["startDate"]}
-                                            endDate={this.state["endDate"]}
-                                            groupId={this.state["groupId"]}
-                                            org={this.state["org"]}
-                                            role={this.state["role"]}
-                                        />
-                                    </Col>
-                                    <Col sm={4}>
-                                        <RatingChart
-                                            question={"Confidence with topic"}
-                                            surveys={this.props["surveys"]}
-                                            portfolios={this.props["portfolios"]}
-                                            courses={this.props["courses"]}
-                                            groups={this.props["groups"]}
-                                            users={this.props["users"]}
-                                            portfolioId={this.state["portfolioId"]}
-                                            courseId={this.state["courseId"]}
-                                            startDate={this.state["startDate"]}
-                                            endDate={this.state["endDate"]}
-                                            groupId={this.state["groupId"]}
-                                            org={this.state["org"]}
-                                            role={this.state["role"]}
-                                        />
-                                    </Col>
-                                </Row>
+                                <Results
+                                    ref={el => {this.componentRef = el}}
+                                    surveys={this.props["surveys"]}
+                                    portfolios={this.props["portfolios"]}
+                                    courses={this.props["courses"]}
+                                    groups={this.props["groups"]}
+                                    users={this.props["users"]}
+                                    portfolioId={this.state["portfolioId"]}
+                                    courseId={this.state["courseId"]}
+                                    startDate={this.state["startDate"]}
+                                    endDate={this.state["endDate"]}
+                                    groupId={this.state["groupId"]}
+                                    org={this.state["org"]}
+                                    role={this.state["role"]}
+                                    frqCategories={this.state["frqCategories"]}
+                                    frqResponses={this.state["frqResponses"]}
+                                    frqCategoriesColors={this.state["frqCategoriesColors"]}
+                                />
                             </TabPane>
                             <TabPane tabId={"demographics"}>
                                 <Demographics
