@@ -222,3 +222,13 @@ button.btn.pai-btn.white-bg.btn.btn-primary {
         display: block;
     }
 }
+
+@media print {
+    .sidenav {
+        display: none;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+}
