@@ -180,11 +180,6 @@
     margin: 0 5px;
 }
 
-button.btn.pai-btn.white-bg.btn.btn-primary {
-    background: #007bff;
-    color: #fff !important;
-}
-
 @media screen and (max-width: 991px) {
     .sidenav {
         display: none;

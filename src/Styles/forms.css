@@ -61,6 +61,17 @@
     float: right;
 }
 
+button.btn.pai-btn.white-bg.btn.btn-primary {
+    background: #007bff;
+    color: #fff !important;
+}
+
+.survey-action-btn {
+    float: right;
+    background: #007bff;
+    color: #ffffff;
+}
+
 .pai-date input {
     font-size: 0.875rem;
 }

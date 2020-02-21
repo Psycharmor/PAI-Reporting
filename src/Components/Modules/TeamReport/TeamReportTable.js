@@ -20,36 +20,50 @@ export default class TeamReportTable extends React.Component {
     }
 
     componentDidMount() {
-        this.setTable();
+        this.setState((state) => {
+            return {
+                loading: true,
+                headers: [],
+                data: []
+            };
+        });
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         if (prevProps["groupId"] !== this.props["groupId"]) {
+            this.setState((state) => {
+                return {
+                    loading: true,
+                    headers: [],
+                    data: []
+                };
+            });
+        }
+
+        else if (this.state["loading"]) {
             this.setTable();
         }
     }
 
     setTable() {
         const group = this.props["groups"][this.props["groupId"]];
-        this.setState({
-            loading: true,
-            headers: [],
-            data: []
-        });
         let headers = TeamReportFunctions.getTableHeaders(group, this.props["courses"]);
         for (let i = 0; i < headers.length; ++i) {
             headers[i]["headerStyle"] = headerStyle;
             headers[i]["style"] = cellStyle;
         }
         const data = TeamReportFunctions.getTableData(group, this.props["users"], this.props["activities"], this.props);
-        this.setState({
-            loading: false,
-            headers: headers,
-            data: data
+        this.setState((state) => {
+            return {
+                loading: false,
+                headers: headers,
+                data: data
+            };
         });
     }
 
     render() {
+        console.log(this.state);
         return (
             <>
             {this.state["loading"] && <LoadingOverlay/>}

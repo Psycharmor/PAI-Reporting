@@ -1,6 +1,7 @@
 import React from "react";
 
 import {Container, Row, Col, TabContent, TabPane, Button} from "reactstrap";
+import {FaPrint} from "react-icons/fa";
 import ReactToPrint from "react-to-print";
 import moment from "moment";
 
@@ -269,29 +270,6 @@ export default class SurveyResults extends React.Component {
         return (
             <Container fluid={true}>
                 <Row className={"margin-bot-30"}>
-                    <Col sm={2}>
-                        <ReactToPrint
-                            trigger={() => <Button className={"btn pai-btn"}>{"Print Survey Results"}</Button>}
-                            content={() => this.componentRef}
-                        />
-                    </Col>
-                    <Col>
-                        <SurveyExportBtn
-                            surveys={this.props["surveys"]}
-                            portfolios={this.props["portfolios"]}
-                            courses={this.props["courses"]}
-                            groups={this.props["groups"]}
-                            users={this.props["users"]}
-                            activities={this.props["activities"]}
-                            portfolioId={this.state["portfolioId"]}
-                            courseId={this.state["courseId"]}
-                            startDate={this.state["startDate"]}
-                            endDate={this.state["endDate"]}
-                            groupId={this.state["groupId"]}
-                            org={this.state["org"]}
-                            role={this.state["role"]}
-                        />
-                    </Col>
                     <Col>
                         <FilterBtn
                             portfolios={this.props["portfolios"]}
@@ -320,6 +298,29 @@ export default class SurveyResults extends React.Component {
                         <SurveyTabs
                             activeTab={this.state["activeTab"]}
                             activeTabChangeHandler={this.handleActiveTabChange}
+                        />
+                    </Col>
+                    <Col sm={1}>
+                        <ReactToPrint
+                            trigger={() => <Button className={"btn pai-btn survey-action-btn"}><FaPrint/></Button>}
+                            content={() => this.componentRef}
+                        />
+                    </Col>
+                    <Col sm={1}>
+                        <SurveyExportBtn
+                            surveys={this.props["surveys"]}
+                            portfolios={this.props["portfolios"]}
+                            courses={this.props["courses"]}
+                            groups={this.props["groups"]}
+                            users={this.props["users"]}
+                            activities={this.props["activities"]}
+                            portfolioId={this.state["portfolioId"]}
+                            courseId={this.state["courseId"]}
+                            startDate={this.state["startDate"]}
+                            endDate={this.state["endDate"]}
+                            groupId={this.state["groupId"]}
+                            org={this.state["org"]}
+                            role={this.state["role"]}
                         />
                     </Col>
                 </Row>
