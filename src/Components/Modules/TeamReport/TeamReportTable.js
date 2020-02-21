@@ -4,37 +4,77 @@ import {Card, CardHeader} from "reactstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 
+import LoadingOverlay from "../../LoadingOverlay";
 import TeamReportFunctions from "../../../Lib/Modules/TeamReport/TeamReportFunctions";
 
-export default function TeamReportTable(props) {
-    const group = props["groups"][props["groupId"]];
-    const headers = TeamReportFunctions.getTableHeaders(group, props["courses"]);
-    for (let i = 0; i < headers.length; ++i) {
-        headers[i]["headerStyle"] = headerStyle;
-        headers[i]["style"] = cellStyle;
+export default class TeamReportTable extends React.Component {
+    constructor(props) {
+        super(props);
+
+        const group = this.props["groups"][this.props["groupId"]];
+        this.state = {
+            loading: true,
+            headers: TeamReportFunctions.getTableHeaders(group, this.props["courses"]),
+            data: []
+        };
     }
-    const data = TeamReportFunctions.getTableData(group, props["users"], props["activities"], props);;
-    return (
-        <Card className={"table-card"}>
-            <CardHeader>
-                <h3>{"User Course Completions"}</h3>
-                <p>{"All users and their course progress"}</p>
-            </CardHeader>
-            <BootstrapTable
-                bootstrap4={true}
-                wrapperClasses={"table-responsive"}
-                keyField={"email"}
-                columns={headers}
-                data={data}
-                bordered={false}
-                pagination={paginationFactory({
-                    showTotal: true,
-                    alwaysShowAllBtns: true,
-                    sizePerPageList: [10, 50, 100, 200, 500]
-                })}
-            />
-        </Card>
-    );
+
+    componentDidMount() {
+        this.setTable();
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps["groupId"] !== this.props["groupId"]) {
+            this.setTable();
+        }
+    }
+
+    setTable() {
+        const group = this.props["groups"][this.props["groupId"]];
+        this.setState({
+            loading: true,
+            headers: [],
+            data: []
+        });
+        let headers = TeamReportFunctions.getTableHeaders(group, this.props["courses"]);
+        for (let i = 0; i < headers.length; ++i) {
+            headers[i]["headerStyle"] = headerStyle;
+            headers[i]["style"] = cellStyle;
+        }
+        const data = TeamReportFunctions.getTableData(group, this.props["users"], this.props["activities"], this.props);
+        this.setState({
+            loading: false,
+            headers: headers,
+            data: data
+        });
+    }
+
+    render() {
+        return (
+            <>
+            {this.state["loading"] && <LoadingOverlay/>}
+            <Card className={"table-card"}>
+                <CardHeader>
+                    <h3>{"User Course Completions"}</h3>
+                    <p>{"All users and their course progress"}</p>
+                </CardHeader>
+                <BootstrapTable
+                    bootstrap4={true}
+                    wrapperClasses={"table-responsive"}
+                    keyField={"email"}
+                    columns={this.state["headers"]}
+                    data={this.state["data"]}
+                    bordered={false}
+                    pagination={paginationFactory({
+                        showTotal: true,
+                        alwaysShowAllBtns: true,
+                        sizePerPageList: [10, 50, 100, 200, 500]
+                    })}
+                />
+            </Card>
+            </>
+        );
+    }
 };
 
 // table styles
