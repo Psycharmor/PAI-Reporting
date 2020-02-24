@@ -52,7 +52,7 @@ export default class Login extends React.Component {
     }
 
     handleLoginSuccess(user) {
-        localStorage.setItem("USER", JSON.stringify(user));
+        sessionStorage.setItem("USER", JSON.stringify(user));
         this.props["loginHandler"](user["token"]);
     }
 

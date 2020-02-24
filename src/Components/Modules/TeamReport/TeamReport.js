@@ -61,7 +61,7 @@ export default class TeamReport extends React.Component {
     }
 
     getGroupIds() {
-        const user = JSON.parse(localStorage.getItem("USER"));
+        const user = JSON.parse(sessionStorage.getItem("USER"));
         if (user["user_role"].includes("administrator")) {
             return Object.keys(this.props["groups"]);
         }

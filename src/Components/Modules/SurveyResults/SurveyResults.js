@@ -107,7 +107,7 @@ export default class SurveyResults extends React.Component {
     }
 
     async doFrqApiCalls() {
-        const user = JSON.parse(localStorage.getItem("USER"));
+        const user = JSON.parse(sessionStorage.getItem("USER"));
         if (user) {
             this.setState({
                 loading: true,
@@ -133,7 +133,7 @@ export default class SurveyResults extends React.Component {
     }
 
     async addNewCategory(category) {
-        const user = JSON.parse(localStorage.getItem("USER"));
+        const user = JSON.parse(sessionStorage.getItem("USER"));
         if (user) {
             this.setState({
                 loading: true
@@ -162,7 +162,7 @@ export default class SurveyResults extends React.Component {
     }
 
     async removeCategory(categoryKey) {
-        const user = JSON.parse(localStorage.getItem("USER"));
+        const user = JSON.parse(sessionStorage.getItem("USER"));
         if (user) {
             this.setState({
                 loading: true
@@ -192,7 +192,7 @@ export default class SurveyResults extends React.Component {
     }
 
     async linkResponse(toApi, categoryKey) {
-        const user = JSON.parse(localStorage.getItem("USER"));
+        const user = JSON.parse(sessionStorage.getItem("USER"));
         if (user) {
             this.setState({
                 loading: true
@@ -229,7 +229,7 @@ export default class SurveyResults extends React.Component {
     }
 
     async delinkResponse(toApi, categoryKey) {
-        const user = JSON.parse(localStorage.getItem("USER"));
+        const user = JSON.parse(sessionStorage.getItem("USER"));
         if (user) {
             this.setState({
                 loading: true

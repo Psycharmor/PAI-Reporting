@@ -20,7 +20,7 @@ export default class DbLib {
     }
 
     async loadDb(db) {
-        const user = JSON.parse(localStorage.getItem("USER"));
+        const user = JSON.parse(sessionStorage.getItem("USER"));
         if (user["user_role"].includes("administrator")) {
             await Promise.all([
                 this.getApiData(db, this.url + "wp-json/pai/v2/groups/?", "groups", 1000),
@@ -50,7 +50,7 @@ export default class DbLib {
         let count = 0;
         let results = {};
         do {
-            if (!localStorage.getItem("USER")) {
+            if (!sessionStorage.getItem("USER")) {
                 break;
             }
             const result = await axios.get(url + "limit=" + limit + "&offset=" + offset, this.options);

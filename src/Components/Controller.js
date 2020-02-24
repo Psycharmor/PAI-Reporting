@@ -51,8 +51,8 @@ export default class Controller extends React.Component {
     }
 
     componentDidMount() {
-        if (localStorage.getItem("USER")) {
-            const user = JSON.parse(localStorage.getItem("USER"));
+        if (sessionStorage.getItem("USER")) {
+            const user = JSON.parse(sessionStorage.getItem("USER"));
             this.api["token"] = user["token"];
             if (this.getUserRole() === "administrator") {
                 this.menus["surveyResults"] = {
@@ -101,7 +101,7 @@ export default class Controller extends React.Component {
     }
 
     handleUserLogout() {
-        localStorage.removeItem("USER");
+        sessionStorage.removeItem("USER");
         this.setState({
             view: "teamReport",
             sidebarOpen: false,
@@ -117,7 +117,7 @@ export default class Controller extends React.Component {
     }
 
     getUserRole() {
-        const user = JSON.parse(localStorage.getItem("USER"));
+        const user = JSON.parse(sessionStorage.getItem("USER"));
         if (user) {
             const roles = user["user_role"];
             if (roles.includes("administrator")) {
@@ -156,11 +156,17 @@ export default class Controller extends React.Component {
             }
         });
         if (!exp || moment().isAfter(moment(exp))) {
-            await dbLib.loadDb(db);
-            const newExp = {
-                exp: moment().endOf("day")
-            };
-            localStorage.setItem("DBEXPIRATION", JSON.stringify(newExp));
+            try {
+                await dbLib.loadDb(db);
+                const newExp = {
+                    exp: moment().endOf("day")
+                };
+                localStorage.setItem("DBEXPIRATION", JSON.stringify(newExp));
+            }
+            catch (err) {
+                sessionStorage.removeItem("USER");
+                window.location.reload();
+            }
         }
         this.initializeData(db, dbLib);
     }
@@ -191,7 +197,7 @@ export default class Controller extends React.Component {
     }
 
     render() {
-        if (localStorage.getItem("USER")) {
+        if (sessionStorage.getItem("USER")) {
             console.log(this.state);
             return (
                 <>
