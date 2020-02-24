@@ -118,17 +118,23 @@ export default class SurveyResults extends React.Component {
                 }
             };
 
-            const [categories, responses] = await Promise.all([
-                ApiHandler.get(this.props["url"] + "/wp-json/pai/v2/frqs?what=categories", options),
-                ApiHandler.get(this.props["url"] + "/wp-json/pai/v2/frqs?what=responses", options)
-            ]);
+            try {
+                const [categories, responses] = await Promise.all([
+                    ApiHandler.get(this.props["url"] + "/wp-json/pai/v2/frqs?what=categories", options),
+                    ApiHandler.get(this.props["url"] + "/wp-json/pai/v2/frqs?what=responses", options)
+                ]);
 
-            this.setState({
-                loading: false,
-                frqCategories: categories["data"],
-                frqResponses: responses["data"],
-                frqCategoriesColors: getBgColors(categories["data"])
-            });
+                this.setState({
+                    loading: false,
+                    frqCategories: categories["data"],
+                    frqResponses: responses["data"],
+                    frqCategoriesColors: getBgColors(categories["data"])
+                });
+            }
+            catch (err) {
+                sessionStorage.removeItem("USER");
+                window.location.reload();
+            }
         }
     }
 
@@ -149,14 +155,20 @@ export default class SurveyResults extends React.Component {
                 action: "add",
                 categories: [category]
             };
-            const result = await ApiHandler.post(url, body, options);
-            if (result["data"] > 0) {
-                this.doFrqApiCalls();
+            try {
+                const result = await ApiHandler.post(url, body, options);
+                if (result["data"] > 0) {
+                    this.doFrqApiCalls();
+                }
+                else {
+                    this.setState({
+                        loading: false
+                    });
+                }
             }
-            else {
-                this.setState({
-                    loading: false
-                });
+            catch (err) {
+                sessionStorage.removeItem("USER");
+                window.location.reload();
             }
         }
     }
@@ -179,14 +191,20 @@ export default class SurveyResults extends React.Component {
                 categories: [categoryKey]
             };
 
-            const result = await ApiHandler.post(url, body, options);
-            if (result["data"] > 0) {
-                this.doFrqApiCalls();
+            try {
+                const result = await ApiHandler.post(url, body, options);
+                if (result["data"] > 0) {
+                    this.doFrqApiCalls();
+                }
+                else {
+                    this.setState({
+                        loading: false
+                    });
+                }
             }
-            else {
-                this.setState({
-                    loading: false
-                });
+            catch (err) {
+                sessionStorage.removeItem("USER");
+                window.location.reload();
             }
         }
     }
@@ -216,14 +234,20 @@ export default class SurveyResults extends React.Component {
                 action: "add",
                 responses: responses
             };
-            const result = await ApiHandler.post(url, body, options);
-            if (result["data"] > 0) {
-                this.doFrqApiCalls();
+            try {
+                const result = await ApiHandler.post(url, body, options);
+                if (result["data"] > 0) {
+                    this.doFrqApiCalls();
+                }
+                else {
+                    this.setState({
+                        loading: false
+                    });
+                }
             }
-            else {
-                this.setState({
-                    loading: false
-                });
+            catch (err) {
+                sessionStorage.removeItem("USER");
+                window.location.reload();
             }
         }
     }
@@ -253,14 +277,21 @@ export default class SurveyResults extends React.Component {
                 action: "remove",
                 responses: responses
             };
-            const result = await ApiHandler.post(url, body, options);
-            if (result["data"] > 0) {
-                this.doFrqApiCalls();
+            
+            try {
+                const result = await ApiHandler.post(url, body, options);
+                if (result["data"] > 0) {
+                    this.doFrqApiCalls();
+                }
+                else {
+                    this.setState({
+                        loading: false
+                    });
+                }
             }
-            else {
-                this.setState({
-                    loading: false
-                });
+            catch (err) {
+                sessionStorage.removeItem("USER");
+                window.location.reload();
             }
         }
     }
