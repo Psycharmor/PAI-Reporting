@@ -28,7 +28,7 @@ export default function RatingChart(props) {
                     const index = tooltipItem["index"];
 
                     return [
-                        "Total: " + data[index]["result"],
+                        "Total: " + data[index]["result"], // seriously, what do you call this
                         "Users: " + data[index]["userCount"]
                     ];
                 }

@@ -4,7 +4,7 @@ import {Card, CardHeader, CardBody} from "reactstrap";
 import Dropzone from "react-dropzone";
 
 export default function GroupUploadDropzone(props) {
-    const label = (props["file"]) ? props["file"]["name"] : "Drop it like it's hot";
+    const label = (props["file"]) ? props["file"]["name"] : "Upload Users";
 
     return (
         <Card className={"height-100-percent"}>
