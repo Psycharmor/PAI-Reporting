@@ -229,10 +229,10 @@ const SurveyResultsFunctions = {
                 }
             }
         }
-        for (let i = 0; i < data.length; ++i) {
-            data[i] = (data[i]["result"] > 0) ? data[i]["result"] / data[i]["userCount"] : 0;
-            data[i] = +(data[i].toFixed(2));
-        }
+        // for (let i = 0; i < data.length; ++i) {
+        //     data[i] = (data[i]["result"] > 0) ? data[i]["result"] / data[i]["userCount"] : 0;
+        //     data[i] = +(data[i].toFixed(2));
+        // }
 
         return data;
     },

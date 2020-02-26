@@ -8,6 +8,63 @@ import SurveyResultsFunctions from "../../../../Lib/Modules/SurveyResults/Survey
 export default function RatingChart(props) {
     const labels = getLabels();
     const data = SurveyResultsFunctions.getRatingData(props);
+    let tableData = [];
+    for (let i = 0; i < data.length; ++i) {
+        tableData.push(0);
+    }
+    for (let i = 0; i < data.length; ++i) {
+        tableData[i] = (data[i]["result"] > 0) ? data[i]["result"] / data[i]["userCount"] : 0;
+        tableData[i] = +(tableData[i].toFixed(2));
+    }
+
+    const options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: false,
+        tooltips: {
+            enabled: true,
+            callbacks: {
+                afterLabel: (tooltipItem, tableData) => {
+                    const index = tooltipItem["index"];
+
+                    return [
+                        "Total: " + data[index]["result"],
+                        "Users: " + data[index]["userCount"]
+                    ];
+                }
+            }
+        },
+        scales: {
+            xAxes: [{
+                ticks: {
+                    fontFamily: "open sans, sans-serif"
+                },
+                gridLines: {
+                    display: false
+                }
+            }],
+            yAxes: [{
+                ticks: {
+                    fontFamily: "open sans, sans-serif",
+                    min: 0
+                }
+            }]
+        },
+        plugins: {
+            datalabels: {
+                color: "#000000",
+                font: {
+                    family: "open sans, sans-serif",
+                    weight: 600
+                },
+                anchor: "end",
+                align: "end",
+                formatter: function(value, context) {
+                    return +(value.toFixed(2));
+                }
+            }
+        }
+    };
 
     return (
         <Card>
@@ -22,7 +79,7 @@ export default function RatingChart(props) {
                     data={{
                         labels: labels,
                         datasets: [{
-                            data: data,
+                            data: tableData,
                             backgroundColor: [
                                 "#11cdef",
                                 "#11cdef"
@@ -42,39 +99,3 @@ function getLabels() {
         "Post"
     ];
 }
-
-const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    legend: false,
-    scales: {
-        xAxes: [{
-            ticks: {
-                fontFamily: "open sans, sans-serif"
-            },
-            gridLines: {
-                display: false
-            }
-        }],
-        yAxes: [{
-            ticks: {
-                fontFamily: "open sans, sans-serif",
-                min: 0
-            }
-        }]
-    },
-    plugins: {
-        datalabels: {
-            color: "#000000",
-            font: {
-                family: "open sans, sans-serif",
-                weight: 600
-            },
-            anchor: "end",
-            align: "end",
-            formatter: function(value, context) {
-                return +(value.toFixed(2));
-            }
-        }
-    }
-};
