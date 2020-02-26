@@ -65,11 +65,11 @@ export default class Controller extends React.Component {
                 //     text: "Comments",
                 //     class: "comment-icon"
                 // };
-                // this.menus["groupUpload"] = {
-                //     icon: <FaFileUpload/>,
-                //     text: "Upload",
-                //     class: "upload-icon"
-                // };
+                this.menus["groupUpload"] = {
+                    icon: <FaFileUpload/>,
+                    text: "Upload",
+                    class: "upload-icon"
+                };
             }
             this.initializeDatabase();
         }
@@ -82,6 +82,11 @@ export default class Controller extends React.Component {
                 icon: <MdPoll/>,
                 text: "Survey Results",
                 class: "survey-icon"
+            };
+            this.menus["groupUpload"] = {
+                icon: <FaFileUpload/>,
+                text: "Upload",
+                class: "upload-icon"
             };
         }
         this.initializeDatabase();

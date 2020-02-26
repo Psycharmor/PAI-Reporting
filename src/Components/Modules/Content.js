@@ -41,6 +41,9 @@ function getContent(props) {
         case "groupUpload":
             return (
                 <GroupUpload
+                    groups={props["groups"]}
+                    courses={props["courses"]}
+                    url={props["url"]}
                 />
             );
         default:

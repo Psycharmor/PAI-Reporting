@@ -7,10 +7,10 @@ export default function GroupUploadDropzone(props) {
     const label = (props["file"]) ? props["file"]["name"] : "Drop it like it's hot";
 
     return (
-        <Card>
+        <Card className={"height-100-percent"}>
             <CardHeader className={"pai-card-header"}>
                 <h3>{"File Upload"}</h3>
-                <h5>{"Upload file of the Users"}</h5>
+                <h5>{"Upload file of the users"}</h5>
             </CardHeader>
             <CardBody className={"pai-card-body"}>
                 <Dropzone
