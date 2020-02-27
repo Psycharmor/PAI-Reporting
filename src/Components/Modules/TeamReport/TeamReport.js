@@ -8,6 +8,7 @@ import ReportFilters from "./Filters/ReportFilters";
 import Brief from "./Briefing/Brief";
 import ReportExportBtn from "./ReportExportBtn";
 import TeamReportTable from "./TeamReportTable";
+import LoadingOverlay from "../../LoadingOverlay";
 import TeamReportFunctions from "../../../Lib/Modules/TeamReport/TeamReportFunctions";
 
 export default class TeamReport extends React.Component {
@@ -30,15 +31,31 @@ export default class TeamReport extends React.Component {
     }
 
     handleGroupChange(event) {
-        this.setState({
-            groupId: parseInt(event.target["value"]),
-            subgroupId: 0
+        // we need to edit the dom before react is able to rerender
+        // so we force a timeout before the state change to allow showLoader
+        // time to edit the loader.
+        // Not very many ways to have a loader for the actual render itself
+        showLoader(); // screw you react
+        const groupId = parseInt(event.target["value"]);
+        setTimeout(() => {
+            requestAnimationFrame(() => {
+                this.setState({
+                    groupId: groupId,
+                    subgroupId: 0
+                });
+            });
         });
     }
 
     handleSubgroupChange(event) {
-        this.setState({
-            subgroupId: parseInt(event.target["value"])
+        showLoader();
+        const subgroupId = parseInt(event.target["value"]);
+        setTimeout(() => {
+            requestAnimationFrame(() => {
+                this.setState({
+                    subgroupId: subgroupId
+                });
+            });
         });
     }
 
@@ -46,8 +63,13 @@ export default class TeamReport extends React.Component {
         if (typeof(date) === "string") {
             return;
         }
-        this.setState({
-            startDate: date
+        showLoader();
+        setTimeout(() => {
+            requestAnimationFrame(() => {
+                this.setState({
+                    startDate: date
+                });
+            });
         });
     }
 
@@ -55,8 +77,13 @@ export default class TeamReport extends React.Component {
         if (typeof(date) === "string") {
             return;
         }
-        this.setState({
-            endDate: date
+        showLoader();
+        setTimeout(() => {
+            requestAnimationFrame(() => {
+                this.setState({
+                    endDate: date
+                });
+            });
         });
     }
 
@@ -126,6 +153,8 @@ export default class TeamReport extends React.Component {
         const groupId = (this.state["subgroupId"] === 0) ?
             this.state["groupId"] : this.state["subgroupId"];
         return (
+            <>
+            <LoadingOverlay/>
             <Container fluid={true}>
                 <ReportFilters
                     groupId={this.state["groupId"]}
@@ -180,6 +209,12 @@ export default class TeamReport extends React.Component {
                     </Col>
                 </Row>
             </Container>
+            </>
         );
     }
 };
+
+function showLoader() {
+    const loader = document.querySelector(".loading-overlay");
+    loader.classList.remove("hide");
+}

@@ -4,48 +4,23 @@ import {Card, CardHeader} from "reactstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 
-import LoadingOverlay from "../../LoadingOverlay";
 import TeamReportFunctions from "../../../Lib/Modules/TeamReport/TeamReportFunctions";
 
 export default class TeamReportTable extends React.Component {
-    constructor(props) {
-        super(props);
-
-        const group = this.props["groups"][this.props["groupId"]];
-        this.state = {
-            loading: true,
-            headers: TeamReportFunctions.getTableHeaders(group, this.props["courses"]),
-            data: []
-        };
-    }
 
     componentDidMount() {
-        this.setState((state) => {
-            return {
-                loading: true,
-                headers: [],
-                data: []
-            };
+        setTimeout(function() {
+            requestAnimationFrame(hideLoader);
         });
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if (prevProps["groupId"] !== this.props["groupId"]) {
-            this.setState((state) => {
-                return {
-                    loading: true,
-                    headers: [],
-                    data: []
-                };
-            });
-        }
-
-        else if (this.state["loading"]) {
-            this.setTable();
-        }
+    componentDidUpdate(prevProps) {
+        setTimeout(function() {
+            requestAnimationFrame(hideLoader);
+        });
     }
 
-    setTable() {
+    render() {
         const group = this.props["groups"][this.props["groupId"]];
         let headers = TeamReportFunctions.getTableHeaders(group, this.props["courses"]);
         for (let i = 0; i < headers.length; ++i) {
@@ -53,20 +28,8 @@ export default class TeamReportTable extends React.Component {
             headers[i]["style"] = cellStyle;
         }
         const data = TeamReportFunctions.getTableData(group, this.props["users"], this.props["activities"], this.props);
-        this.setState((state) => {
-            return {
-                loading: false,
-                headers: headers,
-                data: data
-            };
-        });
-    }
 
-    render() {
-        console.log(this.state);
         return (
-            <>
-            {this.state["loading"] && <LoadingOverlay/>}
             <Card className={"table-card"}>
                 <CardHeader>
                     <h3>{"User Course Completions"}</h3>
@@ -76,8 +39,8 @@ export default class TeamReportTable extends React.Component {
                     bootstrap4={true}
                     wrapperClasses={"table-responsive"}
                     keyField={"email"}
-                    columns={this.state["headers"]}
-                    data={this.state["data"]}
+                    columns={headers}
+                    data={data}
                     bordered={false}
                     pagination={paginationFactory({
                         showTotal: true,
@@ -86,10 +49,14 @@ export default class TeamReportTable extends React.Component {
                     })}
                 />
             </Card>
-            </>
         );
     }
 };
+
+function hideLoader() {
+    const loader = document.querySelector(".loading-overlay");
+    loader.classList.add("hide");
+}
 
 // table styles
 const headerStyle = {
