@@ -7,6 +7,7 @@ import Dropdown from "../../Forms/Dropdown";
 import GroupUploadDropzone from "./GroupUploadDropzone";
 import GroupUploadCourses from "./GroupUploadCourses";
 import GroupUploadProgress from "./GroupUploadProgress";
+import GroupUploadExampleBtn from "./GroupUploadExampleBtn";
 import ApiHandler from "../../../Lib/ApiHandler";
 
 export default class GroupUpload extends React.Component {
@@ -197,6 +198,11 @@ export default class GroupUpload extends React.Component {
                             optionPairs={this.getGroupOptions()}
                             onChangeHandler={this.handleGroupChange}
                         />
+                    </Col>
+                </Row>
+                <Row className={"margin-bot-30"}>
+                    <Col>
+                        <GroupUploadExampleBtn/>
                     </Col>
                 </Row>
                 <Row className={"margin-bot-30"}>
