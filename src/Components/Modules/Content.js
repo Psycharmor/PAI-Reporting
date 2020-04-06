@@ -3,6 +3,7 @@ import React from "react";
 import TeamReport from "./TeamReport/TeamReport";
 import SurveyResults from "./SurveyResults/SurveyResults";
 import GroupUpload from "./GroupUpload/GroupUpload";
+import Comments from "./Comments/Comments";
 
 export default function Content(props) {
     const content = getContent(props);
@@ -41,6 +42,14 @@ function getContent(props) {
         case "groupUpload":
             return (
                 <GroupUpload
+                    groups={props["groups"]}
+                    courses={props["courses"]}
+                    url={props["url"]}
+                />
+            );
+        case "Comments":
+            return (
+                <Comments
                     groups={props["groups"]}
                     courses={props["courses"]}
                     url={props["url"]}

@@ -74,6 +74,8 @@ export default class GroupUpload extends React.Component {
     }
 
     async doBatchUpload(data, limit) {
+
+      
         let count = 0;
         let offset = 0;
         do {
@@ -81,7 +83,7 @@ export default class GroupUpload extends React.Component {
             if (user) {
                 const users = data.slice(offset, offset + limit);
 
-                const url = this.props["url"] + "/wp-json/pai/v2/upload";
+                const url = this.props["url"] + "/wp-json/pai/v3/upload";
                 const options = {
                     headers: {
                         Authorization: "Bearer " + user["token"]

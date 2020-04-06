@@ -4,9 +4,9 @@ import {CSVLink} from "react-csv";
 
 export default function GroupUploadExampleBtn(props) {
     const data = [
-        ["username", "email"],
-        ["exampleUsername", "exampleEmail@email.com"],
-        ["anotherUser", "theotheruser@email.com"]
+        ["first_name","last_name","username", "email"],
+        ["exampleUsername", "exampleUsername", "exampleUsername", "exampleEmail@email.com"],
+        ["anotherUser", "anotherUser", "anotherUser", "theotheruser@email.com"]
     ];
     return (
         <CSVLink
