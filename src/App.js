@@ -3,7 +3,10 @@ import React from 'react';
 import Controller from "./Components/Controller";
 
 function App() {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 274b28b376b85315bd822dedfaa529c429c8e9a8
   var exp = JSON.parse(localStorage.getItem("DBEXPIRATION"));
   exp = (exp) ? exp["exp"] : "";
 
@@ -34,7 +37,10 @@ function App() {
   }else{
     console.log("DB is updated current");
   }
+<<<<<<< HEAD
   
+=======
+>>>>>>> 274b28b376b85315bd822dedfaa529c429c8e9a8
   return (
     <Controller/>
   );
