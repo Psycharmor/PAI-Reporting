@@ -6,6 +6,7 @@ import GroupUpload from "./GroupUpload/GroupUpload";
 import Comments from "./Comments/Comments";
 
 export default function Content(props) {
+
     const content = getContent(props);
 
     return (
@@ -16,6 +17,8 @@ export default function Content(props) {
 };
 
 function getContent(props) {
+  // console.log('GET CONTENT', props);
+
     switch (props["view"]) {
         case "teamReport":
             return (
@@ -47,12 +50,11 @@ function getContent(props) {
                     url={props["url"]}
                 />
             );
-        case "Comments":
+        case "comments":
             return (
                 <Comments
-                    groups={props["groups"]}
-                    courses={props["courses"]}
-                    url={props["url"]}
+                    comments={props["comments"]}
+                    actionHandler={props["actionHandler"]}
                 />
             );
         default:

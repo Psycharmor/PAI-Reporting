@@ -17,6 +17,7 @@ export default class DbLib {
         db.createObjectStore("portfolios");
         db.createObjectStore("activities");
         db.createObjectStore("surveys");
+        db.createObjectStore("comments");
     }
 
     async loadDb(db) {
@@ -29,7 +30,8 @@ export default class DbLib {
                 this.getApiData(db, this.url + "wp-json/pai/v2/portfolios/?", "portfolios", 1000),
                 this.getApiData(db, this.url + "wp-json/pai/v2/course-activities/?", "activities", 50000),
                 this.getApiData(db, this.url + "wp-json/pai/v2/surveys/?", "surveys", 3000),
-                this.getApiData(db, this.url + "wp-json/pai/v2/surveys/?caregivers=1&", "surveys", 3000)
+                this.getApiData(db, this.url + "wp-json/pai/v2/surveys/?caregivers=1&", "surveys", 3000),
+                this.getApiData(db, this.url + "wp-json/pai/v1/comments/?", "comments", 1000)
             ]);
         }
         else if (user["user_role"].includes("group_leader")) {

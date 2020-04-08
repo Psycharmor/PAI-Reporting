@@ -1,12 +1,12 @@
 import React from "react";
 
-import {Container, Row, Col, Nav, NavItem, TabContent, TabPane} from "reactstrap";
+import {Container, Row, Col, TabContent, TabPane} from "reactstrap";
 
 import AllTable from "./Tables/AllTable";
 import PortfolioDropdown from "./PortfolioDropdown";
 import CourseDropdown from "./CourseDropdown";
 
-class Comments extends React.Component {
+export default class Comments extends React.Component {
     constructor(props) {
         super(props);
 
@@ -32,6 +32,8 @@ class Comments extends React.Component {
         this.handleApprove = this.handleApprove.bind(this);
         this.handlePending = this.handlePending.bind(this);
         this.handleTrash = this.handleTrash.bind(this);
+
+        console.log("THIS", this);
     }
 
     /*
@@ -251,4 +253,3 @@ class Comments extends React.Component {
         );
     }
 };
-export default Comments;

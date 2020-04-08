@@ -1,0 +1,48 @@
+.bulk-action {
+    display: flex;
+}
+
+.bulk-action select {
+    width: 100px;
+    margin-right: 5px;
+}
+
+.comment-action {
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.comment-action .approve {
+    color: #5e72e4;
+}
+
+.comment-action .approve:hover {
+    text-decoration: underline;
+    text-decoration-color: #5e72e4;
+}
+
+.comment-action .pending {
+    color: #fb6340;
+}
+
+.comment-action .pending:hover {
+    text-decoration: underline;
+    text-decoration-color: #fb6340;
+}
+
+.comment-action .trash {
+    color: #f5365c;
+}
+
+.comment-action .trash:hover {
+    text-decoration: underline;
+    text-decoration-color: #f5365c;
+}
+.pa-checkbox {
+    position: relative;
+    width: 1.1rem;
+    height: 1.1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    background-color: #ffffff;
+}

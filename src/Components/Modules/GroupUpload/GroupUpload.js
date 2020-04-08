@@ -75,7 +75,7 @@ export default class GroupUpload extends React.Component {
 
     async doBatchUpload(data, limit) {
 
-      
+
         let count = 0;
         let offset = 0;
         do {
@@ -188,7 +188,7 @@ export default class GroupUpload extends React.Component {
     }
 
     render() {
-        console.log(this.state);
+        // console.log(this.state);
         return (
             <>
             {this.state["uploading"] && <div className={"loading-overlay"}></div>}

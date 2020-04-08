@@ -9,6 +9,7 @@ import "./Styles/navigations.css";
 import "./Styles/forms.css";
 import "./Styles/icons.css";
 import "./Styles/tables.css";
+import "./Styles/comments.css";
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 

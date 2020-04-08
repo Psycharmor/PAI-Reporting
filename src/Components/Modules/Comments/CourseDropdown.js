@@ -11,13 +11,15 @@ export default function CourseDropdown(props) {
     );
 };
 
-function getSelectOptions(surveyEntries, portfolioId) {
+function getSelectOptions(comments, portfolioId) {
     let options = [
         <option key={0} value={0}>{"All Courses"}</option>
     ];
     let found = [];
-    for (let i = 0; i < surveyEntries.length; ++i) {
-        const comment = surveyEntries[i];
+    for (let i in comments ){
+
+    // for (let i = 0; i < comments.length; ++i) {
+        const comment = comments[i];
         if (typeof comment["portfolio"] === "object" && comment["portfolio"]["id"] === portfolioId) {
             if (!found.includes(comment["postTitle"])) {
                 found.push(comment["postTitle"]);

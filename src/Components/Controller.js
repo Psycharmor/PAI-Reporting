@@ -1,4 +1,6 @@
 import React from "react";
+import axios from "axios";
+
 
 import {MdAssignment, MdPoll, MdComment} from "react-icons/md";
 import {FaFileUpload} from "react-icons/fa";
@@ -17,7 +19,7 @@ export default class Controller extends React.Component {
         super(props);
 
         this.api = {
-            url: "https://psycharmor.org/",
+            url: "http://staging.psycharmor.org/",
             token: ""
         };
 
@@ -41,13 +43,16 @@ export default class Controller extends React.Component {
             courses: {},
             portfolios: {},
             activities: {},
-            surveys: {}
+            surveys: {},
+            comments: {}
         };
 
         this.handleUserLogin = this.handleUserLogin.bind(this);
         this.handleViewChange = this.handleViewChange.bind(this);
         this.handleSidebarToggle = this.handleSidebarToggle.bind(this);
         this.handleUserLogout = this.handleUserLogout.bind(this);
+        this.handleCommentAction = this.handleCommentAction.bind(this);
+
     }
 
     componentDidMount() {
@@ -60,11 +65,11 @@ export default class Controller extends React.Component {
                     text: "Survey Results",
                     class: "survey-icon"
                 };
-                // this.menus["comments"] = {
-                //     icon: <MdComment/>,
-                //     text: "Comments",
-                //     class: "comment-icon"
-                // };
+                this.menus["comments"] = {
+                    icon: <MdComment/>,
+                    text: "Comments",
+                    class: "comment-icon"
+                };
                 this.menus["groupUpload"] = {
                     icon: <FaFileUpload/>,
                     text: "Upload",
@@ -117,7 +122,31 @@ export default class Controller extends React.Component {
             courses: {},
             portfolios: {},
             activities: {},
-            surveys: {}
+            surveys: {},
+            comments: {},
+            apiComments : []
+        });
+    }
+
+    handleCommentAction(body) {
+        const options = {
+            headers: {
+                Authorization: "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9zdGFnaW5nLnBzeWNoYXJtb3Iub3JnIiwiaWF0IjoxNTg1ODU5NTk0LCJuYmYiOjE1ODU4NTk1OTQsImV4cCI6MTU4NjQ2NDM5NCwiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMTg1MTEifX19.tzO427GSJ4skJ-1xx5FkKQhj4PXloFITidyu69DgkwM"
+            }
+        };
+        axios.post("http://staging.psycharmor.org/wp-json/pai/v1/comments", body, options)
+        .then((jsonData) => {
+            if (jsonData["status"] === 200) {
+                this.setState({
+                    loading: true,
+                    commentsDone: false
+                });
+                this.newApi["apiComments"] = [];
+                this.doCommentsApiCalls(1000, 0);
+            }
+        })
+        .catch((err) => {
+            console.log("Promise Catch: Content.handleCommentAction", err);
         });
     }
 
@@ -145,7 +174,8 @@ export default class Controller extends React.Component {
             courses: {},
             portfolios: {},
             activities: {},
-            surveys: {}
+            surveys: {},
+            comments: {}
         });
         let exp = JSON.parse(localStorage.getItem("DBEXPIRATION"));
         exp = (exp) ? exp["exp"] : "";
@@ -177,14 +207,15 @@ export default class Controller extends React.Component {
     }
 
     async initializeData(db, dbLib) {
-        let [groups, users, courses, portfolios, activities, surveys] = await Promise.all(
+        let [groups, users, courses, portfolios, activities, surveys, comments] = await Promise.all(
             [
                 dbLib.fetchDbStore(db, "groups"),
                 dbLib.fetchDbStore(db, "users"),
                 dbLib.fetchDbStore(db, "courses"),
                 dbLib.fetchDbStore(db, "portfolios"),
                 dbLib.fetchDbStore(db, "activities"),
-                dbLib.fetchDbStore(db, "surveys")
+                dbLib.fetchDbStore(db, "surveys"),
+                dbLib.fetchDbStore(db, "comments")
             ]
         );
         db.close();
@@ -197,7 +228,8 @@ export default class Controller extends React.Component {
             courses: courses,
             portfolios: portfolios,
             activities: activities,
-            surveys: surveys
+            surveys: surveys,
+            comments : comments
         });
     }
 
@@ -228,6 +260,8 @@ export default class Controller extends React.Component {
                         portfolios={this.state["portfolios"]}
                         activities={this.state["activities"]}
                         surveys={this.state["surveys"]}
+                        comments={this.state["comments"]}
+                        actionHandler={this.handleCommentAction}
                         url={this.api["url"]}
                     />}
                 </div>

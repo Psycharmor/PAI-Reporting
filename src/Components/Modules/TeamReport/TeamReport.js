@@ -24,6 +24,7 @@ export default class TeamReport extends React.Component {
             endDate: moment().endOf("day")
         };
 
+
         this.handleGroupChange = this.handleGroupChange.bind(this);
         this.handleSubgroupChange = this.handleSubgroupChange.bind(this);
         this.handleStartDateChange = this.handleStartDateChange.bind(this);
@@ -145,8 +146,8 @@ export default class TeamReport extends React.Component {
     }
 
     render() {
-        console.log(this.props);
-        console.log(this.state);
+        // console.log(this.props);
+        // console.log(this.state);
 
         const groups = (this.state["subgroupId"] === 0) ?
             this.props["groups"] : this.props["groups"][this.state["groupId"]]["subgroups"];

@@ -42,6 +42,8 @@ export default function AllTable(props) {
     ];
     const data = getTableData(props);
 
+    // console.log("data", data);
+
     const paginationOptions = {
         showTotal: true,
         alwaysShowAllBtns: true,
@@ -113,9 +115,17 @@ function formatCommentColumn(cell, row, rowIndex, formatExtraData) {
 */
 function getTableData(props) {
     let data = [];
-    for (let i = 0; i < props["comments"].length; ++i) {
+
+
+
+    for (let i in props["comments"] ){
+    // for (let i = 0; i < props["comments"].length; ++i) {
+
         const comment = props["comments"][i];
         const status = getStatus(comment["status"]);
+
+
+
         if (props["portfolioId"] !== 0) {
             if (props["courseId"] !== 0) {
                 if (comment["postTitle"] === props["courseId"]) {
