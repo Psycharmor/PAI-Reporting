@@ -1,10 +1,14 @@
 import React from "react";
+import axios from "axios";
 
 import {Container, Row, Col, TabContent, TabPane} from "reactstrap";
 
 import AllTable from "./Tables/AllTable";
 import PortfolioDropdown from "./PortfolioDropdown";
 import CourseDropdown from "./CourseDropdown";
+
+import ApiHandler from "../../../Lib/ApiHandler";
+// import UtilityFunctions from "../../../../Lib/UtilityFunctions";
 
 export default class Comments extends React.Component {
     constructor(props) {
@@ -33,7 +37,9 @@ export default class Comments extends React.Component {
         this.handlePending = this.handlePending.bind(this);
         this.handleTrash = this.handleTrash.bind(this);
 
-        console.log("THIS", this);
+        this.handleCommentAction = this.handleCommentAction.bind(this);
+
+        // console.log("THIS", this);
     }
 
     /*
@@ -147,6 +153,28 @@ export default class Comments extends React.Component {
         this.props["actionHandler"](body);
     }
 
+
+    handleCommentAction(body) {
+        const options = {
+            headers: {
+                Authorization: "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9zdGFnaW5nLnBzeWNoYXJtb3Iub3JnIiwiaWF0IjoxNTg1ODU5NTk0LCJuYmYiOjE1ODU4NTk1OTQsImV4cCI6MTU4NjQ2NDM5NCwiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMTg1MTEifX19.tzO427GSJ4skJ-1xx5FkKQhj4PXloFITidyu69DgkwM"
+            }
+        };
+        axios.post("http://staging.psycharmor.org/wp-json/pai/v1/comments", body, options)
+        .then((jsonData) => {
+            if (jsonData["status"] === 200) {
+                this.setState({
+                    loading: true,
+                    commentsDone: false
+                });
+                this.newApi["apiComments"] = [];
+                this.doCommentsApiCalls(1000, 0);
+            }
+        })
+        .catch((err) => {
+            console.log("Promise Catch: Content.handleCommentAction", err);
+        });
+    }
     /*
         Render the tabs to display different content
         Params:

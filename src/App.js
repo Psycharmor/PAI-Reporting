@@ -23,7 +23,7 @@ function App() {
   	req.onsuccess = function () {
   			console.log("Deleted database successfully");
   			localStorage.clear();
-  			window.location.reload();
+  			// window.location.reload();
   	};
   	req.onerror = function () {
   			console.log("Couldn't delete database");

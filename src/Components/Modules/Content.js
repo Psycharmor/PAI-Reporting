@@ -54,7 +54,6 @@ function getContent(props) {
             return (
                 <Comments
                     comments={props["comments"]}
-                    actionHandler={props["actionHandler"]}
                 />
             );
         default:
