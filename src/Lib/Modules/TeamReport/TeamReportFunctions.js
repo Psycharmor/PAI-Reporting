@@ -1,6 +1,9 @@
 /*
     All functions related to parsing/computing info for the Team Report view
 */
+import moment from "moment";
+
+
 const TeamReportFunctions = {
     getTableHeaders: function(group, courses) {
         let headers = [
@@ -49,16 +52,18 @@ const TeamReportFunctions = {
     getTableData: function(group, users, activities, props) {
         const pActivities = TeamReportFunctions.parseActivities(activities, group["userIds"]);
         let data = [];
+
         const courseIds = group["courseIds"];
         const userIds = group["userIds"];
 
         for (let i = 0; i < userIds.length; ++i) {
             const userId = userIds[i];
             let courseCompletedCount = 0;
+
             let row = {
                 firstName: users[userId]["firstName"],
                 lastName: users[userId]["lastName"],
-                email: users[userId]["email"]
+                email: users[userId]["email"],
             };
 
             for (let i = 0; i < courseIds.length; ++i) {
@@ -66,21 +71,29 @@ const TeamReportFunctions = {
                 row[courseId] = 0;
                 if ((userId in pActivities) && (courseId in pActivities[userId])) {
                     if (TeamReportFunctions.isFilteredActivity(props, pActivities[userId][courseId])) {
+
+                        /// DateCompleted for each course
+                        const dateCompleted = pActivities[userId][courseId]["completed"];
+
                         const stepsCompleted = pActivities[userId][courseId]["stepsCompleted"];
                         const stepsTotal = pActivities[userId][courseId]["stepsTotal"];
+
+
                         if (stepsTotal !== 0) {
                             if (stepsCompleted === stepsTotal) {
                                 ++courseCompletedCount;
                             }
-                            row[courseId] = stepsCompleted / stepsTotal * 100;
+                            row[courseId] = dateCompleted
+                            // row[dateCompleted] = dateCompleted;
                         }
                     }
                 }
             }
             row["completed"] = courseCompletedCount;
-
+            // row["dateCompleted"] = dateCompleted;
             data.push(row);
         }
+        // console.log("data", data);
 
         return data;
     },
@@ -123,7 +136,13 @@ function courseProgressComparator(a, b, order) {
 }
 
 function courseProgressRenderer(cell, row, rowIndex, formatExtraData) {
-    return +(cell.toFixed(2)) + "%";
+
+    var dateTimeString = moment(cell * 1000 ).format("DD-MM-YYYY");
+    if ( cell !== 0 ){
+      return dateTimeString;
+    }else{
+      return '';
+    }
 }
 
 function courseCompletedComparator(a, b, order) {
@@ -134,5 +153,6 @@ function courseCompletedComparator(a, b, order) {
 }
 
 function courseCompletedRenderer(cell, row, rowIndex, formatExtraData) {
+
     return cell + "/" + formatExtraData["courseCount"];
 }
