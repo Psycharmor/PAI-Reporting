@@ -96,11 +96,11 @@ export default class Controller extends React.Component {
                 text: "Survey Results",
                 class: "survey-icon"
             };
-            this.menus["groupUpload"] = {
-                icon: <FaFileUpload/>,
-                text: "Upload",
-                class: "upload-icon"
-            };
+            // this.menus["groupUpload"] = {
+            //     icon: <FaFileUpload/>,
+            //     text: "Upload",
+            //     class: "upload-icon"
+            // };
         }
         this.initializeDatabase();
     }
