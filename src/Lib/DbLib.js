@@ -24,8 +24,6 @@ export default class DbLib {
         const user = JSON.parse(sessionStorage.getItem("USER"));
         if (user["user_role"].includes("administrator")) {
             await Promise.all([
-                this.getApiData(db, this.url + "wp-json/pai/v2/surveys/?", "surveys", 3000),
-                this.getApiData(db, this.url + "wp-json/pai/v2/surveys/?caregivers=1&", "surveys", 3000),
                 this.getApiData(db, this.url + "wp-json/pai/v2/surveys/?caregiverscg=1&", "surveys", 3000),
             ]);
         }
