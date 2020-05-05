@@ -27,17 +27,41 @@ const SurveyResultsFunctions = {
         const surveys = props["surveys"];
         for (let surveyId in surveys) {
             if (isFilteredSurvey(props, surveyId)) {
+
                 const results = surveys[surveyId]["results"];
-                for (let i = 0; i < questions.length; ++i) {
-                    const question = questions[i];
-                    if (question in results) {
-                        if (results[question] === "Yes") {
-                            ++datasets[0]["data"][i];
-                        }
-                        else if (results[question] === "No") {
-                            ++datasets[1]["data"][i];
+                const caregiver = surveys[surveyId]["CaregiverCG2"];
+
+                if (results){
+                  for (let i = 0; i < questions.length; ++i) {
+                      const question = questions[i];
+                      if (question in results) {
+                          if (results[question] === "Yes") {
+                              ++datasets[0]["data"][i];
+                          }
+                          else if (results[question] === "No") {
+                              ++datasets[1]["data"][i];
+                          }
+                      }
+                  }
+                }
+                if ( caregiver ){
+                  for (let caregiverresults in caregiver) {
+
+                    const results = surveys[surveyId]["CaregiverCG2"]["results"];
+                    // console.log("results",results);
+
+                    for (let i = 0; i < questions.length; ++i) {
+                        const question = questions[i];
+                        if (question in results) {
+                            if (results[question] === "Yes") {
+                                ++datasets[0]["data"][i];
+                            }
+                            else if (results[question] === "No") {
+                                ++datasets[1]["data"][i];
+                            }
                         }
                     }
+                  }
                 }
             }
         }
@@ -51,18 +75,25 @@ const SurveyResultsFunctions = {
         for (let surveyId in props["surveys"]) {
             if (isFilteredSurvey(props, surveyId)) {
                 const survey = props["surveys"][surveyId];
-                if (!(survey["userId"] in data) && (survey["userId"] in props["users"])) {
-                    const userId = survey["userId"];
-                    data[userId] = {
-                        firstName: props["users"][userId]["firstName"],
-                        lastName: props["users"][userId]["lastName"],
-                        email: props["users"][userId]["email"],
-                        team: getTeam(props["groups"], userId, survey["courseId"]),
-                        organization: props["users"][userId]["organization"],
-                        roleWithVeterans: props["users"][userId]["roleWithVeterans"],
-                        referralSource: props["users"][userId]["referralSource"],
-                        courseCompletionCount: getUserCourseCompletionCount(userId, pActivities)
-                    };
+
+                if ( survey["results"] ){
+                  if (!(survey["userId"] in data) && (survey["userId"] in props["users"])) {
+                      const userId = survey["userId"];
+                      data[userId] = {
+                          firstName: props["users"][userId]["firstName"],
+                          lastName: props["users"][userId]["lastName"],
+                          email: props["users"][userId]["email"],
+                          team: getTeam(props["groups"], userId, survey["courseId"]),
+                          organization: props["users"][userId]["organization"],
+                          roleWithVeterans: props["users"][userId]["roleWithVeterans"],
+                          referralSource: props["users"][userId]["referralSource"],
+                          courseCompletionCount: getUserCourseCompletionCount(userId, pActivities)
+                      };
+                  }
+                }
+                if( survey["CaregiverCG2"]){
+
+
                 }
             }
         }
@@ -75,21 +106,27 @@ const SurveyResultsFunctions = {
         for (let surveyId in props["surveys"]) {
             if (isFilteredSurvey(props, surveyId)) {
                 const survey = props["surveys"][surveyId];
-                for (let i = 0; i < props["questions"].length; ++i) {
-                    const question = props["questions"][i];
-                    if (props["question"] === "0" || props["question"] === question) {
-                        const results = survey["results"];
-                        if (question in results && results[question]) {
-                            data.push({
-                                index: data.length,
-                                surveyId: surveyId,
-                                question: question,
-                                response: results[question],
-                                categories: getCategories(surveyId, question, props["responses"], props["categories"]),
-                                submitted: survey["submitted"]
-                            });
-                        }
-                    }
+                if ( survey["results"] ){
+                  for (let i = 0; i < props["questions"].length; ++i) {
+                      const question = props["questions"][i];
+                      if (props["question"] === "0" || props["question"] === question) {
+                          const results = survey["results"];
+                          if (question in results && results[question]) {
+                              data.push({
+                                  index: data.length,
+                                  surveyId: surveyId,
+                                  question: question,
+                                  response: results[question],
+                                  categories: getCategories(surveyId, question, props["responses"], props["categories"]),
+                                  submitted: survey["submitted"]
+                              });
+                          }
+                      }
+                  }
+                }
+                if( survey["CaregiverCG2"]){
+
+
                 }
             }
         }
@@ -106,26 +143,135 @@ const SurveyResultsFunctions = {
         return labels;
     },
 
+
+
     getFrqChartData(props, question, labels) {
         let data = [];
         for (let i = 0; i < labels.length; ++i) {
             data.push(0);
         }
-        for (let surveyId in props["surveys"]) {
-            if (isFilteredSurvey(props, surveyId) && (surveyId in props["responses"])) {
-                const results = props["surveys"][surveyId]["results"];
-                if (question in results && results[question]) {
-                    for (let i = 0; i < props["responses"][surveyId].length; ++i) {
-                        const response = props["responses"][surveyId][i];
-                        if (response["question"] === question) {
-                            const index = labels.indexOf(props["categories"][response["categoryKey"]]);
-                            ++data[index];
-                        }
-                    }
-                }
+        const surveys = props["surveys"];
+        const responses = props["responses"];
+
+        for (let surveyId in surveys ) {
+
+            if (isFilteredSurvey(props, surveyId) && (surveyId in props["responses"])  ) {
+            // if (isFilteredSurvey(props, surveyId) ) {
+                const caregiver = surveys[surveyId]["CaregiverCG2"];
+                const results = surveys[surveyId]["results"];
+
+                // if( results in surveys ){
+                  if (question in results && results[question]) {
+                      for (let i = 0; i < props["responses"][surveyId].length; ++i) {
+                          const response = props["responses"][surveyId][i];
+                          if (response["question"] === question) {
+                              const index = labels.indexOf(props["categories"][response["categoryKey"]]);
+                              ++data[index];
+                          }
+                      }
+                  }
+                // }
+                // if( caregiver in surveys ){
+                //   for (let caregiverresults in caregiver) {
+                //       const results = surveys[surveyId]["CaregiverCG2"]["results"];
+                //
+                //       if (question in results && results[question]) {
+                //           for (let i = 0; i < props["responses"][surveyId].length; ++i) {
+                //               const response = props["responses"][surveyId][i];
+                //               if (response["question"] === question) {
+                //                   const index = labels.indexOf(props["categories"][response["categoryKey"]]);
+                //                   ++data[index];
+                //               }
+                //           }
+                //       }
+                //
+                //   }
+                //
+                // }
             }
         }
+        return data;
+    },
 
+
+
+    getCaregiverFrqChartData(props, question, labels) {
+        let data = [];
+        for (let i = 0; i < labels.length; ++i) {
+            data.push(0);
+        }
+        const surveys = props["surveys"];
+        const responses = props["responses"];
+
+
+
+        // console.log("question", question );
+        // console.log("question", props["question"] );
+
+        for (let surveyId in surveys ) {
+            // if (isFilteredSurvey(props, surveyId) && (surveyId in props["responses"])  ) {
+            if (isFilteredSurvey(props, surveyId) ) {
+
+                const caregiver = surveys[surveyId]["CaregiverCG2"];
+                const results = surveys[surveyId]["results"];
+
+                // if( caregiver in surveys ){
+                  for (let caregiverresults in caregiver) {
+                      const results = surveys[surveyId]["CaregiverCG2"]["results"];
+
+                      if (question in results ) {
+
+
+
+                        // for (let i = 0; i < props["responses"][surveyId].length; ++i) {
+                        //     const response = props["responses"][surveyId][i];
+                        //     if (response["question"] === question) {
+                        //         const index = labels.indexOf(props["categories"][response["categoryKey"]]);
+                        //         ++data[index];
+                        //     }
+                        // }
+
+                        // const response = props["responses"];
+                        console.log("categories", props["categories"]);
+                        
+                        if (results[question] === "Strongly Agree") {
+                            const index = labels.indexOf(props["categories"] );
+
+                            ++data[index];
+                        }
+                        if (results[question] === "Agree") {
+                            const index = labels.indexOf(props["categories"]);
+                            ++data[index];
+                        }
+                        if (results[question] === "Neutral") {
+                            const index = labels.indexOf(props["categories"]);
+                            ++data[index];
+                        }
+                        if (results[question] === "Disagree") {
+                            const index = labels.indexOf(props["categories"]);
+                            ++data[index];
+                        }
+                        if (results[question] === "Strongly Disagree") {
+                            const index = labels.indexOf(props["categories"]);
+                            ++data[index];
+                        }
+
+
+
+                          // for (let i = 0; i < props["responses"][surveyId].length; ++i) {
+                          //     const response = props["responses"][surveyId][i];
+                          //     if (response["question"] === question) {
+                          //         const index = labels.indexOf(props["categories"][response["categoryKey"]]);
+                          //         ++data[index];
+                          //     }
+                          // }
+                      }
+
+                  }
+                //
+                // }
+            }
+        }
         return data;
     },
 
@@ -146,20 +292,27 @@ const SurveyResultsFunctions = {
         for (let surveyId in props["surveys"]) {
             if (isFilteredSurvey(props, surveyId)) {
                 const survey = props["surveys"][surveyId];
-                for (let i = 0; i < labels.length; ++i) {
-                    const label = labels[i];
-                    if (label in survey["results"]) {
-                        const result = survey["results"][label];
-                        if (result["before"] && result["before"].trim()) {
-                            ++data[i]["userCount"]["pre"];
-                            data[i]["result"]["pre"] += parseInt(result["before"]);
-                        }
-                        if (result["now"] && result["now"].trim()) {
-                            ++data[i]["userCount"]["post"];
-                            data[i]["result"]["post"] += parseInt(result["now"]);
-                        }
-                    }
+                if ( survey["results"] ){
+                  for (let i = 0; i < labels.length; ++i) {
+                      const label = labels[i];
+                      if (label in survey["results"]) {
+                          const result = survey["results"][label];
+                          if (result["before"] && result["before"].trim()) {
+                              ++data[i]["userCount"]["pre"];
+                              data[i]["result"]["pre"] += parseInt(result["before"]);
+                          }
+                          if (result["now"] && result["now"].trim()) {
+                              ++data[i]["userCount"]["post"];
+                              data[i]["result"]["post"] += parseInt(result["now"]);
+                          }
+                      }
+                  }
                 }
+                if( survey["CaregiverCG2"]){
+
+
+                }
+
             }
         }
         for (let i = 0; i < data.length; ++i) {
@@ -182,18 +335,25 @@ const SurveyResultsFunctions = {
         for (let surveyId in props["surveys"]) {
             if (isFilteredSurvey(props, surveyId)) {
                 const survey = props["surveys"][surveyId];
-                for (let i = 0; i < labels.length; ++i) {
-                    const label = labels[i];
-                    if (label in survey["results"]) {
-                        const result = survey["results"][label];
-                        if ((result["before"] && result["before"].trim()) || (result["now"] && result["now"].trim())) {
-                            ++data[i]["userCount"];
-                            const pre = (result["before"] && result["before"].trim()) ? parseInt(result["before"]) : 0;
-                            const post = (result["now"] && result["now"].trim()) ? parseInt(result["now"]) : 0;
-                            data[i]["result"] += post - pre;
-                        }
-                    }
+                if ( survey["results"] ){
+                  for (let i = 0; i < labels.length; ++i) {
+                      const label = labels[i];
+                      if (label in survey["results"]) {
+                          const result = survey["results"][label];
+                          if ((result["before"] && result["before"].trim()) || (result["now"] && result["now"].trim())) {
+                              ++data[i]["userCount"];
+                              const pre = (result["before"] && result["before"].trim()) ? parseInt(result["before"]) : 0;
+                              const post = (result["now"] && result["now"].trim()) ? parseInt(result["now"]) : 0;
+                              data[i]["result"] += post - pre;
+                          }
+                      }
+                  }
                 }
+                if( survey["CaregiverCG2"]){
+
+
+                }
+
             }
         }
         for (let i = 0; i < data.length; ++i) {
@@ -216,17 +376,24 @@ const SurveyResultsFunctions = {
         for (let surveyId in props["surveys"]) {
             if (isFilteredSurvey(props, surveyId)) {
                 const survey = props["surveys"][surveyId];
-                if (props["question"] in survey["results"]) {
-                    const result = survey["results"][props["question"]];
-                    if (result["before"] && result["before"].trim()) {
-                        ++data[0]["userCount"];
-                        data[0]["result"] += parseInt(result["before"]);
-                    }
-                    if (result["now"] && result["now"].trim()) {
-                        ++data[1]["userCount"];
-                        data[1]["result"] += parseInt(result["now"]);
-                    }
+                if ( survey["results"] ){
+                  if (props["question"] in survey["results"]) {
+                      const result = survey["results"][props["question"]];
+                      if (result["before"] && result["before"].trim()) {
+                          ++data[0]["userCount"];
+                          data[0]["result"] += parseInt(result["before"]);
+                      }
+                      if (result["now"] && result["now"].trim()) {
+                          ++data[1]["userCount"];
+                          data[1]["result"] += parseInt(result["now"]);
+                      }
+                  }
                 }
+                if( survey["CaregiverCG2"]){
+
+
+                }
+
             }
         }
         // for (let i = 0; i < data.length; ++i) {
@@ -238,12 +405,23 @@ const SurveyResultsFunctions = {
     },
 
     createExportData(props) {
+
         let data = [createExportHeaders()];
         const pActivities = parseActivities(props["activities"]);
         for (let surveyId in props["surveys"]) {
             if (isFilteredSurvey(props, surveyId)) {
+
                 const survey = props["surveys"][surveyId];
-                data.push(createExportRows(survey, props, pActivities));
+
+                if ( survey["results"] ){
+
+                    data.push(createExportRows(survey, props, pActivities));
+                }
+                if( survey["CaregiverCG2"]){
+
+                    // console.log("CaregiverCG2");
+                }
+
             }
         }
 
@@ -254,36 +432,53 @@ export default SurveyResultsFunctions;
 
 function isFilteredSurvey(props, surveyId) {
     if (props["portfolioId"] !== 0) {
+
+      const survey = props["surveys"][surveyId];
+      if ( survey["results"] ){
         const courseId = props["surveys"][surveyId]["courseId"];
         const portfolio = props["portfolios"][props["portfolioId"]];
         if (!portfolio["courseIds"].includes(courseId)) {
             return false;
         }
+      }
     }
 
     if (props["courseId"] !== 0) {
+      const survey = props["surveys"][surveyId];
+      if ( survey["results"] ){
         const surveyCourseId = props["surveys"][surveyId]["courseId"];
         if (props["courseId"] !== surveyCourseId) {
             return false;
         }
+      }
+
     }
 
-    if (props["startDate"].unix() > props["surveys"][surveyId]["submitted"]) {
-        return false;
+    const survey = props["surveys"][surveyId];
+
+    if ( survey["results"] ){
+      if (props["startDate"].unix() > props["surveys"][surveyId]["submitted"]) {
+          return false;
+      }
+
+      if (props["endDate"].unix() < props["surveys"][surveyId]["submitted"]) {
+          return false;
+      }
     }
 
-    if (props["endDate"].unix() < props["surveys"][surveyId]["submitted"]) {
-        return false;
-    }
 
     if (props["groupId"] !== 0) {
         if (props["groupId"] === -1) {
             let inGroup = false;
             for (let groupId in props["groups"]) {
                 const userIds = props["groups"][groupId]["userIds"];
-                const userId = props["surveys"][surveyId]["userId"];
-                if (userIds.includes(userId)) {
-                    inGroup = true;
+
+                const survey = props["surveys"][surveyId];
+                if ( survey["results"] ){
+                  const userId = props["surveys"][surveyId]["userId"];
+                  if (userIds.includes(userId)) {
+                      inGroup = true;
+                  }
                 }
             }
             if (!inGroup) {
@@ -294,23 +489,34 @@ function isFilteredSurvey(props, surveyId) {
         else if (props["groupId"] === -2) {
             for (let groupId in props["groups"]) {
                 const userIds = props["groups"][groupId]["userIds"];
-                const userId = props["surveys"][surveyId]["userId"];
-                if (userIds.includes(userId)) {
-                    return false;
+
+                const survey = props["surveys"][surveyId];
+                if ( survey["results"] ){
+                  const userId = props["surveys"][surveyId]["userId"];
+                  if (userIds.includes(userId)) {
+                      return false;
+                  }
                 }
             }
         }
 
         else {
             const userIds = props["groups"][props["groupId"]]["userIds"];
-            const userId = props["surveys"][surveyId]["userId"];
-            if (!userIds.includes(userId)) {
-                return false;
+
+            const survey = props["surveys"][surveyId];
+            if ( survey["results"] ){
+              const userId = props["surveys"][surveyId]["userId"];
+              if (!userIds.includes(userId)) {
+                  return false;
+              }
             }
+
         }
     }
 
     if (props["org"] !== "0") {
+      const survey = props["surveys"][surveyId];
+      if ( survey["results"] ){
         const userId = props["surveys"][surveyId]["userId"];
         if (userId in props["users"]) {
             const user = props["users"][userId];
@@ -328,25 +534,29 @@ function isFilteredSurvey(props, surveyId) {
                 return false;
             }
         }
+      }
     }
 
     if (props["role"] !== "0") {
-        const userId = props["surveys"][surveyId]["userId"];
-        if (userId in props["users"]) {
-            const user = props["users"][userId];
-            if (props["role"] === "-1") {
-                if (!user["roleWithVeterans"] || !user["roleWithVeterans"].trim()) {
-                    return false;
-                }
-            }
-            else if (props["role"] === "-2") {
-                if (user["roleWithVeterans"] && user["roleWithVeterans"].trim()) {
-                    return false;
-                }
-            }
-            else if (props["role"] !== user["roleWithVeterans"]) {
-                return false;
-            }
+        const survey = props["surveys"][surveyId];
+        if ( survey["results"] ){
+          const userId = props["surveys"][surveyId]["userId"];
+          if (userId in props["users"]) {
+              const user = props["users"][userId];
+              if (props["role"] === "-1") {
+                  if (!user["roleWithVeterans"] || !user["roleWithVeterans"].trim()) {
+                      return false;
+                  }
+              }
+              else if (props["role"] === "-2") {
+                  if (user["roleWithVeterans"] && user["roleWithVeterans"].trim()) {
+                      return false;
+                  }
+              }
+              else if (props["role"] !== user["roleWithVeterans"]) {
+                  return false;
+              }
+          }
         }
     }
 

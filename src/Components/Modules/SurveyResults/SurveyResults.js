@@ -10,6 +10,7 @@ import SurveyTabs from "./SurveyTabs";
 import SurveyExportBtn from "./SurveyExportBtn";
 import Results from "./Results";
 import Demographics from "./Demographics";
+import Caregiver from "./Caregiver";
 import FreeResponseCategories from "./FreeResponse/FreeResponseCategories";
 import ApiHandler from "../../../Lib/ApiHandler";
 
@@ -17,6 +18,7 @@ export default class SurveyResults extends React.Component {
     constructor(props) {
         super(props);
 
+        // console.log("props", props);
         this.state = {
             loading: false,
             activeTab: "results",
@@ -277,7 +279,7 @@ export default class SurveyResults extends React.Component {
                 action: "remove",
                 responses: responses
             };
-            
+
             try {
                 const result = await ApiHandler.post(url, body, options);
                 if (result["data"] > 0) {
@@ -376,6 +378,22 @@ export default class SurveyResults extends React.Component {
                                     frqCategories={this.state["frqCategories"]}
                                     frqResponses={this.state["frqResponses"]}
                                     frqCategoriesColors={this.state["frqCategoriesColors"]}
+                                />
+                            </TabPane>
+                            <TabPane tabId={"caregiver"}>
+                                <Caregiver
+                                    surveys={this.props["surveys"]}
+                                    portfolios={this.props["portfolios"]}
+                                    courses={this.props["courses"]}
+                                    groups={this.props["groups"]}
+                                    users={this.props["users"]}
+                                    portfolioId={this.state["portfolioId"]}
+                                    courseId={this.state["courseId"]}
+                                    startDate={this.state["startDate"]}
+                                    endDate={this.state["endDate"]}
+                                    groupId={this.state["groupId"]}
+                                    org={this.state["org"]}
+                                    role={this.state["role"]}
                                 />
                             </TabPane>
                             <TabPane tabId={"demographics"}>

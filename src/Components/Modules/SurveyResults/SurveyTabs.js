@@ -13,6 +13,13 @@ export default function SurveyTabs(props) {
                 {"Results"}
             </NavItem>
             <NavItem
+                className={(props["activeTab"] === "caregiver") ? "active" : ""}
+                onClick={props["activeTabChangeHandler"]}
+                value={"caregiver"}
+            >
+                {"Caregiver"}
+            </NavItem>
+            <NavItem
                 className={(props["activeTab"] === "demographics") ? "active" : ""}
                 onClick={props["activeTabChangeHandler"]}
                 value={"demographics"}

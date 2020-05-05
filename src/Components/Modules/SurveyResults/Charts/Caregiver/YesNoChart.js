@@ -4,13 +4,12 @@ import {Card, CardHeader, CardBody} from "reactstrap";
 import {HorizontalBar} from "react-chartjs-2";
 import "chartjs-plugin-datalabels";
 
-import SurveyResultsFunctions from "../../../../Lib/Modules/SurveyResults/SurveyResultsFunctions";
+import SurveyResultsFunctions from "../../../../../Lib/Modules/SurveyResults/SurveyResultsFunctions";
 
 export default function YesNoChart(props) {
 
 
-    const labels = getResultsLabels();
-    // const labels = SurveyResultsFunctions.getYesNoChart(props);
+    const labels = getCaregiverLabels();
 
     const datasets = SurveyResultsFunctions.getYesNoData(props, labels);
     const chartMax = getChartMax(getMaxTotalData(datasets));
@@ -92,18 +91,17 @@ export default function YesNoChart(props) {
 };
 
 
-function getResultsLabels(){
+function getCaregiverLabels (){
 
   return [
-      "I learned something new as a result of this training.",
-      "The information presented was relevant to my goals.",
-      "After taking this course, I will use what I learned.",
-      "I would recommend PsychArmor training to someone else.",
-      "Would you participate in more detailed evaluation?",
-      "I am more aware of available resources as a result of this course.",
+      /// caregiver
+      "Have you received our Caregiver Experience binder?",
+      "Have you used your Caregiver Experience binder since receiving it?",
+      "Have you printed or read any additional Tips & Takeaways?",
+      "Have you received our Caregiver Recognition Award in partnership with Hidden Heroes?"
   ];
-}
 
+}
 
 
 function getMaxTotalData(datasets) {

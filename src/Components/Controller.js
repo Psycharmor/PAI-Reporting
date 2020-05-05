@@ -19,22 +19,30 @@ export default class Controller extends React.Component {
         super(props);
 
         this.api = {
-            url: "https://psycharmor.org/",
+            url: "http://staging.psycharmor.org/",
             token: ""
         };
 
+        // this.menus = {
+        //     teamReport: {
+        //         icon: <MdAssignment/>,
+        //         text: "Team Report",
+        //         class: "team-report-icon"
+        //     }
+        // };
         this.menus = {
-            teamReport: {
-                icon: <MdAssignment/>,
-                text: "Team Report",
-                class: "team-report-icon"
+            surveyResults: {
+                icon: <MdPoll/>,
+                text: "Survey Results",
+                class: "survey-icon"
             }
         };
+
 
         this.databaseName = "reportDatabase";
 
         this.state = {
-            view: "teamReport",
+            view: "surveyResults",
             sidebarOpen: false,
             loading: false,
             dataLoaded: false,
@@ -113,7 +121,7 @@ export default class Controller extends React.Component {
     handleUserLogout() {
         sessionStorage.removeItem("USER");
         this.setState({
-            view: "teamReport",
+            view: "surveyResults",
             sidebarOpen: false,
             loading: false,
             dataLoaded: false,
