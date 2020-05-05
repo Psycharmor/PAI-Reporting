@@ -19,7 +19,7 @@ export default class Controller extends React.Component {
         super(props);
 
         this.api = {
-            url: "http://staging.psycharmor.org/",
+            url: "https://psycharmor.org/",
             token: ""
         };
 
