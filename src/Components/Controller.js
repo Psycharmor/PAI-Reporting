@@ -19,17 +19,17 @@ export default class Controller extends React.Component {
         super(props);
 
         this.api = {
-            url: "http://staging.psycharmor.org/",
+            url: "https://psycharmor.org/",
             token: ""
         };
 
-        // this.menus = {
-        //     teamReport: {
-        //         icon: <MdAssignment/>,
-        //         text: "Team Report",
-        //         class: "team-report-icon"
-        //     }
-        // };
+        this.menus = {
+            teamReport: {
+                icon: <MdAssignment/>,
+                text: "Team Report",
+                class: "team-report-icon"
+            }
+        };
         this.menus = {
             surveyResults: {
                 icon: <MdPoll/>,
@@ -73,11 +73,11 @@ export default class Controller extends React.Component {
                     text: "Survey Results",
                     class: "survey-icon"
                 };
-                // this.menus["comments"] = {
-                //     icon: <MdComment/>,
-                //     text: "Comments",
-                //     class: "comment-icon"
-                // };
+                this.menus["comments"] = {
+                    icon: <MdComment/>,
+                    text: "Comments",
+                    class: "comment-icon"
+                };
                 this.menus["groupUpload"] = {
                     icon: <FaFileUpload/>,
                     text: "Upload",

@@ -66,7 +66,7 @@ export default class Caregiver extends React.Component {
                         org={this.props["org"]}
                         role={this.props["role"]}
                         categories={this.props["frqCategories"]}
-                        
+
                         question={"I feel more confident after taking PsychArmor courses"}
                         colors={this.props["frqCategoriesColors"]}
                     />
