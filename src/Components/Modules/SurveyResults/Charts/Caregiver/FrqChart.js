@@ -5,13 +5,21 @@ import {Pie} from "react-chartjs-2";
 
 import SurveyResultsFunctions from "../../../../../Lib/Modules/SurveyResults/SurveyResultsFunctions";
 
+const getTotals = (data) => {
+    let totalScore = 0, totalRespondents = 0;
+    data.forEach((score, index) => {
+        totalRespondents += score;
+        totalScore += score * (5 - index);
+    });
+    const average = (totalScore / totalRespondents).toFixed(2);
+    return { average, respondents: totalRespondents };
+}
+
 export default function FrqChart(props) {
-
-    const labels = getCaregiverFrqChartLabels();
-
-    const data = SurveyResultsFunctions.getCaregiverFrqChartData(props, props["question"], labels);
+    const data = SurveyResultsFunctions.getCaregiverFrqChartData(props);
+    const { average, respondents } = getTotals(data);
     return (
-        <Card>
+        <Card className='padding-bot-50'>
             <CardHeader>
                 <h3>{"Multi Response Results"}</h3>
                 <p>{props["question"]}</p>
@@ -21,14 +29,16 @@ export default function FrqChart(props) {
                     height={null}
                     width={null}
                     data={{
-                        labels: labels,
+                        labels: props.labels,
                         datasets: [{
                             data: data,
-                            backgroundColor: props["colors"]
+                            backgroundColor: props.colors,
                         }]
                     }}
                     options={options}
                 />
+                <div>Average Score: {average}</div>
+                <div>Total Respondents: {respondents}</div>
             </CardBody>
         </Card>
     );
@@ -50,16 +60,3 @@ const options = {
         }
     }
 };
-
-function getCaregiverFrqChartLabels (){
-
-  return [
-      /// caregiver
-      "Strongly Agree",
-      "Agree",
-      "Neutral",
-      "Disagree",
-      "Strongly Disagree",
-  ];
-
-}

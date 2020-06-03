@@ -193,86 +193,79 @@ const SurveyResultsFunctions = {
         return data;
     },
 
+    getAllCaregiverResponses(props) {
+        const { surveys, question } = props;
+        const responses = [];
 
-
-    getCaregiverFrqChartData(props, question, labels) {
-        let data = [];
-        for (let i = 0; i < labels.length; ++i) {
-            data.push(0);
+        for (let surveyId in surveys) {
+            if (!isFilteredSurvey(props, surveyId)) continue;
+            const { results } = surveys[surveyId];
+            if (!(question in results)) continue;
+            const result = results[question];
+            if (!result) continue;
+            responses.push(result);
         }
-        const surveys = props["surveys"];
-        const responses = props["responses"];
 
+        return responses;
+    },
 
+    getCaregiverBarChartData(props) {
+        const { surveys, labels, question } = props;
+        const data = labels.reduce((obj, item) => {
+            obj[item] = 0;
+            return obj;
+        }, {});
 
-        // console.log("question", question );
-        // console.log("question", props["question"] );
-
-        for (let surveyId in surveys ) {
-            // if (isFilteredSurvey(props, surveyId) && (surveyId in props["responses"])  ) {
-            if (isFilteredSurvey(props, surveyId) ) {
-
-                const caregiver = surveys[surveyId]["CaregiverCG2"];
-                const results = surveys[surveyId]["results"];
-
-                // if( caregiver in surveys ){
-                  for (let caregiverresults in caregiver) {
-                      const results = surveys[surveyId]["CaregiverCG2"]["results"];
-
-                      if (question in results ) {
-
-
-
-                        // for (let i = 0; i < props["responses"][surveyId].length; ++i) {
-                        //     const response = props["responses"][surveyId][i];
-                        //     if (response["question"] === question) {
-                        //         const index = labels.indexOf(props["categories"][response["categoryKey"]]);
-                        //         ++data[index];
-                        //     }
-                        // }
-
-                        // const response = props["responses"];
-                        console.log("categories", props["categories"]);
-                        
-                        if (results[question] === "Strongly Agree") {
-                            const index = labels.indexOf(props["categories"] );
-
-                            ++data[index];
-                        }
-                        if (results[question] === "Agree") {
-                            const index = labels.indexOf(props["categories"]);
-                            ++data[index];
-                        }
-                        if (results[question] === "Neutral") {
-                            const index = labels.indexOf(props["categories"]);
-                            ++data[index];
-                        }
-                        if (results[question] === "Disagree") {
-                            const index = labels.indexOf(props["categories"]);
-                            ++data[index];
-                        }
-                        if (results[question] === "Strongly Disagree") {
-                            const index = labels.indexOf(props["categories"]);
-                            ++data[index];
-                        }
-
-
-
-                          // for (let i = 0; i < props["responses"][surveyId].length; ++i) {
-                          //     const response = props["responses"][surveyId][i];
-                          //     if (response["question"] === question) {
-                          //         const index = labels.indexOf(props["categories"][response["categoryKey"]]);
-                          //         ++data[index];
-                          //     }
-                          // }
-                      }
-
-                  }
-                //
-                // }
-            }
+        for (let surveyId in surveys) {
+            if (!isFilteredSurvey(props, surveyId)) continue;
+            const { results } = surveys[surveyId];
+            if (!(question in results)) continue;
+            const result = results[question];
+            if (!labels.includes(result)) continue;
+            data[result]++;
         }
-        return data;
+
+        return labels.map(label => data[label]);
+    },
+
+    getCaregiverMultiBarChartData(props) {
+        const { surveys, labels, question } = props;
+        const data = labels.reduce((obj, item) => {
+            obj[item] = 0;
+            return obj;
+        }, {});
+
+        for (let surveyId in surveys) {
+            if (!isFilteredSurvey(props, surveyId)) continue;
+            const { results } = surveys[surveyId];
+            if (!(question in results)) continue;
+            const answers = JSON.parse(results[question]) || [];
+            answers.forEach(result => {
+                if (!labels.includes(result)) return;
+                data[result]++;
+            })
+        }
+
+        return labels.map(label => data[label]);
+    },
+
+    getCaregiverFrqChartData(props) {
+        const { surveys, labels, question } = props;
+        const data = labels.reduce((obj, item) => {
+            obj[item] = 0;
+            return obj;
+        }, {});
+
+        for (let surveyId in surveys) {
+            if (!isFilteredSurvey(props, surveyId)) continue;
+            const { results } = surveys[surveyId];
+            if (!(question in results)) continue;
+            const result = results[question];
+            if (!labels.includes(result)) continue;
+            data[result]++;
+        }
+
+        return labels.map(label => data[label]);
     },
 
     getRatingGroupMeansData(props, labels) {

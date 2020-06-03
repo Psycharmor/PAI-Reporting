@@ -13,6 +13,7 @@ import Demographics from "./Demographics";
 import Caregiver from "./Caregiver";
 import FreeResponseCategories from "./FreeResponse/FreeResponseCategories";
 import ApiHandler from "../../../Lib/ApiHandler";
+import UtilityFunctions from "../../../Lib/UtilityFunctions";
 
 export default class SurveyResults extends React.Component {
     constructor(props) {
@@ -33,7 +34,7 @@ export default class SurveyResults extends React.Component {
             frqResponses: {},
             frqCategoriesColors: []
         };
-        this.state["frqCategoriesColors"] = getBgColors(this.state["frqCategories"]);
+        this.state["frqCategoriesColors"] = UtilityFunctions.getBgColors(this.state["frqCategories"]);
 
         this.handleActiveTabChange = this.handleActiveTabChange.bind(this);
         this.handlePortfolioChange = this.handlePortfolioChange.bind(this);
@@ -130,7 +131,7 @@ export default class SurveyResults extends React.Component {
                     loading: false,
                     frqCategories: categories["data"],
                     frqResponses: responses["data"],
-                    frqCategoriesColors: getBgColors(categories["data"])
+                    frqCategoriesColors: UtilityFunctions.getBgColors(categories["data"])
                 });
             }
             catch (err) {
@@ -442,12 +443,3 @@ export default class SurveyResults extends React.Component {
         );
     }
 };
-
-function getBgColors(categories) {
-    let bgColors = [];
-    for (let categoryKey in categories) {
-        bgColors.push("rgb(" + Math.floor(Math.random() * 256) + "," + Math.floor(Math.random() * 256) + "," + Math.floor(Math.random() * 256) + ")");
-    }
-
-    return bgColors;
-}
