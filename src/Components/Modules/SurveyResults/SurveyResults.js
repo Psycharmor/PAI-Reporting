@@ -10,13 +10,16 @@ import SurveyTabs from "./SurveyTabs";
 import SurveyExportBtn from "./SurveyExportBtn";
 import Results from "./Results";
 import Demographics from "./Demographics";
+import Caregiver from "./Caregiver";
 import FreeResponseCategories from "./FreeResponse/FreeResponseCategories";
 import ApiHandler from "../../../Lib/ApiHandler";
+import UtilityFunctions from "../../../Lib/UtilityFunctions";
 
 export default class SurveyResults extends React.Component {
     constructor(props) {
         super(props);
 
+        // console.log("props", props);
         this.state = {
             loading: false,
             activeTab: "results",
@@ -31,7 +34,7 @@ export default class SurveyResults extends React.Component {
             frqResponses: {},
             frqCategoriesColors: []
         };
-        this.state["frqCategoriesColors"] = getBgColors(this.state["frqCategories"]);
+        this.state["frqCategoriesColors"] = UtilityFunctions.getBgColors(this.state["frqCategories"]);
 
         this.handleActiveTabChange = this.handleActiveTabChange.bind(this);
         this.handlePortfolioChange = this.handlePortfolioChange.bind(this);
@@ -128,7 +131,7 @@ export default class SurveyResults extends React.Component {
                     loading: false,
                     frqCategories: categories["data"],
                     frqResponses: responses["data"],
-                    frqCategoriesColors: getBgColors(categories["data"])
+                    frqCategoriesColors: UtilityFunctions.getBgColors(categories["data"])
                 });
             }
             catch (err) {
@@ -277,7 +280,7 @@ export default class SurveyResults extends React.Component {
                 action: "remove",
                 responses: responses
             };
-            
+
             try {
                 const result = await ApiHandler.post(url, body, options);
                 if (result["data"] > 0) {
@@ -378,6 +381,22 @@ export default class SurveyResults extends React.Component {
                                     frqCategoriesColors={this.state["frqCategoriesColors"]}
                                 />
                             </TabPane>
+                            <TabPane tabId={"caregiver"}>
+                                <Caregiver
+                                    surveys={this.props["surveys"]}
+                                    portfolios={this.props["portfolios"]}
+                                    courses={this.props["courses"]}
+                                    groups={this.props["groups"]}
+                                    users={this.props["users"]}
+                                    portfolioId={this.state["portfolioId"]}
+                                    courseId={this.state["courseId"]}
+                                    startDate={this.state["startDate"]}
+                                    endDate={this.state["endDate"]}
+                                    groupId={this.state["groupId"]}
+                                    org={this.state["org"]}
+                                    role={this.state["role"]}
+                                />
+                            </TabPane>
                             <TabPane tabId={"demographics"}>
                                 <Demographics
                                     surveys={this.props["surveys"]}
@@ -424,12 +443,3 @@ export default class SurveyResults extends React.Component {
         );
     }
 };
-
-function getBgColors(categories) {
-    let bgColors = [];
-    for (let categoryKey in categories) {
-        bgColors.push("rgb(" + Math.floor(Math.random() * 256) + "," + Math.floor(Math.random() * 256) + "," + Math.floor(Math.random() * 256) + ")");
-    }
-
-    return bgColors;
-}

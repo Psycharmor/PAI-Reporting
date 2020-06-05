@@ -8,6 +8,14 @@ const UtilityFunctions = {
             return false;
         }
         return true;
+    },
+    getBgColors: function(categories) {
+        let bgColors = [];
+        for (let categoryKey in categories) {
+            bgColors.push("rgb(" + Math.floor(Math.random() * 256) + "," + Math.floor(Math.random() * 256) + "," + Math.floor(Math.random() * 256) + ")");
+        }
+
+        return bgColors;
     }
 };
 export default UtilityFunctions;
