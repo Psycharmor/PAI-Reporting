@@ -8,9 +8,15 @@ import UtilityFunctions from "../../../Lib/UtilityFunctions";
 import CaregiverMultiBarChart from "./Charts/Caregiver/MultiBarChart";
 import CaregiverBarChart from "./Charts/Caregiver/BarChart";
 import CaregiverAllResponses from "./Charts/Caregiver/AllResponses";
+<<<<<<< HEAD
 import RatingGroupMeansChart from "./Charts/RatingGroupMeansChart";
 import RatingScoreMeansChart from "./Charts/RatingScoreMeansChart";
 import RatingChart from "./Charts/RatingChart";
+=======
+// import RatingGroupMeansChart from "./Charts/RatingGroupMeansChart";
+// import RatingScoreMeansChart from "./Charts/RatingScoreMeansChart";
+// import RatingChart from "./Charts/RatingChart";
+>>>>>>> staging
 
 const caregiverFreqLabels = [
     "Strongly Agree",
@@ -62,7 +68,11 @@ export default class Caregiver extends React.Component {
                 <Col sm={6}>
                     <FrqChart {...this.props} colors={frqColors} labels={caregiverFreqLabels} question={"I feel more confident after taking PsychArmor courses."} />
                 </Col>
+<<<<<<< HEAD
 
+=======
+                
+>>>>>>> staging
             </Row>
             <Row className={"margin-bot-30"}>
                 <Col sm={6}>
@@ -71,7 +81,11 @@ export default class Caregiver extends React.Component {
                 <Col sm={6}>
                     <CaregiverBarChart {...this.props} question='What part of the binder have you found most useful?' labels={['Calendar', 'Notes pages', 'Important Documents list and sleeve', 'Tips and Takeaways sheets from PsychArmor courses', 'Resources']} />
                 </Col>
+<<<<<<< HEAD
 
+=======
+                
+>>>>>>> staging
             </Row>
             <Row className={"margin-bot-30"}>
                 <Col sm={6}>
@@ -80,7 +94,11 @@ export default class Caregiver extends React.Component {
                 <Col sm={6}>
                     <FrqChart {...this.props} colors={frqColors} labels={caregiverFreqLabels} question={"I feel more confident in my role as a caregiver after receiving the Caregiver Experience binder."} />
                 </Col>
+<<<<<<< HEAD
 
+=======
+                
+>>>>>>> staging
             </Row>
             <Row className={"margin-bot-30"}>
                 <Col sm={6}>
