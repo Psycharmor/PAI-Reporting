@@ -23,13 +23,13 @@ export default class Controller extends React.Component {
             token: ""
         };
 
-        // this.menus = {
-        //     teamReport: {
-        //         icon: <MdAssignment/>,
-        //         text: "Team Report",
-        //         class: "team-report-icon"
-        //     }
-        // };
+        this.menus = {
+            teamReport: {
+                icon: <MdAssignment/>,
+                text: "Team Report",
+                class: "team-report-icon"
+            }
+        };
         this.menus = {
             surveyResults: {
                 icon: <MdPoll/>,
@@ -78,11 +78,11 @@ export default class Controller extends React.Component {
                 //     text: "Comments",
                 //     class: "comment-icon"
                 // };
-                // this.menus["groupUpload"] = {
-                //     icon: <FaFileUpload/>,
-                //     text: "Upload",
-                //     class: "upload-icon"
-                // };
+                this.menus["groupUpload"] = {
+                    icon: <FaFileUpload/>,
+                    text: "Upload",
+                    class: "upload-icon"
+                };
             }
             this.initializeDatabase();
         }
@@ -96,11 +96,11 @@ export default class Controller extends React.Component {
                 text: "Survey Results",
                 class: "survey-icon"
             };
-            // this.menus["groupUpload"] = {
-            //     icon: <FaFileUpload/>,
-            //     text: "Upload",
-            //     class: "upload-icon"
-            // };
+            this.menus["groupUpload"] = {
+                icon: <FaFileUpload/>,
+                text: "Upload",
+                class: "upload-icon"
+            };
         }
         this.initializeDatabase();
     }
