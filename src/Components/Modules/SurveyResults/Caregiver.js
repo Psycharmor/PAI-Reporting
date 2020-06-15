@@ -8,15 +8,15 @@ import UtilityFunctions from "../../../Lib/UtilityFunctions";
 import CaregiverMultiBarChart from "./Charts/Caregiver/MultiBarChart";
 import CaregiverBarChart from "./Charts/Caregiver/BarChart";
 import CaregiverAllResponses from "./Charts/Caregiver/AllResponses";
-<<<<<<< HEAD
+
 import RatingGroupMeansChart from "./Charts/RatingGroupMeansChart";
 import RatingScoreMeansChart from "./Charts/RatingScoreMeansChart";
 import RatingChart from "./Charts/RatingChart";
-=======
+
 // import RatingGroupMeansChart from "./Charts/RatingGroupMeansChart";
 // import RatingScoreMeansChart from "./Charts/RatingScoreMeansChart";
 // import RatingChart from "./Charts/RatingChart";
->>>>>>> staging
+
 
 const caregiverFreqLabels = [
     "Strongly Agree",
@@ -71,7 +71,7 @@ export default class Caregiver extends React.Component {
 <<<<<<< HEAD
 
 =======
-                
+
 >>>>>>> staging
             </Row>
             <Row className={"margin-bot-30"}>
@@ -84,7 +84,7 @@ export default class Caregiver extends React.Component {
 <<<<<<< HEAD
 
 =======
-                
+
 >>>>>>> staging
             </Row>
             <Row className={"margin-bot-30"}>
@@ -97,7 +97,7 @@ export default class Caregiver extends React.Component {
 <<<<<<< HEAD
 
 =======
-                
+
 >>>>>>> staging
             </Row>
             <Row className={"margin-bot-30"}>
