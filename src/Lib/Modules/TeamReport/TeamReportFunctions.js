@@ -23,6 +23,11 @@ const TeamReportFunctions = {
                 sort: true
             },
             {
+                text: "Organisation",
+                dataField: "organisation",
+                sort: true
+            },
+            {
                 text: "Courses Completed",
                 dataField: "completed",
                 sort: true,
@@ -64,6 +69,7 @@ const TeamReportFunctions = {
                 firstName: users[userId]["firstName"],
                 lastName: users[userId]["lastName"],
                 email: users[userId]["email"],
+                organisation: users[userId]["organisation"],
             };
 
             for (let i = 0; i < courseIds.length; ++i) {
