@@ -1,4 +1,5 @@
 import React from "react";
+import moment from "moment";
 
 import {CSVLink} from "react-csv";
 
@@ -36,16 +37,25 @@ function createData(props) {
         ];
         for (let i = 0; i < courseIds.length; ++i) {
             const courseId = courseIds[i];
-            let coursePercent = "0%";
+            let coursePercent = " ";
             if ((userId in pActivities) && (courseId in pActivities[userId])) {
+
+                const dateCompleted = pActivities[userId][courseId]["completed"];
                 const stepsCompleted = pActivities[userId][courseId]["stepsCompleted"];
                 const stepsTotal = pActivities[userId][courseId]["stepsTotal"];
                 if (stepsTotal !== 0) {
                     if (stepsCompleted === stepsTotal) {
                         ++courseCompletedCount;
                     }
-                    coursePercent = (+(stepsCompleted / stepsTotal * 100).toFixed(2)) + "%";
-                }
+                   // coursePercent = dateCompleted ;
+
+                    if( dateCompleted !== 0){
+                        coursePercent  = moment(dateCompleted * 1000 ).format("MM/DD/YYYY");
+                    }else{
+                        coursePercent = '';
+                    }
+
+               }
             }
             row.push(coursePercent);
         }
@@ -66,4 +76,15 @@ function createHeaders(props) {
     }
 
     return headers;
+}
+
+
+function formatDateTime(dateString) {
+    const parsed = moment(new Date(dateString))
+
+    if (!parsed.isValid()) {
+        return dateString
+    }
+
+    return parsed.format('MMM D, YYYY, HH:mmA')
 }

@@ -19,7 +19,7 @@ export default class Controller extends React.Component {
         super(props);
 
         this.api = {
-            url: "https://psycharmor.org/",
+            url: "http://staging.psycharmor.org/",
             token: ""
         };
 
@@ -30,19 +30,11 @@ export default class Controller extends React.Component {
                 class: "team-report-icon"
             }
         };
-        this.menus = {
-            surveyResults: {
-                icon: <MdPoll/>,
-                text: "Survey Results",
-                class: "survey-icon"
-            }
-        };
-
 
         this.databaseName = "reportDatabase";
 
         this.state = {
-            view: "surveyResults",
+            view: "teamReport",
             sidebarOpen: false,
             loading: false,
             dataLoaded: false,
@@ -121,7 +113,7 @@ export default class Controller extends React.Component {
     handleUserLogout() {
         sessionStorage.removeItem("USER");
         this.setState({
-            view: "surveyResults",
+            view: "teamReport",
             sidebarOpen: false,
             loading: false,
             dataLoaded: false,
@@ -139,10 +131,10 @@ export default class Controller extends React.Component {
     handleCommentAction(body) {
         const options = {
             headers: {
-                Authorization: "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvX1C9zdGFnaW5nLnBzeWNoYXJtb3Iub3JnIiwiaWF0IjoxNTg1ODU5NTk0LCJuYmYiOjE1ODU4NTk1OTQsImV4cCI6MTU4NjQ2NDM5NCwiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMTg1MTEifX19.tzO427GSJ4skJ-1xx5FkKQhj4PXloFITidyu69DgkwM"
+                Authorization: "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9zdGFnaW5nLnBzeWNoYXJtb3Iub3JnIiwiaWF0IjoxNTg1ODU5NTk0LCJuYmYiOjE1ODU4NTk1OTQsImV4cCI6MTU4NjQ2NDM5NCwiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMTg1MTEifX19.tzO427GSJ4skJ-1xx5FkKQhj4PXloFITidyu69DgkwM"
             }
         };
-        axios.post("http://staging.psycharmor.org/wp-json/pai/v1/comments", body, options)
+        axios.post("https://psycharmor.org/wp-json/pai/v1/comments", body, options)
         .then((jsonData) => {
             if (jsonData["status"] === 200) {
                 this.setState({

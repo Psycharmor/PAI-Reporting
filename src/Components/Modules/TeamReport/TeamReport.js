@@ -127,6 +127,29 @@ export default class TeamReport extends React.Component {
         return groups[0]["groupId"];
     }
 
+
+    getUserCompletionCount(groups, groupId, activities) {
+        const courseIds = groups[groupId]["courseIds"];
+        const userIds = groups[groupId]["userIds"];
+
+        var userCompletionCount = [];
+
+        for (let activityId in activities) {
+            const activity = activities[activityId];
+
+            if (userIds.includes(activity["userId"]) && courseIds.includes(activity["courseId"])  && activity["status"]) {
+
+                if (TeamReportFunctions.isFilteredActivity(this.state, activity)) {
+                    if ( userCompletionCount.indexOf(activity["userId"]) === -1 ) {
+                        userCompletionCount.push(activity["userId"]) ;
+                    }
+                }
+            }
+        }
+        return userCompletionCount.length;
+    }
+
+
     getCourseCompletionCount(groups, groupId, activities) {
         const courseIds = groups[groupId]["courseIds"];
         const userIds = groups[groupId]["userIds"];
@@ -172,8 +195,9 @@ export default class TeamReport extends React.Component {
                 <Row className={"margin-bot-30"}>
                     <Col sm={6} xl={3}>
                         <Brief
-                            title={"Total Users"}
-                            content={groups[groupId]["userIds"].length}
+                            title={"Users"}
+                            content={this.getUserCompletionCount(groups, groupId, this.props["activities"])}
+                            // content={groups[groupId]["userIds"].length}
                             icon={<MdPerson/>}
                             class={"team-report-total-users-icon"}
                         />

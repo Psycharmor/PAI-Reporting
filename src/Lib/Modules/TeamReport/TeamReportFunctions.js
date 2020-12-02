@@ -65,11 +65,12 @@ const TeamReportFunctions = {
             const userId = userIds[i];
             let courseCompletedCount = 0;
 
+
             let row = {
                 firstName: users[userId]["firstName"],
                 lastName: users[userId]["lastName"],
                 email: users[userId]["email"],
-                organisation: users[userId]["organisation"],
+                organisation: users[userId]["organization"],
             };
 
             for (let i = 0; i < courseIds.length; ++i) {
@@ -131,6 +132,7 @@ const TeamReportFunctions = {
 
         return true;
     }
+
 };
 export default TeamReportFunctions;
 
