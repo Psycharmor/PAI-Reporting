@@ -13,6 +13,7 @@ import Sidebar from "./Navigation/Sidebar";
 import Topbar from "./Navigation/Topbar";
 import Content from "./Modules/Content";
 import DbLib from "../Lib/DbLib.js";
+import {database} from "../firebase";
 
 export default class Controller extends React.Component {
     constructor(props) {
@@ -207,18 +208,70 @@ export default class Controller extends React.Component {
     }
 
     async initializeData(db, dbLib) {
-        let [groups, users, courses, portfolios, activities, surveys, comments] = await Promise.all(
-            [
-                dbLib.fetchDbStore(db, "groups"),
-                dbLib.fetchDbStore(db, "users"),
-                dbLib.fetchDbStore(db, "courses"),
-                dbLib.fetchDbStore(db, "portfolios"),
-                dbLib.fetchDbStore(db, "activities"),
-                dbLib.fetchDbStore(db, "surveys"),
-                dbLib.fetchDbStore(db, "comments")
-            ]
-        );
-        db.close();
+        // let [groups, users, courses, portfolios, activities, surveys, comments] = await Promise.all(
+        //     [
+        //         dbLib.fetchDbStore(db, "groups"),
+        //         dbLib.fetchDbStore(db, "users"),
+        //         dbLib.fetchDbStore(db, "courses"),
+        //         dbLib.fetchDbStore(db, "portfolios"),
+        //         dbLib.fetchDbStore(db, "activities"),
+        //         dbLib.fetchDbStore(db, "surveys"),
+        //         dbLib.fetchDbStore(db, "comments")
+        //     ]
+        // );
+        // db.close();
+        //
+        // await this.setState({
+        //     loading: false,
+        //     dataLoaded: true,
+        //     groups: groups,
+        //     users: users,
+        //     courses: courses,
+        //     portfolios: portfolios,
+        //     activities: activities,
+        //     surveys: surveys,
+        //     comments : comments
+        // });
+
+        let groups = {};
+        let users = {};
+        let courses = {};
+        let portfolios = {};
+        let activities = {};
+        let surveys = {};
+        let comments = {};
+
+        const user = JSON.parse(sessionStorage.getItem("USER"));
+        if (user["user_role"].includes("administrator")) {
+            const fetchGroups = await database().ref("groups").once("value");
+            const fetchUsers = await database().ref("users").once("value");
+            const fetchCourses = await database().ref("courses").once("value");
+            const fetchPortfolios = await database().ref("portfolios").once("value");
+            const fetchActivities = await database().ref("course-activities").once("value");
+            const fetchSurveys = await database().ref("surveys").once("value");
+            const fetchComments = await database().ref("comments").once("value");
+
+             groups = fetchGroups.val();
+             users = fetchUsers.val();
+             courses = fetchCourses.val();
+             portfolios = fetchPortfolios.val();
+             activities = fetchActivities.val();
+             surveys = fetchSurveys.val();
+             comments = fetchComments.val();
+        } else if (user["user_role"].includes("group_leader")) {
+            for (let i = 0; i < user["group"].length; ++i) {
+                const groupId = user["group"][i]["id"];
+                const fetchGroups = await database().ref("groups").orderByChild("groupid").equalTo(groupId).once("value");
+                const fetchUsers = await database().ref("users").orderByChild("groupid").equalTo(groupId).once("value");
+                const fetchCourses = await database().ref("courses").orderByChild("groupid").equalTo(groupId).once("value");
+                const fetchActivities = await database().ref("course-activities").orderByChild("groupid").equalTo(groupId).once("value");
+
+                groups = {...fetchGroups, ...fetchGroups.val()};
+                users = {...fetchUsers, ...fetchUsers.val()};
+                courses = {...fetchCourses, ...fetchCourses.val()};
+                activities = {...fetchActivities, ...fetchActivities.val()};
+            }
+        }
 
         this.setState({
             loading: false,

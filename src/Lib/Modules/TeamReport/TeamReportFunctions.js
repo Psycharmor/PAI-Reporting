@@ -67,10 +67,10 @@ const TeamReportFunctions = {
 
 
             let row = {
-                firstName: users[userId]["firstName"],
-                lastName: users[userId]["lastName"],
-                email: users[userId]["email"],
-                organisation: users[userId]["organization"],
+                firstName: users[userId]?.["firstName"],
+                lastName: users[userId]?.["lastName"],
+                email: users[userId]?.["email"],
+                organisation: users[userId]?.["organization"],
             };
 
             for (let i = 0; i < courseIds.length; ++i) {

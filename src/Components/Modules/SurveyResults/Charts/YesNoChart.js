@@ -95,12 +95,12 @@ export default function YesNoChart(props) {
 function getResultsLabels(){
 
   return [
-      "I learned something new as a result of this training.",
-      "The information presented was relevant to my goals.",
-      "After taking this course, I will use what I learned.",
-      "I would recommend PsychArmor training to someone else.",
+      "I learned something new as a result of this training",
+      "The information presented was relevant to my goals",
+      "After taking this course, I will use what I learned",
+      "I would recommend PsychArmor training to someone else",
       "Would you participate in more detailed evaluation?",
-      "I am more aware of available resources as a result of this course.",
+      "I am more aware of available resources as a result of this course",
   ];
 }
 

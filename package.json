@@ -11,6 +11,7 @@
     "bootstrap": "^4.4.1",
     "chart.js": "^2.9.3",
     "chartjs-plugin-datalabels": "^0.7.0",
+    "firebase": "^8.2.1",
     "idb": "^5.0.1",
     "moment": "^2.24.0",
     "papaparse": "^5.1.1",
@@ -23,7 +24,7 @@
     "react-dom": "^16.12.0",
     "react-dropzone": "^10.2.1",
     "react-icons": "^3.9.0",
-    "react-scripts": "3.3.1",
+    "react-scripts": "4.0.1",
     "react-to-print": "^2.5.1",
     "reactstrap": "^8.4.1"
   },

@@ -200,6 +200,7 @@ const SurveyResultsFunctions = {
         for (let surveyId in surveys) {
             if (!isFilteredSurvey(props, surveyId)) continue;
             const { results } = surveys[surveyId];
+            if (!results) continue;
             if (!(question in results)) continue;
             const result = results[question];
             if (!result) continue;
@@ -219,6 +220,7 @@ const SurveyResultsFunctions = {
         for (let surveyId in surveys) {
             if (!isFilteredSurvey(props, surveyId)) continue;
             const { results } = surveys[surveyId];
+            if (!results) continue;
             if (!(question in results)) continue;
             const result = results[question];
             if (!labels.includes(result)) continue;
@@ -238,6 +240,7 @@ const SurveyResultsFunctions = {
         for (let surveyId in surveys) {
             if (!isFilteredSurvey(props, surveyId)) continue;
             const { results } = surveys[surveyId];
+            if (!results) continue;
             if (!(question in results)) continue;
             const answers = JSON.parse(results[question]) || [];
             answers.forEach(result => {
@@ -259,6 +262,7 @@ const SurveyResultsFunctions = {
         for (let surveyId in surveys) {
             if (!isFilteredSurvey(props, surveyId)) continue;
             const { results } = surveys[surveyId];
+            if (!results) continue;
             if (!(question in results)) continue;
             const result = results[question];
             if (!labels.includes(result)) continue;
@@ -571,7 +575,7 @@ function getCategories(surveyId, question, responses, categories) {
 
 function getTeam(groups, userId, courseId) {
     for (let groupId in groups) {
-        if (groups[groupId]["courseIds"].includes(courseId) && groups[groupId]["userIds"].includes(userId)) {
+        if (groups[groupId]["courseIds"] && groups[groupId]["userIds"] && groups[groupId]["courseIds"].includes(courseId) && groups[groupId]["userIds"].includes(userId)) {
             return groups[groupId]["title"];
         }
     }
@@ -614,11 +618,11 @@ function createExportHeaders() {
         "Role With Veterans",
         "Courses Completed",
         "Referral Source",
-        "I learned something new as a result of this training.",
-        "The information presented was relevant to my goals.",
-        "After taking this course, I will use what I learned.",
-        "I would recommend PsychArmor training to someone else.",
-        "I am more aware of available resources as a result of this course.",
+        "I learned something new as a result of this training",
+        "The information presented was relevant to my goals",
+        "After taking this course, I will use what I learned",
+        "I would recommend PsychArmor training to someone else",
+        "I am more aware of available resources as a result of this course",
         "Would you participate in more detailed evaluation?",
         "Why did you take this course?",
         "What aspects of the course did you find especially helpful",
@@ -645,11 +649,11 @@ function createExportRows(survey, props, pActivities) {
         (userId in props["users"]) ? props["users"][userId]["roleWithVeterans"] : "",
         getUserCourseCompletionCount(userId, pActivities),
         (userId in props["users"]) ? props["users"][userId]["referralSource"] : "",
-        survey["results"]["I learned something new as a result of this training."] || "",
-        survey["results"]["The information presented was relevant to my goals."] || "",
-        survey["results"]["After taking this course, I will use what I learned."] || "",
-        survey["results"]["I would recommend PsychArmor training to someone else."] || "",
-        survey["results"]["I am more aware of available resources as a result of this course."] || "",
+        survey["results"]["I learned something new as a result of this training"] || "",
+        survey["results"]["The information presented was relevant to my goals"] || "",
+        survey["results"]["After taking this course, I will use what I learned"] || "",
+        survey["results"]["I would recommend PsychArmor training to someone else"] || "",
+        survey["results"]["I am more aware of available resources as a result of this course"] || "",
         survey["results"]["Would you participate in more detailed evaluation?"] || "",
     ];
 
@@ -699,7 +703,7 @@ function createExportRows(survey, props, pActivities) {
 function getUserTeam(groups, userId, courseId) {
     for (let groupId in groups) {
         const group = groups[groupId];
-        if (group["courseIds"].includes(courseId) && group["userIds"].includes(userId)) {
+        if (group["courseIds"] && group["userIds"] && group["courseIds"].includes(courseId) && group["userIds"].includes(userId)) {
             return group["title"];
         }
     }

@@ -30,9 +30,9 @@ function createData(props) {
         const userId = userIds[i];
         let courseCompletedCount = 0;
         let row = [
-            props["users"][userId]["firstName"],
-            props["users"][userId]["lastName"],
-            props["users"][userId]["email"],
+            props["users"][userId]?.["firstName"],
+            props["users"][userId]?.["lastName"],
+            props["users"][userId]?.["email"],
             "0/" + courseIds.length
         ];
         for (let i = 0; i < courseIds.length; ++i) {
