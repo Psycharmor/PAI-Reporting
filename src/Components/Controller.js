@@ -5,6 +5,7 @@ import axios from "axios";
 import {MdAssignment, MdPoll, MdComment} from "react-icons/md";
 import {FaFileUpload} from "react-icons/fa";
 import moment from "moment";
+import async from "async";
 import {openDB, deleteDB} from "idb";
 
 import Login from "./Modules/Login/Login";
@@ -185,7 +186,7 @@ export default class Controller extends React.Component {
         const dbLib = new DbLib(this.api);
 
         if (!exp || moment().isAfter(moment(exp))) {
-            // console.log("new day, delete database");
+            console.log("new day, delete database");
             await deleteDB(this.databaseName);
         }
         const db = await openDB(this.databaseName, 1, {
@@ -236,42 +237,22 @@ export default class Controller extends React.Component {
         // });
 
         let groups = {};
-        let users = {};
-        let courses = {};
-        let portfolios = {};
-        let activities = {};
-        let surveys = {};
-        let comments = {};
+        const users = await database().ref("users").once("value");
+        const courses = await database().ref("courses").once("value");
+        const portfolios = await database().ref("portfolios").once("value");
+        const activities = await database().ref("course-activities").once("value");
+        const surveys = await database().ref("surveys").once("value");
+        const comments = await database().ref("comments").once("value");
 
         const user = JSON.parse(sessionStorage.getItem("USER"));
         if (user["user_role"].includes("administrator")) {
             const fetchGroups = await database().ref("groups").once("value");
-            const fetchUsers = await database().ref("users").once("value");
-            const fetchCourses = await database().ref("courses").once("value");
-            const fetchPortfolios = await database().ref("portfolios").once("value");
-            const fetchActivities = await database().ref("course-activities").once("value");
-            const fetchSurveys = await database().ref("surveys").once("value");
-            const fetchComments = await database().ref("comments").once("value");
-
              groups = fetchGroups.val();
-             users = fetchUsers.val();
-             courses = fetchCourses.val();
-             portfolios = fetchPortfolios.val();
-             activities = fetchActivities.val();
-             surveys = fetchSurveys.val();
-             comments = fetchComments.val();
         } else if (user["user_role"].includes("group_leader")) {
             for (let i = 0; i < user["group"].length; ++i) {
                 const groupId = user["group"][i]["id"];
-                const fetchGroups = await database().ref("groups").orderByChild("groupid").equalTo(groupId).once("value");
-                const fetchUsers = await database().ref("users").orderByChild("groupid").equalTo(groupId).once("value");
-                const fetchCourses = await database().ref("courses").orderByChild("groupid").equalTo(groupId).once("value");
-                const fetchActivities = await database().ref("course-activities").orderByChild("groupid").equalTo(groupId).once("value");
-
-                groups = {...fetchGroups, ...fetchGroups.val()};
-                users = {...fetchUsers, ...fetchUsers.val()};
-                courses = {...fetchCourses, ...fetchCourses.val()};
-                activities = {...fetchActivities, ...fetchActivities.val()};
+                const fetchGroups = await database().ref("groups/" + groupId).once("value");
+                groups = {...groups, [groupId]: { ...fetchGroups.val()}};
             }
         }
 
@@ -279,18 +260,18 @@ export default class Controller extends React.Component {
             loading: false,
             dataLoaded: true,
             groups: groups,
-            users: users,
-            courses: courses,
-            portfolios: portfolios,
-            activities: activities,
-            surveys: surveys,
-            comments : comments
+            users: users.val(),
+            courses: courses.val(),
+            portfolios: portfolios.val(),
+            activities: activities.val(),
+            surveys: surveys.val(),
+            comments : comments.val()
         });
     }
 
     render() {
         if (sessionStorage.getItem("USER")) {
-            // console.log(this.state);
+            console.log(this.state);
             return (
                 <>
                 {this.state["loading"] && <LoadingOverlay/>}

@@ -32,6 +32,9 @@ const fetch = async (endpoint, limit, params) => {
 	const replacedData = stringData.replace(/\./g, "").replace(/\$/g, "").replace(/here:/g, "here");
 	const parsedData = JSON.parse(replacedData);
 
+	const size = Object.keys(parsedData).length;
+	console.log(size);
+
 	const chunks = makeChunks(parsedData, 10000);
 	await async.eachOf(chunks, async (chunk) => {
 		await firebase.database().ref(endpoint).update(chunk);
@@ -42,7 +45,7 @@ const fetch = async (endpoint, limit, params) => {
 
 const fetchAll1 = async () => {
 	await fetch("groups", 10000);
-	await fetch("users", 30000);
+	await fetch("users", 80000);
 	await fetch("courses", 10000);
 	await fetch("portfolios", 10000);
 };
