@@ -4,7 +4,7 @@ const firebase = require("firebase-admin");
 const functions = require("firebase-functions");
 const superFunction = functions.runWith({
 	timeoutSeconds: 540,
-	memory: "4GB",
+	memory: "2GB",
 });
 
 firebase.initializeApp({
@@ -29,7 +29,7 @@ const fetch = async (endpoint, limit, params) => {
 
 	// Let's get rid of dots [.], dollar sign [$] and colons [:] in keys
 	const stringData = JSON.stringify(data);
-	const replacedData = stringData.replaceAll(".", "").replaceAll("$", "").replaceAll("here:", "here");
+	const replacedData = stringData.replace(/\./g, "").replace(/\$/g, "").replace(/here:/g, "here");
 	const parsedData = JSON.parse(replacedData);
 
 	const chunks = makeChunks(parsedData, 10000);
@@ -42,7 +42,7 @@ const fetch = async (endpoint, limit, params) => {
 
 const fetchAll1 = async () => {
 	await fetch("groups", 10000);
-	await fetch("users", 80000);
+	await fetch("users", 30000);
 	await fetch("courses", 10000);
 	await fetch("portfolios", 10000);
 };

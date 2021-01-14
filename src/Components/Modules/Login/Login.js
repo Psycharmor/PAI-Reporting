@@ -98,8 +98,6 @@ export default class Login extends React.Component {
     render() {
         return (
             <div className={"login"}>
-
-                <Alert> We're undergoing a scheduled Maintenance - Sorry for the inconvenience. We'll be back up and running as fast as possible</Alert>
                 <h1>
                     <a href={"https://psycharmor.org"} target={"_blank"} rel="noopener noreferrer">
                         <img alt={"psycharmor"} src={"https://s3-us-west-1.amazonaws.com/psycharmor/wp-content/uploads/2019/06/13093821/pai-for-wordpress.png"}/>

@@ -131,6 +131,19 @@ const TeamReportFunctions = {
         }
 
         return true;
+    },
+
+    isFilteredUser: function(props, registeredDateUnix) {
+
+        if (props["startDate"].unix() > registeredDateUnix ) {
+            return false;
+        }
+
+        if (props["endDate"].unix() < registeredDateUnix) {
+            return false;
+        }
+
+        return true;
     }
 
 };

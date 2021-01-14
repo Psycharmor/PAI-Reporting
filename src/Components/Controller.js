@@ -34,6 +34,7 @@ export default class Controller extends React.Component {
 
         this.databaseName = "reportDatabase";
 
+
         this.state = {
             view: "teamReport",
             sidebarOpen: false,
@@ -47,6 +48,7 @@ export default class Controller extends React.Component {
             surveys: {},
             comments: {}
         };
+
 
         this.handleUserLogin = this.handleUserLogin.bind(this);
         this.handleViewChange = this.handleViewChange.bind(this);

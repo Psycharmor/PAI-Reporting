@@ -128,6 +128,30 @@ export default class TeamReport extends React.Component {
     }
 
 
+    getUserCount(groups, groupId, users){
+      const groupUserIds = groups[groupId]["userIds"];
+
+      var userCount = [];
+
+      for(var groupUserId in groupUserIds) {
+          var userId = groupUserIds[groupUserId];
+           const user = users[userId];
+           console.log(user["registeredDate"]);
+           var registeredDateUnix = moment(user["registeredDate"], "YYYY-MM-DD").unix();
+           if (TeamReportFunctions.isFilteredUser(this.state, registeredDateUnix )) {
+             // console.log(user.length);
+               if ( userCount.indexOf(userId) === -1 ) {
+                   userCount.push(userId);
+               }
+           }
+
+      }
+
+      return userCount.length;
+    }
+
+
+
     getUserCompletionCount(groups, groupId, activities) {
         const courseIds = groups[groupId]["courseIds"];
         const userIds = groups[groupId]["userIds"];
@@ -136,6 +160,7 @@ export default class TeamReport extends React.Component {
 
         for (let activityId in activities) {
             const activity = activities[activityId];
+
 
             if (userIds.includes(activity["userId"]) && courseIds.includes(activity["courseId"])  && activity["status"]) {
 
@@ -195,9 +220,17 @@ export default class TeamReport extends React.Component {
                 <Row className={"margin-bot-30"}>
                     <Col sm={6} xl={3}>
                         <Brief
-                            title={"Users"}
-                            content={this.getUserCompletionCount(groups, groupId, this.props["activities"])}
+                            title={"Total Users"}
+                            content={this.getUserCount(groups, groupId, this.props["users"])}
                             // content={groups[groupId]["userIds"].length}
+                            icon={<MdPerson/>}
+                            class={"team-report-total-users-icon"}
+                        />
+                    </Col>
+                    <Col sm={6} xl={3}>
+                        <Brief
+                            title={"Active Users"}
+                            content={this.getUserCompletionCount(groups, groupId, this.props["activities"])}
                             icon={<MdPerson/>}
                             class={"team-report-total-users-icon"}
                         />
@@ -210,7 +243,7 @@ export default class TeamReport extends React.Component {
                             class={"team-report-total-course-completed-icon"}
                         />
                     </Col>
-                    <Col sm={6}>
+                        <Col sm={6} xl={3}>
                         <ReportExportBtn
                             group={groups[groupId]}
                             users={this.props["users"]}
