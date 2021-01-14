@@ -136,7 +136,7 @@ export default class TeamReport extends React.Component {
       for(var groupUserId in groupUserIds) {
           var userId = groupUserIds[groupUserId];
            const user = users[userId];
-           console.log(user["registeredDate"]);
+           // console.log(user["registeredDate"]);
            var registeredDateUnix = moment(user["registeredDate"], "YYYY-MM-DD").unix();
            if (TeamReportFunctions.isFilteredUser(this.state, registeredDateUnix )) {
              // console.log(user.length);

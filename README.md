@@ -45,6 +45,10 @@ You will also see any lint errors in the console.
 yarn global add serve
 serve -s build
 
+## Changing prefix by running on 5000
+/opt/bitnami/apache2/conf/bitnami/bitnami-apps-prefix.conf 
+
+
 
 ### ONLY DO THIS STEP IF NEW FIREBASE PROJECT
 ### Prerequisites
