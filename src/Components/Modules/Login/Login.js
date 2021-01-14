@@ -39,7 +39,7 @@ export default class Login extends React.Component {
         })
         .then((user) => {
             if (user.data["user_role"].includes("administrator") || user.data["user_role"].includes("group_leader") || user.data["user_role"].includes("subgroup_leader")) {
-                console.log(user.data["user_role"]);
+                // console.log(user.data["user_role"]);
                 this.handleLoginSuccess(user.data);
             }
             else {

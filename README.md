@@ -45,8 +45,11 @@ You will also see any lint errors in the console.
 yarn global add serve
 serve -s build
 
+#Serve the build app in port 5000 using mp2
+pm2 serve build/ 5000 --spa
+
 ## Changing prefix by running on 5000
-/opt/bitnami/apache2/conf/bitnami/bitnami-apps-prefix.conf 
+/opt/bitnami/apache2/conf/bitnami/bitnami-apps-prefix.conf
 
 
 

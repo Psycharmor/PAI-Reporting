@@ -185,7 +185,7 @@ export default class Controller extends React.Component {
         const dbLib = new DbLib(this.api);
 
         if (!exp || moment().isAfter(moment(exp))) {
-            console.log("new day, delete database");
+            // console.log("new day, delete database");
             await deleteDB(this.databaseName);
         }
         const db = await openDB(this.databaseName, 1, {
@@ -290,7 +290,7 @@ export default class Controller extends React.Component {
 
     render() {
         if (sessionStorage.getItem("USER")) {
-            console.log(this.state);
+            // console.log(this.state);
             return (
                 <>
                 {this.state["loading"] && <LoadingOverlay/>}

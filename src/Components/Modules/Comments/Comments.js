@@ -33,7 +33,7 @@ export default class Comments extends React.Component {
         this.handlePending = this.handlePending.bind(this);
         this.handleTrash = this.handleTrash.bind(this);
 
-        console.log("THIS", this);
+        // console.log("THIS", this);
     }
 
     /*
