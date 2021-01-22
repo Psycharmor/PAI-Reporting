@@ -26,7 +26,7 @@ function createData(props) {
     const courseIds = props["group"]["courseIds"];
     const pActivities = TeamReportFunctions.parseActivities(props["activities"], userIds);
 
-    for (let i = 0; i < userIds.length; ++i) {
+    for (let i = 0; i < userIds?.length; ++i) {
         const userId = userIds[i];
         let courseCompletedCount = 0;
         let row = [

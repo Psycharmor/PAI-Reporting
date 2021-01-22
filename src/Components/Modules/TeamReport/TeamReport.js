@@ -90,7 +90,7 @@ export default class TeamReport extends React.Component {
 
     getGroupIds() {
         const user = JSON.parse(sessionStorage.getItem("USER"));
-        if (user["user_role"].includes("administrator")) {
+        if (user["user_role"]?.includes("administrator")) {
             return Object.keys(this.props["groups"]);
         }
 
@@ -106,7 +106,7 @@ export default class TeamReport extends React.Component {
     getInitGroup() {
         let groups = [];
         for (let groupId in this.props["groups"]) {
-            if (this.groupIds.includes(groupId)) {
+            if (this.groupIds?.includes(groupId)) {
                 groups.push({groupId: groupId, name: this.props["groups"][groupId]["title"]});
             }
         }
@@ -162,7 +162,7 @@ export default class TeamReport extends React.Component {
             const activity = activities[activityId];
 
 
-            if (userIds.includes(activity["userId"]) && courseIds.includes(activity["courseId"])  && activity["status"]) {
+            if (userIds?.includes(activity["userId"]) && courseIds.includes(activity["courseId"])  && activity["status"]) {
 
                 if (TeamReportFunctions.isFilteredActivity(this.state, activity)) {
                     if ( userCompletionCount.indexOf(activity["userId"]) === -1 ) {
@@ -182,7 +182,7 @@ export default class TeamReport extends React.Component {
         let courseCompletionCount = 0;
         for (let activityId in activities) {
             const activity = activities[activityId];
-            if (userIds.includes(activity["userId"]) && courseIds.includes(activity["courseId"])
+             if (userIds?.includes(activity["userId"]) && courseIds.includes(activity["courseId"])
                     && activity["status"]) {
                 if (TeamReportFunctions.isFilteredActivity(this.state, activity)) {
                     ++courseCompletionCount;

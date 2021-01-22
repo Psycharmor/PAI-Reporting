@@ -61,7 +61,8 @@ const TeamReportFunctions = {
         const courseIds = group["courseIds"];
         const userIds = group["userIds"];
 
-        for (let i = 0; i < userIds.length; ++i) {
+        for (let i = 0; i < userIds?.length; ++i) {
+
             const userId = userIds[i];
             let courseCompletedCount = 0;
 
@@ -110,7 +111,7 @@ const TeamReportFunctions = {
         for (let activityId in activities) {
             const activity = activities[activityId];
             const userId = activity["userId"];
-            if (groupUsers.includes(userId)) {
+            if (groupUsers?.includes(userId)) {
                 if (!(userId in pActivities)) {
                     pActivities[userId] = {};
                 }
