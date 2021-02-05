@@ -12,7 +12,7 @@ firebase.initializeApp({
 });
 
 const url = "https://psycharmor.org";
-const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvcHN5Y2hhcm1vci5vcmciLCJpYXQiOjE2MTEwOTM1MDYsIm5iZiI6MTYxMTA5MzUwNiwiZXhwIjoxNjExNjk4MzA2LCJkYXRhIjp7InVzZXIiOnsiaWQiOiI1MTQ2NiJ9fX0.1vg0zSAykeGH4cqjjMzlBbuHld_GV4jez4JBFe3T4qI";
+const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvcHN5Y2hhcm1vci5vcmciLCJpYXQiOjE2MTI1NDM5MDEsIm5iZiI6MTYxMjU0MzkwMSwiZXhwIjoxNjEzMTQ4NzAxLCJkYXRhIjp7InVzZXIiOnsiaWQiOiI1MTQ2NiJ9fX0.boajjgUEwnRWA79hiZvW6e6fSsAT-k8cYY_HylaWr54";
 const fetch = async (endpoint, limit, params) => {
 	console.log(`Starting => ${endpoint}`);
 	const {data} = await axios({
