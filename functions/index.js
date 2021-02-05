@@ -4,7 +4,7 @@ const firebase = require("firebase-admin");
 const functions = require("firebase-functions");
 const superFunction = functions.runWith({
 	timeoutSeconds: 540,
-	memory: "2GB",
+	memory: "4GB",
 });
 
 firebase.initializeApp({
@@ -12,9 +12,17 @@ firebase.initializeApp({
 });
 
 const url = "https://psycharmor.org";
-const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvcHN5Y2hhcm1vci5vcmciLCJpYXQiOjE2MTI1NDM5MDEsIm5iZiI6MTYxMjU0MzkwMSwiZXhwIjoxNjEzMTQ4NzAxLCJkYXRhIjp7InVzZXIiOnsiaWQiOiI1MTQ2NiJ9fX0.boajjgUEwnRWA79hiZvW6e6fSsAT-k8cYY_HylaWr54";
 const fetch = async (endpoint, limit, params) => {
 	console.log(`Starting => ${endpoint}`);
+
+	const user = await axios.post(url + "/wp-json/jwt-auth/v1/token/",
+		{
+			username: "reporting@psycharmor.org",
+			password: "rm9&p^&yR9TmtY6pSSGgM0n^",
+		},
+	);
+
+	const userToken = user.data.token;
 	const {data} = await axios({
 		method: "GET",
 		url: `${url}/wp-json/pai/v2/${endpoint}`,
@@ -23,7 +31,7 @@ const fetch = async (endpoint, limit, params) => {
 			...params,
 		},
 		headers: {
-			"Authorization": `Bearer ${token}`,
+			"Authorization": `Bearer ${userToken}`,
 		},
 	});
 
