@@ -256,9 +256,7 @@ export default class Controller extends React.Component {
             }
         }
 
-        this.setState({
-            loading: false,
-            dataLoaded: true,
+        await this.setState({
             groups: groups,
             users: users.val(),
             courses: courses.val(),
@@ -266,6 +264,11 @@ export default class Controller extends React.Component {
             activities: activities.val(),
             surveys: surveys.val(),
             comments : comments.val()
+        });
+
+        await this.setState({
+            loading: false,
+            dataLoaded: true
         });
     }
 

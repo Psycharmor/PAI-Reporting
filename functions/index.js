@@ -40,26 +40,24 @@ const fetch = async (endpoint, limit, params) => {
 	const replacedData = stringData.replace(/\./g, "").replace(/\$/g, "").replace(/here:/g, "here");
 	const parsedData = JSON.parse(replacedData);
 
-	const size = Object.keys(parsedData).length;
-	console.log(size);
-
 	const chunks = makeChunks(parsedData, 10000);
 	await async.eachOf(chunks, async (chunk) => {
 		await firebase.database().ref(endpoint).update(chunk);
 	});
 
-	console.log(`Finished => ${endpoint}`);
+	const size = Object.keys(parsedData).length;
+	console.log(`Finished => ${endpoint}; Requested => ${limit}; Got => ${size}`);
 };
 
 const fetchAll1 = async () => {
 	await fetch("groups", 10000);
-	await fetch("users", 80000);
+	await fetch("users", 100000);
 	await fetch("courses", 10000);
 	await fetch("portfolios", 10000);
 };
 const fetchAll2 = async () => {
-	await fetch("course-activities", 30000);
-	await fetch("surveys", 30000);
+	await fetch("course-activities", 1000000);
+	await fetch("surveys", 100000);
 	await fetch("surveys", 30000, {caregivers: 1});
 	await fetch("surveys", 30000, {caregiverscg: 1});
 };
@@ -74,8 +72,6 @@ exports.manualFetchFromWP2 = superFunction.https.onRequest(async (req, res) => {
 	await fetchAll2();
 	res.send("OK");
 });
-exports.fetchFromWP1 = superFunction.https.onCall(fetchAll1);
-exports.fetchFromWP2 = superFunction.https.onCall(fetchAll2);
 
 function makeChunks(object, chunk_size) {
 	const values = Object.values(object);
